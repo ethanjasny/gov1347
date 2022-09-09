@@ -9,7 +9,7 @@ tags: []
 
 Hello world.
 
-```{r}
+```{r echo = FALSE}
 library(tidyverse)
 seatshare <- read.csv("seatshare.csv")
 
@@ -23,10 +23,10 @@ ggplot(seatshare, aes(x = Congress)) +
 seatshare_long <- seatshare %>%
   select(Congress, Democrats, Republicans) %>%
   gather(key = Party, value = Seats, -Congress)
-seatshare_long
+
 
 ggplot(seatshare_long, aes(x = Congress, y = Seats, col = Party)) +
   geom_line() +
   scale_color_manual(values=c('red3','blue2'))
 ```
-
+These graphs are great, eh?
