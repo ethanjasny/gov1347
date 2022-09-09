@@ -9,8 +9,13 @@ tags: []
 
 Hello world.
 
-```{r echo = FALSE}
+```{r results = FALSE}
 library(tidyverse)
+library(ggplot2)
+```
+
+
+```{r echo = FALSE}
 seatshare <- read.csv("seatshare.csv")
 
 seatshare <- seatshare %>%
