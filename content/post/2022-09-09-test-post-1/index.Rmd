@@ -1,0 +1,32 @@
+---
+title: Test Post 1
+author: Ethan Jasny
+date: '2022-09-09'
+slug: []
+categories: []
+tags: []
+---
+
+Hello world.
+
+```{r}
+library(tidyverse)
+seatshare <- read.csv("seatshare.csv")
+
+seatshare <- seatshare %>%
+  mutate(Congress = parse_number(Congress))
+
+ggplot(seatshare, aes(x = Congress)) +
+  geom_line(aes(y = Democrats), color = "blue3") +
+  geom_line(aes(y = Republicans), color = "red2")
+
+seatshare_long <- seatshare %>%
+  select(Congress, Democrats, Republicans) %>%
+  gather(key = Party, value = Seats, -Congress)
+seatshare_long
+
+ggplot(seatshare_long, aes(x = Congress, y = Seats, col = Party)) +
+  geom_line() +
+  scale_color_manual(values=c('red3','blue2'))
+```
+

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		
+		
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Test Post 1 &middot; My New Hugo Site</title>
+
+		
+		<link rel="stylesheet" href="/css/style.css">
+		<link rel="stylesheet" href="/css/fonts.css">
+		
+		<link rel="icon" href="/favicon.ico"/>
+		<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
+
+		<script src="/js/darkmode.js"></script>
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/">
+					
+						<h2 class="nav-title">My New Hugo Site</h2>
+					
+				</a>
+				<ul>
+    
+    
+</ul>
+			</div>
+		</nav>
+
+        <div id="darkModeToggle" onclick="toggleDarkMode()">
+  &#9680; 
+</div>
+
+        
+
+<main>
+	
+
+
+        <div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Ethan Jasny
+        <br>
+        <span>on&nbsp;</span><time datetime="2022-09-09 00:00:00 &#43;0000 UTC">September 9, 2022</time>
+</div>
+
+		<h1 class="post-title">Test Post 1</h1>
+<div class="post-line"></div>
+
+		
+
+		
+
+
+<p>Hello world.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+## ✔ tibble  3.1.8     ✔ dplyr   1.0.9
+## ✔ tidyr   1.2.0     ✔ stringr 1.4.0
+## ✔ readr   2.1.1     ✔ forcats 0.5.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>seatshare &lt;- read.csv(&quot;seatshare.csv&quot;)
+
+seatshare &lt;- seatshare %&gt;%
+  mutate(Congress = parse_number(Congress))
+
+ggplot(seatshare, aes(x = Congress)) +
+  geom_line(aes(y = Democrats), color = &quot;blue3&quot;) +
+  geom_line(aes(y = Republicans), color = &quot;red2&quot;)</code></pre>
+<p><img src="http://example.org/post/2022-09-09-test-post-1/index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>seatshare_long &lt;- seatshare %&gt;%
+  select(Congress, Democrats, Republicans) %&gt;%
+  gather(key = Party, value = Seats, -Congress)
+seatshare_long</code></pre>
+<pre><code>##    Congress       Party Seats
+## 1        80   Democrats   188
+## 2        81   Democrats   263
+## 3        82   Democrats   234
+## 4        83   Democrats   213
+## 5        84   Democrats   232
+## 6        85   Democrats   234
+## 7        86   Democrats   283
+## 8        87   Democrats   262
+## 9        88   Democrats   258
+## 10       89   Democrats   295
+## 11       90   Democrats   248
+## 12       91   Democrats   243
+## 13       92   Democrats   255
+## 14       93   Democrats   242
+## 15       94   Democrats   291
+## 16       95   Democrats   292
+## 17       96   Democrats   277
+## 18       97   Democrats   242
+## 19       98   Democrats   269
+## 20       99   Democrats   253
+## 21      100   Democrats   258
+## 22      101   Democrats   260
+## 23      102   Democrats   267
+## 24      103   Democrats   258
+## 25      104   Democrats   204
+## 26      105   Democrats   207
+## 27      106   Democrats   211
+## 28      107   Democrats   212
+## 29      108   Democrats   204
+## 30      109   Democrats   202
+## 31      110   Democrats   233
+## 32      111   Democrats   256
+## 33      112   Democrats   193
+## 34      113   Democrats   200
+## 35      114   Democrats   188
+## 36      115   Democrats   194
+## 37      116   Democrats   235
+## 38      117   Democrats   222
+## 39       80 Republicans   246
+## 40       81 Republicans   171
+## 41       82 Republicans   199
+## 42       83 Republicans   221
+## 43       84 Republicans   203
+## 44       85 Republicans   201
+## 45       86 Republicans   153
+## 46       87 Republicans   175
+## 47       88 Republicans   176
+## 48       89 Republicans   140
+## 49       90 Republicans   187
+## 50       91 Republicans   192
+## 51       92 Republicans   180
+## 52       93 Republicans   192
+## 53       94 Republicans   144
+## 54       95 Republicans   143
+## 55       96 Republicans   158
+## 56       97 Republicans   192
+## 57       98 Republicans   166
+## 58       99 Republicans   182
+## 59      100 Republicans   177
+## 60      101 Republicans   175
+## 61      102 Republicans   167
+## 62      103 Republicans   176
+## 63      104 Republicans   230
+## 64      105 Republicans   226
+## 65      106 Republicans   223
+## 66      107 Republicans   221
+## 67      108 Republicans   229
+## 68      109 Republicans   232
+## 69      110 Republicans   202
+## 70      111 Republicans   178
+## 71      112 Republicans   242
+## 72      113 Republicans   234
+## 73      114 Republicans   247
+## 74      115 Republicans   241
+## 75      116 Republicans   199
+## 76      117 Republicans   212</code></pre>
+<pre class="r"><code>ggplot(seatshare_long, aes(x = Congress, y = Seats, col = Party)) +
+  geom_line() +
+  scale_color_manual(values=c(&#39;red3&#39;,&#39;blue2&#39;))</code></pre>
+<p><img src="http://example.org/post/2022-09-09-test-post-1/index_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+
+
+		
+	</div>
+
+	<div class="pagination">
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			
+			<span>
+			&copy; <time datetime="2022-09-09 00:56:34.021895 -0400 EDT m=&#43;0.194107103">2022</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
