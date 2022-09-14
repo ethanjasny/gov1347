@@ -6,6 +6,8 @@ slug: []
 categories: []
 tags: []
 ---
+
+
 # This is a header with one hashtag.
 
 ## This is a header with two hashtags.
@@ -89,7 +91,6 @@ rep_map_all_years <- plot_geo(vote_share_state_all_years, locationmode = "USA-st
             showscale = TRUE, zmin = 0, zmax = 1) %>% 
   layout(title = "US House GOP Two-Party Vote Share by State, 1948-2020", geo = map_options)
 
-rep_map_all_years
 
 dem_map_all_years <- plot_geo(vote_share_state_all_years, locationmode = "USA-states") %>% 
   add_trace(z = ~Dem_Vote_Share, locations = ~abbrev,
@@ -97,7 +98,8 @@ dem_map_all_years <- plot_geo(vote_share_state_all_years, locationmode = "USA-st
             showscale = TRUE, zmin = 0, zmax = 1) %>% 
   layout(title = "US House Dem Two-Party Vote Share by State, 1948-2020", geo = map_options)
 
-dem_map_all_years
+
+subplot(rep_map_all_years, dem_map_all_years)
 
 ```
 
