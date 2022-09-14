@@ -1,7 +1,7 @@
 theme: "tale-hugo"
 baseURL: http://example.org/
 languageCode: en-us
-title: My New Hugo Site
+title: Ethan's 2022 Election Blog
 
 markup:
   goldmark:
