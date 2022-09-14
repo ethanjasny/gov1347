@@ -99,18 +99,18 @@ dem_map_all_years <- plot_geo(vote_share_state_all_years, locationmode = "USA-st
 
 rep_map_all_years
 ```
-<br/><br/>
+<br/>
 The following map does the same for Democratic two-party vote share.
 ```{r plot dem vote share}
 dem_map_all_years
 
 ```
-<br/><br/>
-There are a few important observations to make based on these maps. First, note that the Republican share of the vote is the exact inverse of the Democratic share of the vote. This is because we are dealing with the **two-party** vote share: Republican vote share is thus equivalent to one minus the Democratic vote share 9and vice-versa)
+<br/>
+There are a few important observations to make based on these maps. First, note that the Republican share of the vote is the exact inverse of the Democratic share of the vote. This is because we are dealing with the **two-party** vote share: Republican vote share is thus equivalent to one minus the Democratic vote share and vice-versa)
 
 From these maps, we can also glean broad trends in the geographic coalitions of the Democratic and Republican parties. Back in the 1950s and 1960s, the maps show how the Democrats dominated the two-party vote share in Southern states like Alabama, Mississippi, and Louisiana. Today, however, it is the Republican Party that tends to fare in these states. The maps also demonstrate how the Republicans used to be competitive in more urbanized states like New York and California, which today are Democratic strongholds.  
 
-This reversal in voting patterns has been well documented by scholars like [Alan Abromowitz](https://yalebooks.yale.edu/book/9780300245738/the-great-alignment/), who chart how the political parties underwent ideological, racial, and geographic transformation in the aftermath of the New Deal coalition. These maps help provide the historical context for the political geography of the 2022 midterms.
+This reversal in voting patterns has been well documented by scholars like [Alan Abromowitz](https://yalebooks.yale.edu/book/9780300245738/the-great-alignment/), who chart how the political parties underwent ideological, racial, and geographic transformation in the aftermath of the New Deal coalition. These maps thus help elucidate the historical context for the political geography of the 2022 midterms.  
 
 ```{r, results = FALSE}
 
@@ -120,6 +120,11 @@ test <- house_party_vote_share_by_district_1948_2020 %>%
 sum(test$RepVotes)/(sum(test$RepVotes) + sum(test$DemVotes))
 
 ```
+
+
+# Vote Swing by State
+Calculating the two-party vote share is useful for understanding broad geographic trends. But to gain a better sense of how each party fared in a given election cycle relative to past performance, I will turn to swing. The following map plots vote swing at the state level. If a state has a positive (blue) swing value, it voted more Democratic than it did in the previous election cycle two years prior. If a state has a negative (red) swing value, it voted more Republican than it did in the previous election cycle two years prior. For instance, For instance, in 2018, Democrats won around 36% of the two-party House vote in Arkansas. But in 2020, Democrats only won around 28.5% of the vote, meaning that Arkansas swung to the Republicans by around 7.5 percentage points. 
+
 
 ```{r swing}
 
@@ -140,6 +145,10 @@ swing_map
 
 
 ```
+<br/>
+The swing map illustrates how individual parties fared in specific election cycles. In midterm election cycles with an incumbent Republican president, such as 2018 and 2006, the Democrats made vote-share gains in nearly every state. Meanwhile, in midterm election cycles with an incumbent Democratic president, such as 2010 and 2014, the Republicans made vote-share gains in nearly every state. In presidential election years without an incumbent president, such as 2018 and 2016, the results are mixed — with some states swinging Republican and others swinging Democratic.  
+
+This potentially lends credence to the conventional wisdom, expressed in [*FiveThirtyEight*](https://fivethirtyeight.com/features/why-the-presidents-party-almost-always-has-a-bad-midterm/), [*Gallup*](https://news.gallup.com/poll/393626/usual-midterm-indicators-unfavorable-democrats.aspx), and other sources, that the incumbent president's party tends to lose vote share and seats in midterm election years. Turning to the 2022 midterms, if the trend from 2006, 2010, 2014, and 2018 holds, we'd expect President Joe Biden's Democratic Party to lose vote share.
 
 
 ```{r gerrymandering: seat share}
