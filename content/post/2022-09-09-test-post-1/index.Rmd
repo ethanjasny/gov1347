@@ -1,18 +1,302 @@
 ---
-title: Test Post 1
-author: Ethan Jasny
+title: "Blog Post 1: Exploring the 2020 House Election"
+author: "Ethan Jasny"
 date: '2022-09-09'
 slug: []
 categories: []
 tags: []
 ---
+# This is a header with one hashtag.
+
+## This is a header with two hashtags.
 
 Hello world.
 
-```{r results = FALSE}
+```{r setup, include=FALSE}
+# Hiding all code output
+knitr::opts_chunk$set(echo = FALSE)
+
+# Libraries
 library(tidyverse)
 library(ggplot2)
+library(usmap)
+library(sf)
+library(blogdown)
+library(plotly)
+library(htmlwidgets)
+library(gridExtra)
+
+
+
+# Data
+house_party_vote_share_by_district_1948_2020 <- read_csv("house party vote share by district 1948-2020.csv")
+
+state.abbrevs <- data.frame("state" = c("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"), "abbrev" = c("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"))
+
 ```
+
+
+```{r vote share 2020}
+## Ext. 1: State Maps 
+head(house_party_vote_share_by_district_1948_2020)
+
+voteshare_state_2020 <- house_party_vote_share_by_district_1948_2020 %>%
+  select(State, raceYear, RepVotes, DemVotes) %>%
+  filter(raceYear == 2020) %>%
+  group_by(State) %>%
+  summarise(Rep_Vote_Share = (sum(RepVotes)/sum(DemVotes + RepVotes)),
+         Dem_Vote_Share = (sum(DemVotes)/sum(RepVotes + DemVotes))) %>%
+  rename(state = State)
+
+p1 <- plot_usmap(data = voteshare_state_2020, regions = "state", values = "Rep_Vote_Share") +
+  scale_fill_gradient(low = "white", high = "red", name = "GOP Two-Party Voteshare Margin") +
+  theme_void() +
+  labs(title = "GOP Two-Party Vote Share, 2020 House Elections")
+
+p2 <- plot_usmap(data = voteshare_state_2020, regions = "state", values = "Dem_Vote_Share") +
+  scale_fill_gradient(low = "white", high = "dodgerblue", name = "Dem Two-Party Voteshare Margin") +
+  theme_void() +
+  labs(title = "Dem Two-Party Vote Share, 2020 House Elections")
+
+ggplotly(p1) %>%
+  layout(xaxis = list(showline = FALSE, showgrid = FALSE),
+  yaxis = list(showline = FALSE, showgrid = FALSE))
+
+ggplotly(p2) %>%
+  layout(xaxis = list(showline = FALSE, showgrid = FALSE),
+  yaxis = list(showline = FALSE, showgrid = FALSE))
+```
+
+
+```{r vote share all years}
+vote_share_state_all_years <- house_party_vote_share_by_district_1948_2020 %>%
+  select(State, raceYear, RepVotes, DemVotes) %>%
+  group_by(State, raceYear) %>%
+  summarise(Rep_Vote_Share = (sum(RepVotes)/sum(DemVotes + RepVotes)),
+         Dem_Vote_Share = (sum(DemVotes)/sum(RepVotes + DemVotes))) %>%
+  rename(state = State) %>%
+  left_join(state.abbrevs, by = "state")
+
+## Note: code for this section based partly on Yao's first blog post from 2020.
+
+map_options <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = FALSE,
+  lakecolor = toRGB('white'))
+  
+
+rep_map_all_years <- plot_geo(vote_share_state_all_years, locationmode = "USA-states") %>% 
+  add_trace(z = ~Rep_Vote_Share, locations = ~abbrev,
+            color = ~Rep_Vote_Share, colors = "Reds", frame = ~raceYear, 
+            showscale = TRUE, zmin = 0, zmax = 1) %>% 
+  layout(title = "US House GOP Two-Party Vote Share by State, 1948-2020", geo = map_options)
+
+rep_map_all_years
+
+dem_map_all_years <- plot_geo(vote_share_state_all_years, locationmode = "USA-states") %>% 
+  add_trace(z = ~Dem_Vote_Share, locations = ~abbrev,
+            color = ~Dem_Vote_Share, colors = "Blues", frame = ~raceYear, 
+            showscale = TRUE, zmin = 0, zmax = 1) %>% 
+  layout(title = "US House Dem Two-Party Vote Share by State, 1948-2020", geo = map_options)
+
+dem_map_all_years
+
+```
+
+```{r}
+
+## Spot check
+test <- house_party_vote_share_by_district_1948_2020 %>%
+  filter(State == "Oklahoma", raceYear == 1976)
+sum(test$RepVotes)/(sum(test$RepVotes) + sum(test$DemVotes))
+
+```
+
+```{r swing (EXT2)}
+
+vote_share_state_all_years
+
+swing_data <- vote_share_state_all_years %>%
+  mutate(rep_swing = Rep_Vote_Share - lag(Rep_Vote_Share),
+         dem_swing = Dem_Vote_Share - lag(Dem_Vote_Share)) %>%
+  filter(raceYear != 1948) # We cannot calculate the swing for 1948 because we do not have previous elections to compare it to
+
+swing_data
+
+swing_map <- plot_geo(swing_data, locationmode = "USA-states") %>% 
+  add_trace(z = ~dem_swing, locations = ~abbrev,
+            color = ~dem_swing, colors = "RdBu", frame = ~raceYear, 
+            showscale = TRUE, zmax = 0.5, zmin = -0.5) %>% 
+  layout(title = "US House Swing by State, 1948-2020", geo = map_options)
+
+swing_map
+swing_data
+
+
+```
+
+
+```{r gerrymandering (EXT2)}
+state_seat_share <- house_party_vote_share_by_district_1948_2020 %>%
+  select(State, raceYear, CD, RepVotes, DemVotes, WinnerParty) %>%
+  mutate(dem_win = ifelse(WinnerParty == "D",1,0),
+         rep_win = ifelse(WinnerParty == "R",1,0)) %>%
+  group_by(State, raceYear) %>%
+  summarise(Rep_Vote_Share = (sum(RepVotes)/sum(DemVotes + RepVotes)),
+         Dem_Vote_Share = (sum(DemVotes)/sum(RepVotes + DemVotes)),
+         Dem_Seat_Share = (sum(dem_win)/sum(rep_win + dem_win)),
+         Rep_Seat_Share = (sum(rep_win)/sum(rep_win + dem_win))) %>%
+  rename("state" = State) %>%
+  left_join(state.abbrevs, by = "state")
+  
+map_options <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = FALSE,
+  lakecolor = toRGB('white'))
+
+dem_seat_share <- plot_geo(state_seat_share, locationmode = "USA-states") %>% 
+  add_trace(z = ~Dem_Seat_Share, locations = ~abbrev,
+            color = ~Dem_Seat_Share, colors = "Blues", frame = ~raceYear, 
+            showscale = TRUE, zmax = 1, zmin = 0) %>% 
+  layout(title = "US House Dem Seat Share by State", geo = map_options)
+
+dem_seat_share
+
+rep_seat_share <- plot_geo(state_seat_share, locationmode = "USA-states") %>% 
+  add_trace(z = ~Rep_Seat_Share, locations = ~abbrev,
+            color = ~Rep_Seat_Share, colors = "Reds", frame = ~raceYear, 
+            showscale = TRUE, zmax = 1, zmin = 0) %>% 
+  layout(title = "US House GOP Seat Share by State", geo = map_options)
+
+rep_seat_share
+
+```
+
+
+```{r compare vote and seat share (EXT2)}
+
+state_partisan_advantage <- state_seat_share %>%
+  mutate(Dem_Advantage = Dem_Seat_Share - Dem_Vote_Share,
+         Rep_Advantage = Rep_Seat_Share - Rep_Vote_Share)
+
+map_options <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = FALSE,
+  lakecolor = toRGB('white'))
+
+advantage_map <- plot_geo(state_partisan_advantage, locationmode = "USA-states") %>% 
+  add_trace(z = ~Dem_Advantage, locations = ~abbrev,
+            color = ~Dem_Advantage, colors = "RdBu", frame = ~raceYear, 
+            showscale = TRUE, zmax = 0.5, zmin = -0.5) %>% 
+  layout(title = "US House Seat Share Versus Vote Share Advantage by State, 1948-2020", geo = map_options)
+
+advantage_map
+
+```
+
+
+
+
+## Ext. 3: State Maps
+
+
+
+get_congress_map <- function(cong=114) {
+  tmp_file <- tempfile()
+  tmp_dir  <- tempdir()
+  zp <- sprintf("https://cdmaps.polisci.ucla.edu/shp/districts114.zip",cong)
+  download.file(zp, tmp_file)
+  unzip(zipfile = tmp_file, exdir = tmp_dir)
+  fpath <- paste(tmp_dir, sprintf("districtShapes/districts114.shp",cong), sep = "/")
+  st_read(fpath)
+}
+
+cd_shape <- get_congress_map(114)
+
+vote_share_cd_2014 <- house_party_vote_share_by_district_1948_2020 %>%
+  select(State, raceYear, RepVotes, DemVotes, st_fips, district_num, CD) %>%
+  filter(raceYear == 2014) %>%
+  mutate(R_tp_voteshare_cd = (RepVotes)/(DemVotes + RepVotes),
+         D_tp_voteshare_cd = (DemVotes)/(RepVotes + DemVotes)) %>%
+  select(State, CD, State, district_num, R_tp_voteshare_cd, D_tp_voteshare_cd) %>%
+  rename(STATENAME = State, DISTRICT = district_num)
+
+cd_shape$DISTRICT <- as.numeric(cd_shape$DISTRICT)
+
+joined <- cd_shape %>% left_join(vote_share_cd_2014, by = c("STATENAME", "DISTRICT"))
+
+ggplot() + 
+  geom_sf(data=joined,aes(fill=R_tp_voteshare_cd),
+          inherit.aes=FALSE,alpha=0.9) + 
+  scale_fill_gradient(low = "white", high = "red", limits=c(10,80)) +
+  theme_void() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) 
+
+```
+
+
+```
+
+
+
+get_congress_map <- function(cong=116) {
+  tmp_file <- tempfile()
+  tmp_dir  <- tempdir()
+  zp <- sprintf("cb_2018_us_cd116_500k.zip",cong)
+  download.file(zp, tmp_file)
+  unzip(zipfile = tmp_file, exdir = tmp_dir)
+  fpath <- paste(tmp_dir, sprintf("cb_2018_us_cd116_500k.shp",cong), sep = "/")
+  st_read(fpath)
+}
+
+cd_shape <- get_congress_map(116)
+
+congress_116 <- st_read("cb_2021_us_cd116_500k/cb_2021_us_cd116_500k.shp")
+
+vote_share_cd_2020 <- house_party_vote_share_by_district_1948_2020 %>%
+  select(State, raceYear, RepVotes, DemVotes, st_fips, district_num, CD) %>%
+  filter(raceYear == 2020) %>%
+  mutate(R_tp_voteshare_cd = (RepVotes)/(DemVotes + RepVotes),
+         D_tp_voteshare_cd = (DemVotes)/(RepVotes + DemVotes)) %>%
+  rename(STATEFP = st_fips, CD116FP = district_num) %>%
+  select(State, CD, STATEFP, CD116FP, R_tp_voteshare_cd, D_tp_voteshare_cd)
+  
+congress_116$STATEFP <- as.numeric(congress_116$STATEFP)
+congress_116$CD116FP <- as.numeric(congress_116$CD116FP)
+
+
+
+
+
+
+
+cd_2020_join <- full_join(vote_share_cd_2020, congress_116, by = c("STATEFP", "CD116FP"))
+
+ggplot() + 
+  geom_sf(data=cd_2020_join, aes(fill=R_tp_voteshare_cd),
+          inherit.aes=FALSE,alpha=0.9) + 
+  scale_fill_gradient(low = "white", high = "red", limits=c(10,80)) +
+  theme_void() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) 
+
+
+```
+
+
+
 
 
 ```{r echo = FALSE}

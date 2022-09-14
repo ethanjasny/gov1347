@@ -8,13 +8,13 @@
     <language>en-us</language>
     <lastBuildDate>Fri, 09 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Test Post 1</title>
+      <title>Blog Post 1: Exploring the 2020 House Election</title>
       <link>http://example.org/post/2022-09-09-test-post-1/</link>
       <pubDate>Fri, 09 Sep 2022 00:00:00 +0000</pubDate>
       
       <guid>http://example.org/post/2022-09-09-test-post-1/</guid>
-      <description>Hello world.
-library(tidyverse) ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ── ## ✔ ggplot2 3.3.6 ✔ purrr 0.3.4 ## ✔ tibble 3.1.8 ✔ dplyr 1.0.9 ## ✔ tidyr 1.2.0 ✔ stringr 1.4.0 ## ✔ readr 2.1.1 ✔ forcats 0.5.1 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ── ## ✖ dplyr::filter() masks stats::filter() ## ✖ dplyr::lag() masks stats::lag() library(ggplot2) These graphs are great, eh?</description>
+      <description>This is a header with one hashtag. This is a header with two hashtags. Hello world.
+## # A tibble: 6 × 31 ## Office State CensusPop raceY…¹ Area RepVo…² RepCa…³ RepSt…⁴ DemVo…⁵ DemCa…⁶ ## &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;lgl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; ## 1 House Alabama NA 2020 Dist… 211825 Carl, … Challe… 116949 Averha… ## 2 House Alabama NA 2020 Dist… 197996 Moore,… Challe… 105286 Harvey… ## 3 House Alabama NA 2020 Dist… 217384 Rogers… Incumb… 104595 Winfre… ## 4 House Alabama NA 2020 Dist… 261553 Aderho… Incumb… 56237 Neighb… ## 5 House Alabama NA 2020 Dist… 253094 Brooks… Incumb… 0 &amp;lt;NA&amp;gt; ## 6 House Alabama NA 2020 Dist… 274160 Palmer… Incumb… 0 &amp;lt;NA&amp;gt; ## # … with 21 more variables: DemStatus &amp;lt;chr&amp;gt;, ThirdParty &amp;lt;chr&amp;gt;, ## # ThirdVotes &amp;lt;dbl&amp;gt;, ThirdCandidate &amp;lt;chr&amp;gt;, ThirdStatus &amp;lt;chr&amp;gt;, ## # OtherVotes &amp;lt;dbl&amp;gt;, PluralityVotes &amp;lt;dbl&amp;gt;, PluralityParty &amp;lt;chr&amp;gt;, ## # ThirdVotesTotalPercent &amp;lt;dbl&amp;gt;, RepVotesMajorPercent &amp;lt;dbl&amp;gt;, ## # DemVotesMajorPercent &amp;lt;dbl&amp;gt;, raceNotes &amp;lt;chr&amp;gt;, st_fips &amp;lt;dbl&amp;gt;, ## # state_abb &amp;lt;chr&amp;gt;, CD &amp;lt;chr&amp;gt;, district_num &amp;lt;dbl&amp;gt;, district_id &amp;lt;chr&amp;gt;, ## # WinnerParty &amp;lt;chr&amp;gt;, TotalVotesMajor &amp;lt;dbl&amp;gt;, vote_margin &amp;lt;dbl&amp;gt;, … ## # ℹ Use `colnames()` to see all variable names ## `summarise()` has grouped output by &amp;#39;State&amp;#39;.</description>
     </item>
     
   </channel>
