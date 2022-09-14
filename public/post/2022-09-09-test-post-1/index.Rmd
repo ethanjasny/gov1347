@@ -1,18 +1,14 @@
 ---
 title: "Blog Post 1: Exploring House Election Data"
-author: "Ethan Jasny"
+author: "[Ethan Jasny](https://twitter.com/EthanJasny)"
 date: '2022-09-09'
 slug: []
 categories: []
 tags: []
 ---
-ttest
+*This blog is being completed as part of GOV 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
 
-# This is a header with one hashtag.
-
-## This is a header with two hashtags.
-
-Hello world.
+The objective of this first blog post is to explore and visualize historical House election data in order to gain a better understanding of the electoral context underpinning the 2022 midterms. I will complete blog extensions 2 and 3, as well as parts of extension 1. 
 
 ```{r setup, include=FALSE}
 # Hide all code output
@@ -36,9 +32,9 @@ state.abbrevs <- data.frame("state" = c("Alabama", "Alaska", "Arizona", "Arkansa
 
 ```
 
+```{r vote share 2020, include = FALSE}
+# I have decided to omit these graphs from my blog post given that the animated maps in the code chunk below also include the 2020 vote share.
 
-```{r vote share 2020}
-## Ext. 1: State Maps 
 voteshare_state_2020 <- house_party_vote_share_by_district_1948_2020 %>%
   select(State, raceYear, RepVotes, DemVotes) %>%
   filter(raceYear == 2020) %>%
@@ -64,8 +60,10 @@ ggplotly(p1) %>%
 ggplotly(p2) %>%
   layout(xaxis = list(showline = FALSE, showgrid = FALSE),
   yaxis = list(showline = FALSE, showgrid = FALSE))
-```
 
+```
+# Vote Share by State
+To begin with, I will examine how **two-party vote share** at the **state level** has changed in U.S. House elections from 1948 to 2020. The following interactive map plots the Republican share of the two-party vote at the state level. in U.S. House elections.
 
 ```{r vote share for all years}
 vote_share_state_all_years <- house_party_vote_share_by_district_1948_2020 %>%
@@ -76,7 +74,7 @@ vote_share_state_all_years <- house_party_vote_share_by_district_1948_2020 %>%
   rename(state = State) %>%
   left_join(state.abbrevs, by = "state")
 
-## Note: code for this section based partly on Yao's first blog post from 2020.
+# Note: code for this section based partly on Yao Yu's first blog post from 2020.
 
 map_options <- list(
   scope = 'usa',
@@ -99,9 +97,23 @@ dem_map_all_years <- plot_geo(vote_share_state_all_years, locationmode = "USA-st
   layout(title = "US House Dem Two-Party Vote Share by State, 1948-2020", geo = map_options)
 
 
-subplot(rep_map_all_years, dem_map_all_years)
+rep_map_all_years
+```
+The following map does the same for Democratic two-party vote share.
+```{r plot dem vote share}
+dem_map_all_years
 
 ```
+There are a few important observations to make based on these maps. First, note that the Republican share of the vote is the exact inverse of the Democratic share of the vote. This is because we are dealing with the **two-party** vote share:
+
+$$  
+
+R_{vote-share} = \frac{R_{vote}}{R_{vote}+D_{vote}} = 1 - \frac{D_{vote}}{R_{vote}+D_{vote}} = 1 - D_{vote-share}
+
+$$
+From these maps, we can also glean broad trends in the geographic coalitions of the Democratic and Republican parties. Back in the 1950s and 1960s, the maps show how the Democrats dominated the two-party vote share in Southern states like Alabama, Mississippi, and Louisiana. Today, however, it is the Republican Party that tends to fare in these states. The maps also demonstrate how the Republicans used to be competitive in more urbanized states like New York and California, which today are Democratic strongholds.  
+
+This reversal in voting patterns has been well documented by scholars like [Alan Abromowitz](https://yalebooks.yale.edu/book/9780300245738/the-great-alignment/), who chart how the political parties underwent ideological, racial, and geographic transformation in the aftermath of the New Deal coalition. These maps help provide the historical context for the political geography of the 2022 midterms.
 
 ```{r, results = FALSE}
 
