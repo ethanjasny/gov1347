@@ -1,6 +1,6 @@
 ---
 title: "Blog Post 1: Exploring House Election Data"
-author: "[Ethan Jasny](https://twitter.com/EthanJasny)"
+author: "Ethan Jasny"
 date: '2022-09-09'
 slug: []
 categories: []
@@ -99,13 +99,13 @@ dem_map_all_years <- plot_geo(vote_share_state_all_years, locationmode = "USA-st
 
 rep_map_all_years
 ```
-  
+<br/><br/>
 The following map does the same for Democratic two-party vote share.
 ```{r plot dem vote share}
 dem_map_all_years
 
 ```
-  
+<br/><br/>
 There are a few important observations to make based on these maps. First, note that the Republican share of the vote is the exact inverse of the Democratic share of the vote. This is because we are dealing with the **two-party** vote share: Republican vote share is thus equivalent to one minus the Democratic vote share 9and vice-versa)
 
 From these maps, we can also glean broad trends in the geographic coalitions of the Democratic and Republican parties. Back in the 1950s and 1960s, the maps show how the Democrats dominated the two-party vote share in Southern states like Alabama, Mississippi, and Louisiana. Today, however, it is the Republican Party that tends to fare in these states. The maps also demonstrate how the Republicans used to be competitive in more urbanized states like New York and California, which today are Democratic strongholds.  
