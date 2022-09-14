@@ -1,5 +1,5 @@
 ---
-title: "Blog Post 1: Exploring the 2020 House Election"
+title: "Blog Post 1: Exploring House Election Data"
 author: "Ethan Jasny"
 date: '2022-09-09'
 slug: []
@@ -13,10 +13,10 @@ tags: []
 Hello world.
 
 ```{r setup, include=FALSE}
-# Hiding all code output
-knitr::opts_chunk$set(echo = FALSE)
+# Hide all code output
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
-# Libraries
+# Import libraries
 library(tidyverse)
 library(ggplot2)
 library(usmap)
@@ -26,11 +26,10 @@ library(plotly)
 library(htmlwidgets)
 library(gridExtra)
 
-
-
-# Data
+# Import data
 house_party_vote_share_by_district_1948_2020 <- read_csv("house party vote share by district 1948-2020.csv")
 
+# Create dataframe matchning state names and two-letter state abbreviations
 state.abbrevs <- data.frame("state" = c("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"), "abbrev" = c("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"))
 
 ```
@@ -38,8 +37,6 @@ state.abbrevs <- data.frame("state" = c("Alabama", "Alaska", "Arizona", "Arkansa
 
 ```{r vote share 2020}
 ## Ext. 1: State Maps 
-head(house_party_vote_share_by_district_1948_2020)
-
 voteshare_state_2020 <- house_party_vote_share_by_district_1948_2020 %>%
   select(State, raceYear, RepVotes, DemVotes) %>%
   filter(raceYear == 2020) %>%
@@ -68,7 +65,7 @@ ggplotly(p2) %>%
 ```
 
 
-```{r vote share all years}
+```{r vote share for all years}
 vote_share_state_all_years <- house_party_vote_share_by_district_1948_2020 %>%
   select(State, raceYear, RepVotes, DemVotes) %>%
   group_by(State, raceYear) %>%
@@ -104,7 +101,7 @@ dem_map_all_years
 
 ```
 
-```{r}
+```{r, results = FALSE}
 
 ## Spot check
 test <- house_party_vote_share_by_district_1948_2020 %>%
@@ -113,16 +110,13 @@ sum(test$RepVotes)/(sum(test$RepVotes) + sum(test$DemVotes))
 
 ```
 
-```{r swing (EXT2)}
+```{r swing}
 
-vote_share_state_all_years
 
 swing_data <- vote_share_state_all_years %>%
   mutate(rep_swing = Rep_Vote_Share - lag(Rep_Vote_Share),
          dem_swing = Dem_Vote_Share - lag(Dem_Vote_Share)) %>%
   filter(raceYear != 1948) # We cannot calculate the swing for 1948 because we do not have previous elections to compare it to
-
-swing_data
 
 swing_map <- plot_geo(swing_data, locationmode = "USA-states") %>% 
   add_trace(z = ~dem_swing, locations = ~abbrev,
@@ -131,13 +125,13 @@ swing_map <- plot_geo(swing_data, locationmode = "USA-states") %>%
   layout(title = "US House Swing by State, 1948-2020", geo = map_options)
 
 swing_map
-swing_data
+
 
 
 ```
 
 
-```{r gerrymandering (EXT2)}
+```{r gerrymandering: seat share}
 state_seat_share <- house_party_vote_share_by_district_1948_2020 %>%
   select(State, raceYear, CD, RepVotes, DemVotes, WinnerParty) %>%
   mutate(dem_win = ifelse(WinnerParty == "D",1,0),
@@ -175,7 +169,7 @@ rep_seat_share
 ```
 
 
-```{r compare vote and seat share (EXT2)}
+```{r gerrymandering: compare vote and seat share}
 
 state_partisan_advantage <- state_seat_share %>%
   mutate(Dem_Advantage = Dem_Seat_Share - Dem_Vote_Share,
@@ -196,6 +190,9 @@ advantage_map <- plot_geo(state_partisan_advantage, locationmode = "USA-states")
 advantage_map
 
 ```
+
+
+
 
 
 
@@ -240,10 +237,10 @@ ggplot() +
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank()) 
 
-```
 
 
-```
+
+
 
 
 
@@ -293,13 +290,13 @@ ggplot() +
         axis.ticks.y=element_blank()) 
 
 
-```
 
 
 
 
 
-```{r echo = FALSE}
+
+
 seatshare <- read.csv("seatshare.csv")
 
 seatshare <- seatshare %>%

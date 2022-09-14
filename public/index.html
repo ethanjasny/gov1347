@@ -55,12 +55,14 @@
 			<a href="http://example.org/post/2022-09-09-test-post-1/" class="catalogue-item">
     <div>
         <time datetime="2022-09-09 00:00:00 &#43;0000 UTC" class="catalogue-time">September 9, 2022</time>
-        <h2 class="catalogue-title">Blog Post 1: Exploring the 2020 House Election</h2>
+        <h2 class="catalogue-title">Blog Post 1: Exploring House Election Data</h2>
         <div class="catalogue-line"></div>
 
         <p>
             This is a header with one hashtag. This is a header with two hashtags. Hello world.
-## # A tibble: 6 × 31 ## Office State CensusPop raceY…¹ Area RepVo…² RepCa…³ RepSt…⁴ DemVo…⁵ DemCa…⁶ ## &lt;chr&gt; &lt;chr&gt; &lt;lgl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; ## 1 House Alabama NA 2020 Dist… 211825 Carl, … Challe… 116949 Averha… ## 2 House Alabama NA 2020 Dist… 197996 Moore,… Challe… 105286 Harvey… ## 3 House Alabama NA 2020 Dist… 217384 Rogers… Incumb… 104595 Winfre… ## 4 House Alabama NA 2020 Dist… 261553 Aderho… Incumb… 56237 Neighb… ## 5 House Alabama NA 2020 Dist… 253094 Brooks… Incumb… 0 &lt;NA&gt; ## 6 House Alabama NA 2020 Dist… 274160 Palmer… Incumb… 0 &lt;NA&gt; ## # … with 21 more variables: DemStatus &lt;chr&gt;, ThirdParty &lt;chr&gt;, ## # ThirdVotes &lt;dbl&gt;, ThirdCandidate &lt;chr&gt;, ThirdStatus &lt;chr&gt;, ## # OtherVotes &lt;dbl&gt;, PluralityVotes &lt;dbl&gt;, PluralityParty &lt;chr&gt;, ## # ThirdVotesTotalPercent &lt;dbl&gt;, RepVotesMajorPercent &lt;dbl&gt;, ## # DemVotesMajorPercent &lt;dbl&gt;, raceNotes &lt;chr&gt;, st_fips &lt;dbl&gt;, ## # state_abb &lt;chr&gt;, CD &lt;chr&gt;, district_num &lt;dbl&gt;, district_id &lt;chr&gt;, ## # WinnerParty &lt;chr&gt;, TotalVotesMajor &lt;dbl&gt;, vote_margin &lt;dbl&gt;, … ## # ℹ Use `colnames()` to see all variable names ## `summarise()` has grouped output by &#39;State&#39;.
+Ext. 3: State Maps get_congress_map &lt;- function(cong=114) { tmp_file &lt;- tempfile() tmp_dir &lt;- tempdir() zp &lt;- sprintf(“https://cdmaps.polisci.ucla.edu/shp/districts114.zip”,cong) download.file(zp, tmp_file) unzip(zipfile = tmp_file, exdir = tmp_dir) fpath &lt;- paste(tmp_dir, sprintf(“districtShapes/districts114.shp”,cong), sep = “/”) st_read(fpath) }
+cd_shape &lt;- get_congress_map(114)
+vote_share_cd_2014 &lt;- house_party_vote_share_by_district_1948_2020 %&gt;% select(State, raceYear, RepVotes, DemVotes, st_fips, district_num, CD) %&gt;% filter(raceYear == 2014) %&gt;% mutate(R_tp_voteshare_cd = (RepVotes)/(DemVotes + RepVotes), D_tp_voteshare_cd = (DemVotes)/(RepVotes + DemVotes)) %&gt;% select(State, CD, State, district_num, R_tp_voteshare_cd, D_tp_voteshare_cd) %&gt;% rename(STATENAME = State, DISTRICT = district_num)
         </p>
     </div>
 </a>
@@ -80,7 +82,7 @@
         		<footer>
 			
 			<span>
-			&copy; <time datetime="2022-09-14 01:20:25.713261 -0400 EDT m=&#43;0.296446649">2022</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2022-09-14 01:43:29.721437 -0400 EDT m=&#43;0.294191926">2022</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 
