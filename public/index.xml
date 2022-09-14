@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>My New Hugo Site</title>
+    <title>Ethan&#39;s 2022 Election Blog</title>
     <link>http://example.org/</link>
-    <description>Recent content on My New Hugo Site</description>
+    <description>Recent content on Ethan&#39;s 2022 Election Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 09 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
@@ -13,7 +13,8 @@
       <pubDate>Fri, 09 Sep 2022 00:00:00 +0000</pubDate>
       
       <guid>http://example.org/post/2022-09-09-test-post-1/</guid>
-      <description>This is a header with one hashtag. This is a header with two hashtags. Hello world.
+      <description>ttest
+This is a header with one hashtag. This is a header with two hashtags. Hello world.
 Ext. 3: State Maps get_congress_map &amp;lt;- function(cong=114) { tmp_file &amp;lt;- tempfile() tmp_dir &amp;lt;- tempdir() zp &amp;lt;- sprintf(“https://cdmaps.polisci.ucla.edu/shp/districts114.zip”,cong) download.file(zp, tmp_file) unzip(zipfile = tmp_file, exdir = tmp_dir) fpath &amp;lt;- paste(tmp_dir, sprintf(“districtShapes/districts114.shp”,cong), sep = “/”) st_read(fpath) }
 cd_shape &amp;lt;- get_congress_map(114)
 vote_share_cd_2014 &amp;lt;- house_party_vote_share_by_district_1948_2020 %&amp;gt;% select(State, raceYear, RepVotes, DemVotes, st_fips, district_num, CD) %&amp;gt;% filter(raceYear == 2014) %&amp;gt;% mutate(R_tp_voteshare_cd = (RepVotes)/(DemVotes + RepVotes), D_tp_voteshare_cd = (DemVotes)/(RepVotes + DemVotes)) %&amp;gt;% select(State, CD, State, district_num, R_tp_voteshare_cd, D_tp_voteshare_cd) %&amp;gt;% rename(STATENAME = State, DISTRICT = district_num)</description>
