@@ -6,7 +6,7 @@ slug: []
 categories: []
 tags: []
 ---
-*This blog is being completed as part of GOV 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
+*This blog is being completed as part of Gov 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
 
 The objective of this first blog post is to explore and visualize historical House election data in order to gain a better understanding of the electoral context underpinning the 2022 midterms. I will complete blog extensions 2 and 3, as well as parts of extension 1.  
 
@@ -36,27 +36,31 @@ state.abbrevs <- data.frame("state" = c("Alabama", "Alaska", "Arizona", "Arkansa
 # I have decided to omit these graphs from my blog post given that the animated maps in the code chunk below also include the 2020 vote share.
 
 voteshare_state_2020 <- house_party_vote_share_by_district_1948_2020 %>%
-  select(State, raceYear, RepVotes, DemVotes) %>%
-  filter(raceYear == 2020) %>%
+  select(State, raceYear, RepVotes, DemVotes) %>% # Select vars
+  filter(raceYear == 2020) %>% # Filter to only include 2020 races
   group_by(State) %>%
-  summarise(Rep_Vote_Share = (sum(RepVotes)/sum(DemVotes + RepVotes)),
-         Dem_Vote_Share = (sum(DemVotes)/sum(RepVotes + DemVotes))) %>%
+  summarise(Rep_Vote_Share = (sum(RepVotes)/sum(DemVotes + RepVotes)), # Calculate GOP vote share
+         Dem_Vote_Share = (sum(DemVotes)/sum(RepVotes + DemVotes))) %>% # Calculate Dem vote share
   rename(state = State)
 
+# Create GOP voteshare map
 p1 <- plot_usmap(data = voteshare_state_2020, regions = "state", values = "Rep_Vote_Share") +
   scale_fill_gradient(low = "white", high = "red", name = "GOP Two-Party Voteshare Margin") +
   theme_void() +
   labs(title = "GOP Two-Party Vote Share, 2020 House Elections")
 
+# Create Dem voteshare map
 p2 <- plot_usmap(data = voteshare_state_2020, regions = "state", values = "Dem_Vote_Share") +
   scale_fill_gradient(low = "white", high = "dodgerblue", name = "Dem Two-Party Voteshare Margin") +
   theme_void() +
   labs(title = "Dem Two-Party Vote Share, 2020 House Elections")
 
+# Create GOP voteshare map in plotly
 ggplotly(p1) %>%
   layout(xaxis = list(showline = FALSE, showgrid = FALSE),
   yaxis = list(showline = FALSE, showgrid = FALSE))
 
+# Create Dem voteshare map in plotly
 ggplotly(p2) %>%
   layout(xaxis = list(showline = FALSE, showgrid = FALSE),
   yaxis = list(showline = FALSE, showgrid = FALSE))
@@ -67,54 +71,58 @@ To begin with, I will examine how **two-party vote share** at the **state level*
 
 ```{r vote share for all years}
 vote_share_state_all_years <- house_party_vote_share_by_district_1948_2020 %>%
-  select(State, raceYear, RepVotes, DemVotes) %>%
+  select(State, raceYear, RepVotes, DemVotes) %>% # Select variables
   group_by(State, raceYear) %>%
-  summarise(Rep_Vote_Share = (sum(RepVotes)/sum(DemVotes + RepVotes)),
-         Dem_Vote_Share = (sum(DemVotes)/sum(RepVotes + DemVotes))) %>%
+  summarise(Rep_Vote_Share = (sum(RepVotes)/sum(DemVotes + RepVotes)), # Calculate GOP vote share
+         Dem_Vote_Share = (sum(DemVotes)/sum(RepVotes + DemVotes))) %>% # Calculate Dem vote share
   rename(state = State) %>%
-  left_join(state.abbrevs, by = "state")
+  left_join(state.abbrevs, by = "state") # Merge data set to include state two-letter abbreviations
 
-# Note: code for this section based partly on Yao Yu's first blog post from 2020.
+# Note: code for the following maps is based partly on Yao Yu's first blog post from 2020 (https://github.com/itsyaoyu/GOV-1347-election-analytics/blob/master/01-introduction/01-introduction.Rmd)
 
-map_options <- list(
+# Define map layout 
+map_layout <- list(
   scope = 'usa',
   projection = list(type = 'albers usa'),
-  showlakes = FALSE,
-  lakecolor = toRGB('white'))
-  
+  lakecolor = toRGB('white'),
+  showlakes = FALSE)
 
+# Create GOP Voteshare Map
 rep_map_all_years <- plot_geo(vote_share_state_all_years, locationmode = "USA-states") %>% 
   add_trace(z = ~Rep_Vote_Share, locations = ~abbrev,
-            color = ~Rep_Vote_Share, colors = "Reds", frame = ~raceYear, 
-            showscale = TRUE, zmin = 0, zmax = 1) %>% 
-  layout(title = "US House GOP Two-Party Vote Share by State, 1948-2020", geo = map_options)
+            color = ~Rep_Vote_Share, colors = "Reds", frame = ~raceYear, # The raceYear frame creates an animation based on year
+            showscale = TRUE, zmin = 0, zmax = 1) %>% # Define color scale min and max
+  layout(title = "US House GOP Two-Party Vote Share by State, 1948-2020", geo = map_layout)
 
-
+# Create Dem Voteshare Map
 dem_map_all_years <- plot_geo(vote_share_state_all_years, locationmode = "USA-states") %>% 
   add_trace(z = ~Dem_Vote_Share, locations = ~abbrev,
-            color = ~Dem_Vote_Share, colors = "Blues", frame = ~raceYear, 
-            showscale = TRUE, zmin = 0, zmax = 1) %>% 
-  layout(title = "US House Dem Two-Party Vote Share by State, 1948-2020", geo = map_options)
+            color = ~Dem_Vote_Share, colors = "Blues", frame = ~raceYear, # The raceYear frame creates an animation based on year
+            showscale = TRUE, zmin = 0, zmax = 1) %>% # Define color scale min and max
+  layout(title = "US House Dem Two-Party Vote Share by State, 1948-2020", geo = map_layout)
 
-
+# Print Rep map
 rep_map_all_years
 ```
 <br/>
 The following map does the same for Democratic two-party vote share.
 ```{r plot dem vote share}
+# Print Dem map
 dem_map_all_years
 
 ```
 <br/>
-There are a few important observations to make based on these maps. First, note that the Republican share of the vote is the exact inverse of the Democratic share of the vote. This is because we are dealing with the **two-party** vote share: Republican vote share is thus equivalent to one minus the Democratic vote share and vice-versa)
+There are a few important observations to make based on these maps. First, note that the Republican share of the vote is the exact inverse of the Democratic share of the vote. This is because we are dealing with the **two-party** vote share: Republican vote share is thus equivalent to one minus the Democratic vote share and vice-versa.
 
 From these maps, we can also glean broad trends in the geographic coalitions of the Democratic and Republican parties. Back in the 1950s and 1960s, the maps show how the Democrats dominated the two-party vote share in Southern states like Alabama, Mississippi, and Louisiana. Today, however, it is the Republican Party that tends to fare in these states. The maps also demonstrate how the Republicans used to be competitive in more urbanized states like New York and California, which today are Democratic strongholds.  
 
 This reversal in voting patterns has been well documented by scholars like [Alan Abromowitz](https://yalebooks.yale.edu/book/9780300245738/the-great-alignment/), who chart how the political parties underwent ideological, racial, and geographic transformation in the aftermath of the New Deal coalition. These maps thus help elucidate the historical context for the political geography of the 2022 midterms.  
 
+It is important to recognize a pitfall of using the House popular vote to gauge state-level partisanship. In some congressional districts, incumbent politicians will run unopposed because the district is so strongly Republican or Democratic. For example, as the maps show, Republicans won 100% of the two-party vote in South Dakota in 2020. This is because incumbent Republican Congressman Dusty Johnson ran [without facing a Democratic opponent](https://www.politico.com/2020-election/results/south-dakota/house/) in South Dakota's lone congressional district. Of course, in reality, not every South Dakotan voter is a Republican. Democrat Joe Biden [won around 35.6%](https://www.politico.com/2020-election/results/south-dakota/) of the total vote in 2020. As we continue to explore the House popular vote, it is therefore crucial to consider how having incumbents run unopposed may skew our results and anlaysis.
+
 ```{r, results = FALSE}
 
-## Spot check
+## Spot check: this code chunk checks to make sure previous graph is displaying correct calculations
 test <- house_party_vote_share_by_district_1948_2020 %>%
   filter(State == "Oklahoma", raceYear == 1976)
 sum(test$RepVotes)/(sum(test$RepVotes) + sum(test$DemVotes))
@@ -123,216 +131,118 @@ sum(test$RepVotes)/(sum(test$RepVotes) + sum(test$DemVotes))
 
 
 # Vote Swing by State
-Calculating the two-party vote share is useful for understanding broad geographic trends. But to gain a better sense of how each party fared in a given election cycle relative to past performance, I will turn to swing. The following map plots vote swing at the state level. If a state has a positive (blue) swing value, it voted more Democratic than it did in the previous election cycle two years prior. If a state has a negative (red) swing value, it voted more Republican than it did in the previous election cycle two years prior. For instance, For instance, in 2018, Democrats won around 36% of the two-party House vote in Arkansas. But in 2020, Democrats only won around 28.5% of the vote, meaning that Arkansas swung to the Republicans by around 7.5 percentage points. 
+Calculating the two-party vote share is useful for understanding broad geographic trends. But to gain a better sense of how each party fared in a given election cycle relative to past performance, I will turn to swing. The following map plots vote swing at the state level. If a state has a positive (blue) swing value, it voted more Democratic than it did in the previous election cycle two years prior. If a state has a negative (red) swing value, it voted more Republican than it did in the previous election cycle two years prior. For instance, in 2018, Democrats won around 36% of the two-party House vote in Arkansas. But in 2020, Democrats only won around 28.5% of the vote, meaning that Arkansas swung to the Republicans by around 7.5 percentage points. 
 
 
 ```{r swing}
-
-
+# Calculate Vote Swing Variable
 swing_data <- vote_share_state_all_years %>%
-  mutate(rep_swing = Rep_Vote_Share - lag(Rep_Vote_Share),
+  mutate(rep_swing = Rep_Vote_Share - lag(Rep_Vote_Share), # The `lag` function pulls the value from the previous election year
          dem_swing = Dem_Vote_Share - lag(Dem_Vote_Share)) %>%
   filter(raceYear != 1948) # We cannot calculate the swing for 1948 because we do not have previous elections to compare it to
 
+# Plot Swing Map
 swing_map <- plot_geo(swing_data, locationmode = "USA-states") %>% 
   add_trace(z = ~dem_swing, locations = ~abbrev,
             color = ~dem_swing, colors = "RdBu", frame = ~raceYear, 
             showscale = TRUE, zmax = 0.5, zmin = -0.5) %>% 
-  layout(title = "US House Swing by State, 1948-2020", geo = map_options)
+  layout(title = "US House Swing by State, 1948-2020", geo = map_layout)
 
+# Print Swing Map
 swing_map
-
-
-
 ```
 <br/>
 The swing map illustrates how individual parties fared in specific election cycles. In midterm election cycles with an incumbent Republican president, such as 2018 and 2006, the Democrats made vote-share gains in nearly every state. Meanwhile, in midterm election cycles with an incumbent Democratic president, such as 2010 and 2014, the Republicans made vote-share gains in nearly every state. In presidential election years without an incumbent president, such as 2018 and 2016, the results are mixed — with some states swinging Republican and others swinging Democratic.  
 
-This potentially lends credence to the conventional wisdom, expressed in [*FiveThirtyEight*](https://fivethirtyeight.com/features/why-the-presidents-party-almost-always-has-a-bad-midterm/), [*Gallup*](https://news.gallup.com/poll/393626/usual-midterm-indicators-unfavorable-democrats.aspx), and other sources, that the incumbent president's party tends to lose vote share and seats in midterm election years. Turning to the 2022 midterms, if the trend from 2006, 2010, 2014, and 2018 holds, we'd expect President Joe Biden's Democratic Party to lose vote share.
+This potentially lends credence to the conventional wisdom, expressed in [*FiveThirtyEight*](https://fivethirtyeight.com/features/why-the-presidents-party-almost-always-has-a-bad-midterm/), [*Gallup*](https://news.gallup.com/poll/393626/usual-midterm-indicators-unfavorable-democrats.aspx), and other sources, that the incumbent president's party tends to lose vote share and seats in midterm election years. Turning to the 2022 midterms, if the trend from 2006, 2010, 2014, and 2018 holds, we'd expect President Joe Biden's Democratic Party to lose vote share.  
 
+Once again, it is important to recognize the limits of using the House popular vote. In 2020, the House two-party vote in South Dakota swung a whopping 37.4 percentage points towards the Republicans. But this is simply because the Republican incumbent ran unopposed in 2020, not because South Dakota actually became 37.4 percentage points more Republican in two years.
 
+# Comparing Vote Share and Seat Share
+Thus far, I've only considered the House popular vote. Of course, control in the House comes down to which party wins the most seats, not which party wins the most overall votes. The following map plots the share of **seats** won by Republicans at the state level. Just as the calculation for two-party vote share considers only votes for the two major parties, the calculation used here for seat share considers only seats won by the two major parties.
 ```{r gerrymandering: seat share}
+
+# Calculate Seat Share Variables
 state_seat_share <- house_party_vote_share_by_district_1948_2020 %>%
   select(State, raceYear, CD, RepVotes, DemVotes, WinnerParty) %>%
-  mutate(dem_win = ifelse(WinnerParty == "D",1,0),
-         rep_win = ifelse(WinnerParty == "R",1,0)) %>%
+  mutate(dem_win = ifelse(WinnerParty == "D",1,0), # Create new binary variable for Dem win
+         rep_win = ifelse(WinnerParty == "R",1,0)) %>% # Create new binary variable for GOP win
   group_by(State, raceYear) %>%
-  summarise(Rep_Vote_Share = (sum(RepVotes)/sum(DemVotes + RepVotes)),
-         Dem_Vote_Share = (sum(DemVotes)/sum(RepVotes + DemVotes)),
-         Dem_Seat_Share = (sum(dem_win)/sum(rep_win + dem_win)),
-         Rep_Seat_Share = (sum(rep_win)/sum(rep_win + dem_win))) %>%
+  summarise(Rep_Vote_Share = (sum(RepVotes)/sum(DemVotes + RepVotes)), # Calculate GOP vote share
+         Dem_Vote_Share = (sum(DemVotes)/sum(RepVotes + DemVotes)), # Calculate Dem vote share
+         Dem_Seat_Share = (sum(dem_win)/sum(rep_win + dem_win)), # Calculate GOP seat share
+         Rep_Seat_Share = (sum(rep_win)/sum(rep_win + dem_win))) %>% # Calculate Dem seat share
   rename("state" = State) %>%
-  left_join(state.abbrevs, by = "state")
-  
-map_options <- list(
+  left_join(state.abbrevs, by = "state") # Join dataframe with state abbreviations
+
+# Define Map Layout  
+map_layout <- list(
   scope = 'usa',
   projection = list(type = 'albers usa'),
   showlakes = FALSE,
   lakecolor = toRGB('white'))
 
+# Plot Dem Seat Share  
 dem_seat_share <- plot_geo(state_seat_share, locationmode = "USA-states") %>% 
   add_trace(z = ~Dem_Seat_Share, locations = ~abbrev,
             color = ~Dem_Seat_Share, colors = "Blues", frame = ~raceYear, 
             showscale = TRUE, zmax = 1, zmin = 0) %>% 
-  layout(title = "US House Dem Seat Share by State", geo = map_options)
+  layout(title = "US House Dem Seat Share by State", geo = map_layout)
 
-dem_seat_share
-
+# Plot GOP Seat Share  
 rep_seat_share <- plot_geo(state_seat_share, locationmode = "USA-states") %>% 
   add_trace(z = ~Rep_Seat_Share, locations = ~abbrev,
             color = ~Rep_Seat_Share, colors = "Reds", frame = ~raceYear, 
             showscale = TRUE, zmax = 1, zmin = 0) %>% 
-  layout(title = "US House GOP Seat Share by State", geo = map_options)
+  layout(title = "US House GOP Seat Share by State", geo = map_layout)
+
+# Print GOP Seat Share  
 
 rep_seat_share
 
 ```
+<br/>
+The following map does the same for Democratic seat share.
+```{r Dem seat share map}
+# Print Dem Seat Share  
+dem_seat_share
 
+```
+<br/>
+As with the two-party vote share maps, these maps of state-level seat share help illuminate the development of the Republican and Democratic geographic coalitions. Back in the 1950s and 1960s, Democrats would win most if not all of the House seats in Southern states; today, that pattern has reversed. Republicans used to pick up a fair number of seats in the Northeastern and West Coast states, but today Democrats almost completely shut them out in these states.  
+
+Next, I will compare the state-level vote share and seat share. Vote and seat share often diverge. In some cases, this is due to [intentional gerrymandering](https://www.nytimes.com/interactive/2021/11/07/us/politics/redistricting-maps-explained.html), whereby partisans draw district lines to benefit their party. But the way in which voters are naturally distributed across district lines can also serve to untether the popular vote from seat share. As Jonathan Rodden demonstrates in his book [*Why Cities Lose*](https://www.basicbooks.com/titles/jonathan-a-rodden/why-cities-lose/9781541644250/), Democratic voters are so densely packed in city centers that they perform poorly in single-member-plurality districts.
+<br/>
+The following map directly compares vote share and seat share. It displays the difference between Democratic seat share and Democratic vote share in each state. If a state has a positive (blue) swing value, Democrats won a **greater** proportion of the state's seat share than its two-party vote share. **Democrats** thus benefited from gerrymandering and/or electoral geography in this state during this election cycle. If a state has a negative (red) swing value, Democrats won a **lesser** proportion of the state's seat share than its two-party vote share. **Republicans** thus benefitted from gerrymandering and/or electoral geography in this state during this election cycle. For example, in 2020, Democrats won around 28.5% of the two-party House vote in Arkansas. But Democrats won 0 out of the state's 4 House districts. Electoral geography thus benefited Republicans in the state by 28.5 percentage points.
 
 ```{r gerrymandering: compare vote and seat share}
-
+# Calculate New Variable for Partisan Geographic Advantage
 state_partisan_advantage <- state_seat_share %>%
-  mutate(Dem_Advantage = Dem_Seat_Share - Dem_Vote_Share,
-         Rep_Advantage = Rep_Seat_Share - Rep_Vote_Share)
+  mutate(Dem_Advantage = Dem_Seat_Share - Dem_Vote_Share, # Difference between Dem seat and vote share
+         Rep_Advantage = Rep_Seat_Share - Rep_Vote_Share) # Difference between GOP seat and vote share
 
+# Define Map Layout  
 map_options <- list(
   scope = 'usa',
   projection = list(type = 'albers usa'),
   showlakes = FALSE,
   lakecolor = toRGB('white'))
 
+# Plot Dem Advantage Map
 advantage_map <- plot_geo(state_partisan_advantage, locationmode = "USA-states") %>% 
   add_trace(z = ~Dem_Advantage, locations = ~abbrev,
             color = ~Dem_Advantage, colors = "RdBu", frame = ~raceYear, 
             showscale = TRUE, zmax = 0.5, zmin = -0.5) %>% 
   layout(title = "US House Seat Share Versus Vote Share Advantage by State, 1948-2020", geo = map_options)
 
+# Print Dem Advantage Map
 advantage_map
 
 ```
+<br/>
+One immediate observation we can make when looking at recent election years is that partisan advantage seems to align with vote share. In other words, typically Republican states also seem to have district maps that benefit Republicans, while typically Democratic states seem to have district maps that benefit Democrats. This makes intuitive sense: decennial redistricting is often [controlled by state legislatures](https://gerrymander.princeton.edu/redistricting-report-card/). In red states, Republican politicians are thus able to make the district map even redder, whereas in blue states, Democratic politicians are able to make the district map even bluer.  
 
+From a historical perspective, note how the Republicans gain an advantage in a greater number of states starting in 2010 and carrying on through 2020. This could in part be the result of the Republican State Leadership Committee's [REDMAP](https://www.theatlantic.com/politics/archive/2017/10/gerrymandering-technology-redmap-2020/543888/) initiative, which sought to flip vulnerable state legislatures in 2010 in order to control the 2010 redistricting cycle. The initiative was [highly successful](https://www.newyorker.com/magazine/2016/06/27/ratfcked-the-influence-of-redistricting), allowing Republicans to gerrymander a greater number of districts and perhaps explaining why many state congressional district maps today advantage Republicans.  
 
-
-
-
-
-
-## Ext. 3: State Maps
-
-
-
-get_congress_map <- function(cong=114) {
-  tmp_file <- tempfile()
-  tmp_dir  <- tempdir()
-  zp <- sprintf("https://cdmaps.polisci.ucla.edu/shp/districts114.zip",cong)
-  download.file(zp, tmp_file)
-  unzip(zipfile = tmp_file, exdir = tmp_dir)
-  fpath <- paste(tmp_dir, sprintf("districtShapes/districts114.shp",cong), sep = "/")
-  st_read(fpath)
-}
-
-cd_shape <- get_congress_map(114)
-
-vote_share_cd_2014 <- house_party_vote_share_by_district_1948_2020 %>%
-  select(State, raceYear, RepVotes, DemVotes, st_fips, district_num, CD) %>%
-  filter(raceYear == 2014) %>%
-  mutate(R_tp_voteshare_cd = (RepVotes)/(DemVotes + RepVotes),
-         D_tp_voteshare_cd = (DemVotes)/(RepVotes + DemVotes)) %>%
-  select(State, CD, State, district_num, R_tp_voteshare_cd, D_tp_voteshare_cd) %>%
-  rename(STATENAME = State, DISTRICT = district_num)
-
-cd_shape$DISTRICT <- as.numeric(cd_shape$DISTRICT)
-
-joined <- cd_shape %>% left_join(vote_share_cd_2014, by = c("STATENAME", "DISTRICT"))
-
-ggplot() + 
-  geom_sf(data=joined,aes(fill=R_tp_voteshare_cd),
-          inherit.aes=FALSE,alpha=0.9) + 
-  scale_fill_gradient(low = "white", high = "red", limits=c(10,80)) +
-  theme_void() +
-  theme(axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank()) 
-
-
-
-
-
-
-
-
-get_congress_map <- function(cong=116) {
-  tmp_file <- tempfile()
-  tmp_dir  <- tempdir()
-  zp <- sprintf("cb_2018_us_cd116_500k.zip",cong)
-  download.file(zp, tmp_file)
-  unzip(zipfile = tmp_file, exdir = tmp_dir)
-  fpath <- paste(tmp_dir, sprintf("cb_2018_us_cd116_500k.shp",cong), sep = "/")
-  st_read(fpath)
-}
-
-cd_shape <- get_congress_map(116)
-
-congress_116 <- st_read("cb_2021_us_cd116_500k/cb_2021_us_cd116_500k.shp")
-
-vote_share_cd_2020 <- house_party_vote_share_by_district_1948_2020 %>%
-  select(State, raceYear, RepVotes, DemVotes, st_fips, district_num, CD) %>%
-  filter(raceYear == 2020) %>%
-  mutate(R_tp_voteshare_cd = (RepVotes)/(DemVotes + RepVotes),
-         D_tp_voteshare_cd = (DemVotes)/(RepVotes + DemVotes)) %>%
-  rename(STATEFP = st_fips, CD116FP = district_num) %>%
-  select(State, CD, STATEFP, CD116FP, R_tp_voteshare_cd, D_tp_voteshare_cd)
-  
-congress_116$STATEFP <- as.numeric(congress_116$STATEFP)
-congress_116$CD116FP <- as.numeric(congress_116$CD116FP)
-
-
-
-
-
-
-
-cd_2020_join <- full_join(vote_share_cd_2020, congress_116, by = c("STATEFP", "CD116FP"))
-
-ggplot() + 
-  geom_sf(data=cd_2020_join, aes(fill=R_tp_voteshare_cd),
-          inherit.aes=FALSE,alpha=0.9) + 
-  scale_fill_gradient(low = "white", high = "red", limits=c(10,80)) +
-  theme_void() +
-  theme(axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank()) 
-
-
-
-
-
-
-
-
-
-seatshare <- read.csv("seatshare.csv")
-
-seatshare <- seatshare %>%
-  mutate(Congress = parse_number(Congress))
-
-ggplot(seatshare, aes(x = Congress)) +
-  geom_line(aes(y = Democrats), color = "blue3") +
-  geom_line(aes(y = Republicans), color = "red2")
-
-seatshare_long <- seatshare %>%
-  select(Congress, Democrats, Republicans) %>%
-  gather(key = Party, value = Seats, -Congress)
-
-
-ggplot(seatshare_long, aes(x = Congress, y = Seats, col = Party)) +
-  geom_line() +
-  scale_color_manual(values=c('red3','blue2'))
-```
-These graphs are great, eh?
+## Data Sources:
+Data are from congressional district level U.S. House election results, 1948-2020

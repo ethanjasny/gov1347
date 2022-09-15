@@ -2,6 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-
 *.Rproj
 *.Rprofile
+Scraps.Rmd
