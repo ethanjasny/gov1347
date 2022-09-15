@@ -1,7 +1,7 @@
 ---
 title: "Blog Post 1: Exploring House Election Data"
 author: "Ethan Jasny"
-date: '2022-09-09'
+date: '2022-09-14'
 slug: []
 categories: []
 tags: []
@@ -170,8 +170,8 @@ state_seat_share <- house_party_vote_share_by_district_1948_2020 %>%
   group_by(State, raceYear) %>%
   summarise(Rep_Vote_Share = (sum(RepVotes)/sum(DemVotes + RepVotes)), # Calculate GOP vote share
          Dem_Vote_Share = (sum(DemVotes)/sum(RepVotes + DemVotes)), # Calculate Dem vote share
-         Dem_Seat_Share = (sum(dem_win)/sum(rep_win + dem_win)), # Calculate GOP seat share
-         Rep_Seat_Share = (sum(rep_win)/sum(rep_win + dem_win))) %>% # Calculate Dem seat share
+         Dem_Seat_Share = (sum(dem_win)/sum(rep_win + dem_win)), # Calculate Dem seat share
+         Rep_Seat_Share = (sum(rep_win)/sum(rep_win + dem_win))) %>% # Calculate GOP seat share
   rename("state" = State) %>%
   left_join(state.abbrevs, by = "state") # Join dataframe with state abbreviations
 
@@ -223,7 +223,7 @@ state_partisan_advantage <- state_seat_share %>%
          Rep_Advantage = Rep_Seat_Share - Rep_Vote_Share) # Difference between GOP seat and vote share
 
 # Define Map Layout  
-map_options <- list(
+map_layout <- list(
   scope = 'usa',
   projection = list(type = 'albers usa'),
   showlakes = FALSE,
@@ -234,7 +234,7 @@ advantage_map <- plot_geo(state_partisan_advantage, locationmode = "USA-states")
   add_trace(z = ~Dem_Advantage, locations = ~abbrev,
             color = ~Dem_Advantage, colors = "RdBu", frame = ~raceYear, 
             showscale = TRUE, zmax = 0.5, zmin = -0.5) %>% 
-  layout(title = "US House Seat Share Versus Vote Share Advantage by State, 1948-2020", geo = map_options)
+  layout(title = "US House Seat Share Versus Vote Share Advantage by State, 1948-2020", geo = map_layout)
 
 # Print Dem Advantage Map
 advantage_map
