@@ -8,15 +8,20 @@ tags: []
 ---
 *This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
 
-"It's the economy, stupid," became a slogan of Bill Clinton's 1992 presidential campaign. With recession hitting the country under incumbent President George H.W. Bush, political strategist James Carville [coined the phrase](https://www.nytimes.com/1992/10/31/us/1992-campaign-democrats-clinton-bush-compete-be-champion-change-democrat-fights.html) to keep the campaign focused on the big picture. This notion that the economy is paramount is not only the subject of pithy sound bites, but also the basis of statistical models. Econometrician Ray Fair has been [predicting](https://www.nytimes.com/2022/08/19/business/economy-midterm-elections-trump.html) elections since 1978 using only economic inputs. Political scientist Alan Abramowitz's noted ["Time For Change"](https://www.washingtonpost.com/blogs/ezra-klein/files/2012/08/abramowitz.pdf) model uses GDP as one of its three inputs. Thus, in this second blog post, I'll present my first models of the 2022 midterms, based solely on national economic data. I will complete blog extensions 1 and 2. 
+"It's the economy, stupid," became a slogan of Bill Clinton's 1992 presidential campaign. With recession hitting the country under incumbent President George H.W. Bush, political strategist James Carville [coined the phrase](https://www.nytimes.com/1992/10/31/us/1992-campaign-democrats-clinton-bush-compete-be-champion-change-democrat-fights.html) to keep the campaign focused on the big picture. This notion that the economy is paramount is not only the subject of pithy sound bites, but also the basis of statistical models.
+<br/>
+<br/>
+Econometrician Ray Fair has been [predicting](https://www.nytimes.com/2022/08/19/business/economy-midterm-elections-trump.html) elections since 1978 using only economic inputs. Political scientist Alan Abramowitz's noted ["Time For Change"](https://www.washingtonpost.com/blogs/ezra-klein/files/2012/08/abramowitz.pdf) model uses GDP as one of its three inputs. Thus, in this second blog post, I'll present my first models of the 2022 midterms, based solely on national economic data. I will complete blog extensions 1 and 2. 
+<br/>
 <br/>
 It's impossible to disentangle the economy from incumbency. Obviously, in presidential elections, the incumbent is on the ballot and will be judged for his handling of the economy. But midterm elections are also often [viewed](https://muse-jhu-edu.ezp-prod1.hul.harvard.edu/chapter/2341029/pdf) as referendums on the incumbent president. Thus, for the following election models, I will predict the vote and seat share of the **incumbent president's party** in the House of Representatives based on economic variables, including data from both presidential and midterm cycles. If the conventional wisdom holds, we should expect poor economic performance to coincide with bad results for the president's party in House elections. 
 
 # Real Disposable Income
 I'll begin by using changes in real disposable income to predict House election results. One key question when using economic data to determine voter behavior is how far back we should look. In theory, if members of the electorate do vote based on how the president and his party have handled the economy, we should include 2-4 years of economic data to consider the president's full tenure. But, as Andrew Healy and Gabriel S. Lenz [demonstrate](https://onlinelibrary-wiley-com.ezp-prod1.hul.harvard.edu/doi/pdfdirect/10.1111/ajps.12053), short-term economic indicators often cloud out larger economic trends in voters' minds. In their book [*Democracy for Realists*](https://press.princeton.edu/books/hardcover/9780691169446/democracy-for-realists), Christopher Achen and Larry Bartels model presidential elections based on real disposable income — along with a host of other variables. They find that short term growth in real disposable income over the last financial quarter before the election is a better predictor of the incumbent presidential popular vote than total income growth over the course of most of the four-year term.
 <br/>
+<br/>
 In the models below, I will split the difference: use the growth in real disposable income from **one year** in advance of the election by comparing income in the third quarter of the election year and the third quarter of the year prior. The following scatterplot compares the annual growth in real disposable income in the year before the election with the House popular vote of the incumbent president's party.
-```{r}
+```{r, results=FALSE, message = FALSE, warning = FALSE}
 # Hide all code output
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
@@ -95,6 +100,7 @@ ggplot(model_2_data, aes(x = DSPIC_change_pct_yearly, y = incumbent_pres_majorvo
 ```
 <br/>
 Below is the regression table for the relationship between real disposable income and House vote share of the incumbent president's party. 
+<br/>
 ```{r}
 tab_model(lm_RDI_vote, show.se = TRUE)
 
@@ -120,6 +126,7 @@ ggplot(model_2_data, aes(x = DSPIC_change_pct_yearly, y = incumbent_pres_seats, 
 ```
 <br/>
 The regression table for this model is shown below.
+<br/>
 ```{r}
 tab_model(lm_RDI_seat, show.se = TRUE)
 
@@ -127,7 +134,9 @@ tab_model(lm_RDI_seat, show.se = TRUE)
 <br/>
 There are a few key takeaways from these models. First, as expected, there is a positive relationship between annual disposable income growth in the run-up to the election and the electoral performance of the incumbent president's party. However, these relationships are not very strong — the relatively low R-squared values suggest that annual income growth is only somewhat predictive of electoral outcomes. The root-mean-square errors for the vote and seat models are 3.188 and 32.696, respectively. And over a series of cross-validation simulations, the mean absolute errors are 3.035 and 28.860, respectively. These errors are fairly large considering the close vote and seat margins that often decide control of the House.
 <br/>
+<br/>
 So while it is clear that these simple bivariate models are far from perfect, we can still use them to develop predictions for the 2022 midterms. Unfortunately, the data input used to test these models is unavailable as 2022's third economic quarter is not yet over. But we can use the real disposable income change from the first quarter of 2021 to the first quarter of 2022 to get an estimate for the model's input. Real disposable income actually **shrunk by 12 percentage points** from the first quarter of 2021 to the first quarter of 2022, and the models thus predict disastrous results for incumbent President Joe Biden's Democratic Party. Per the two models, Democrats would only win around **37%** of the two-party vote and only around **98 seats** with a negative 12 point annual decrease in RDI. These outcomes are obviously quite extreme, requiring a nearly total collapse in Democratic support. Still, these predictions align with the broader economic theory surrounding this election: a bad economy will be bad for Democrats.
+<br/>
 <br/>
 Notably, the seats model is more extreme than the votes model: 37% of the vote corresponds to around 160 seats, far greater than the 98 seats predicted by the seats model. This could suggest that seat share swings more violently with economic trends than vote share does.
 
@@ -165,6 +174,7 @@ ggplot(model_3_data, aes(x = GDPC1_growth_pct_yearly, y = incumbent_pres_majorvo
 ```
 <br/>
 Below is the regression output.
+<br/>
 ```{r}
 tab_model(lm_GDP_vote, show.se = TRUE)
 
@@ -191,13 +201,16 @@ ggplot(model_3_data, aes(x = GDPC1_growth_pct_yearly, y = incumbent_pres_seats, 
 ```
 <br/>
 Below is the regression table.
+<br/>
 ```{r}
 tab_model(lm_GDP_seat, show.se = TRUE)
 ```
 <br/>
 Once again, as expected, there appears to be a positive relationship between annual GDP growth and the president's party's performance in the House. Still, the relationships remain fairly weak, as judged by the R-squared values. The root-mean-square errors for the vote and seat models are 3.126 and 31.838, respectively. The mean absolute errors derived from cross-validation simulations are are 2.876 and 26.695, respectively. These errors are fairly large considering how close House elections often are.
 <br/>
+<br/>
 Clearly, annual GDP growth does not tell the full story of why parties perform well or poorly in House elections, but we can still use our models to generate predictions. I'll again turn to GDP data from the first quarter of 2021 and the first quarter of 2022 to determine an estimate for annual GDP growth. GDP actually grew by around 10.7%, and as a result of this strong economic growth, these models show Joe Biden's Democrats winning the midterms. Democrats are predicted to win around **51.6%** of the House popular vote and **243** by the respective vote and seat share models. This strong performance for the Democrats runs counter the results of our RDI model. 
+<br/>
 <br/>
 Once again, using seat share as the dependent variable seems to predict more extreme results. 51.6% of the popular vote corresponds to around 225 seats, less than 243. This again could suggest that seat share is more responsive to large economic trends. 
 
