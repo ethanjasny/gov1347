@@ -1,0 +1,186 @@
+---
+title: 'Blog 2: The Economy'
+author: R package build
+date: '2022-09-16'
+slug: []
+categories: []
+tags: []
+---
+```{r}
+# Hide all code output
+knitr::opts_chunk$set(echo = FALSE)
+
+# Import libraries
+library(tidyverse)
+library(ggplot2)
+library(usmap)
+library(sf)
+library(blogdown)
+library(plotly)
+library(htmlwidgets)
+library(gridExtra)
+
+# Import data
+RDI_monthly <- read_csv("RDI_monthly.csv")
+
+RDI_quaterly <- read_csv("RDI_quarterly.csv")
+
+CPI_monthly <- read_csv("CPI_monthly.csv")
+
+GDP_quaterly <- read_csv("GDP_quarterly.csv")
+
+unemployment_national_quaterly <- read_csv("unemployment_national_quarterly_final.csv")
+
+unemployment_state_monthly <- read_csv("unemployment_state_monthly.csv")
+
+election_data <- read_csv("house_popvote_seats.csv")
+
+```
+
+```{r}
+## Prepare Election Returns Data Set
+model_1_data <- election_data %>%
+  select(year, R_seats, D_seats, R_majorvote_pct, D_majorvote_pct, president_party) %>%
+  mutate(incumbent_president = c("D","D","D","R","R","R","R","D","D","D","D","R","R","R","R","D","D","R","R","R","R","R", "R","D","D","D","D", "R", "R", "R","R","D","D","D","D","R","R")) %>%
+  mutate(incumbent_president_dummy = ifelse(incumbent_president == "D", 1, 0)) %>%
+  mutate(midterm_dummy = ifelse(year %% 4, 1, 0)) %>%
+  mutate(incumbent_pres_majorvote = ifelse(incumbent_president == "D", D_majorvote_pct, R_majorvote_pct),
+         incumbent_pres_seats = ifelse(incumbent_president == "D", D_seats, R_seats)) %>%
+  select(year, midterm_dummy, incumbent_pres_majorvote, incumbent_pres_seats)
+
+model_midterm <- lm(incumbent_pres_majorvote ~ midterm_dummy, data = model_1_data)
+
+summary(model_midterm)
+
+
+## Models
+model_2_data <- RDI_quaterly %>%
+  filter(quarter_yr == 3) %>%
+  mutate(DSPIC_change_pct_yearly = 100*(DSPIC_qt - lag(DSPIC_qt))/(lag(DSPIC_qt))) %>%
+  inner_join(model_1_data, by = "year")
+
+ggplot(model_2_data, aes(x = DSPIC_change_pct_yearly, y = incumbent_pres_majorvote, label = year)) +
+  geom_text() +
+  geom_smooth(method="lm", formula = y ~ x)
+
+ggplot(model_2_data, aes(x = DSPIC_change_pct_yearly, y = incumbent_pres_seats, label = year)) +
+  geom_text() +
+  geom_smooth(method="lm", formula = y ~ x)
+
+model_3_data <- GDP_quaterly %>%
+  filter(quarter_yr == 3) %>%
+  mutate(GDPC1_growth_pct_yearly = 100*(GDPC1 - lag(GDPC1))/(lag(GDPC1))) %>%
+  inner_join(model_1_data, by = "year")
+
+ggplot(model_3_data, aes(x = GDPC1_growth_pct_yearly, y = incumbent_pres_majorvote, label = year)) +
+  geom_text() +
+  geom_smooth(method="lm", formula = y ~ x)
+
+ggplot(model_3_data, aes(x = GDPC1_growth_pct_yearly, y = incumbent_pres_seats, label = year)) +
+  geom_text() +
+  geom_smooth(method="lm", formula = y ~ x)
+
+lm_RDI_vote <- lm(incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, data = model_2_data)
+lm_RDI_seat <- lm(incumbent_pres_seats ~ DSPIC_change_pct_yearly, data = model_2_data)
+lm_GDP_vote <- lm(incumbent_pres_majorvote ~ GDPC1_growth_pct_yearly, data = model_3_data)
+lm_GDP_seat <- lm(incumbent_pres_seats ~ GDPC1_growth_pct_yearly, data = model_3_data)
+
+
+summary(lm_RDI_vote)
+summary(lm_RDI_seat)
+summary(lm_GDP_vote)
+summary(lm_GDP_seat)
+
+
+
+
+```
+
+```{r}
+## Testing model fit
+
+# Residual plots
+
+ggplot(model_2_data, aes(x = year)) +
+  geom_line(aes(y = incumbent_pres_majorvote)) +
+  geom_point(aes(y = predict(lm_RDI_vote, model_2_data)))
+
+ggplot(model_2_data, aes(x = year)) +
+  geom_line(aes(y = incumbent_pres_seats)) +
+  geom_point(aes(y = predict(lm_RDI_seat, model_2_data)))
+
+ggplot(model_3_data, aes(x = year)) +
+  geom_line(aes(y = incumbent_pres_majorvote)) +
+  geom_point(aes(y = predict(lm_GDP_vote, model_3_data)))
+
+ggplot(model_3_data, aes(x = year)) +
+  geom_line(aes(y = incumbent_pres_seats)) +
+  geom_point(aes(y = predict(lm_GDP_seat, model_3_data)))
+
+## RMSE
+
+sqrt(mean((lm_RDI_vote$model$incumbent_pres_majorvote - lm_RDI_vote$fitted.values)^2))
+sqrt(mean((lm_RDI_seat$model$incumbent_pres_seats - lm_RDI_seat$fitted.values)^2))
+sqrt(mean((lm_GDP_vote$model$incumbent_pres_majorvote - lm_GDP_vote$fitted.values)^2))
+sqrt(mean((lm_GDP_seat$model$incumbent_pres_seats - lm_GDP_seat$fitted.values)^2))
+
+## Cross-validation
+outsamp_RMSE <- sapply(1:1000, function(i){
+outsample_years <- sample(model_2_data$year, 8)
+lm_RDI_vote_cv <- lm(incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, data = model_2_data[!(model_2_data$year %in% outsample_years),])
+prediction_cv <- predict(lm_RDI_vote_cv, model_2_data[model_2_data$year %in% outsample_years,])
+actual_cv <- model_2_data$incumbent_pres_majorvote[model_2_data$year %in% outsample_years]
+
+sqrt(mean((prediction_cv - actual_cv)^2))
+})
+
+outsamp_abs_error <- sapply(1:1000, function(i){
+outsample_years <- sample(model_2_data$year, 8)
+lm_RDI_vote_cv <- lm(incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, data = model_2_data[!(model_2_data$year %in% outsample_years),])
+prediction_cv <- predict(lm_RDI_vote_cv, model_2_data[model_2_data$year %in% outsample_years,])
+actual_cv <- model_2_data$incumbent_pres_majorvote[model_2_data$year %in% outsample_years]
+
+mean(abs(prediction_cv - actual_cv))
+})
+
+outsamp_error <- sapply(1:1000, function(i){
+outsample_years <- sample(model_2_data$year, 8)
+lm_RDI_vote_cv <- lm(incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, data = model_2_data[!(model_2_data$year %in% outsample_years),])
+prediction_cv <- predict(lm_RDI_vote_cv, model_2_data[model_2_data$year %in% outsample_years,])
+actual_cv <- model_2_data$incumbent_pres_majorvote[model_2_data$year %in% outsample_years]
+
+mean(prediction_cv - actual_cv)
+})
+
+mean(abs(outsamp_RMSE)) # RMSE
+mean(abs(outsamp_abs_error)) # Mean error
+mean(abs(outsamp_error)) # Mean absolute error
+
+```
+
+
+
+
+
+
+
+```{r}
+## Model 1: The Incumbency-Midterm Model
+
+sqrt(mean((lm_RDI_vote$model$incumbent_pres_majorvote - lm_RDI_vote$fitted.values)^2))
+mean(lm_RDI_vote$model$incumbent_pres_majorvote - lm_RDI_vote$fitted.values)
+mean(abs(lm_RDI_vote$model$incumbent_pres_majorvote - lm_RDI_vote$fitted.values))
+```
+
+```{r}
+## Model 2: RDI
+```
+
+```{r}
+## Model 3: RDI + Incumbency-Midterm
+```
+
+
+
+
+

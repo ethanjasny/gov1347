@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Ethan&#39;s 2022 Election Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 14 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 16 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Blog 2: The Economy</title>
+      <link>http://example.org/post/2022-09-16-blog-2-the-economy/</link>
+      <pubDate>Fri, 16 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/2022-09-16-blog-2-the-economy/</guid>
+      <description># Hide all code output knitr::opts_chunk$set(echo = FALSE) # Import libraries library(tidyverse) ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ── ## ✔ ggplot2 3.3.6 ✔ purrr 0.3.4 ## ✔ tibble 3.1.8 ✔ dplyr 1.0.9 ## ✔ tidyr 1.2.0 ✔ stringr 1.4.0 ## ✔ readr 2.1.1 ✔ forcats 0.5.1 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ── ## ✖ dplyr::filter() masks stats::filter() ## ✖ dplyr::lag() masks stats::lag() library(ggplot2) library(usmap) library(sf) ## Linking to GEOS 3.</description>
+    </item>
+    
     <item>
       <title>Blog Post 1: Exploring House Election Data</title>
       <link>http://example.org/post/2022-09-09-test-post-1/</link>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		
+		
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Blog 2: The Economy &middot; Ethan&#39;s 2022 Election Blog</title>
+
+		
+		<link rel="stylesheet" href="/css/style.css">
+		<link rel="stylesheet" href="/css/fonts.css">
+		
+		<link rel="icon" href="/favicon.ico"/>
+		<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="Ethan&#39;s 2022 Election Blog" />
+
+		<script src="/js/darkmode.js"></script>
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/">
+					
+						<h2 class="nav-title">Ethan&#39;s 2022 Election Blog</h2>
+					
+				</a>
+				<ul>
+    
+    
+</ul>
+			</div>
+		</nav>
+
+        <div id="darkModeToggle" onclick="toggleDarkMode()">
+  &#9680; 
+</div>
+
+        
+
+<main>
+	
+
+
+        <div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        R package build
+        <br>
+        <span>on&nbsp;</span><time datetime="2022-09-16 00:00:00 &#43;0000 UTC">September 16, 2022</time>
+</div>
+
+		<h1 class="post-title">Blog 2: The Economy</h1>
+<div class="post-line"></div>
+
+		
+
+		
+
+
+<pre class="r"><code># Hide all code output
+knitr::opts_chunk$set(echo = FALSE)
+
+# Import libraries
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+## ✔ tibble  3.1.8     ✔ dplyr   1.0.9
+## ✔ tidyr   1.2.0     ✔ stringr 1.4.0
+## ✔ readr   2.1.1     ✔ forcats 0.5.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(usmap)
+library(sf)</code></pre>
+<pre><code>## Linking to GEOS 3.10.2, GDAL 3.4.2, PROJ 8.2.1; sf_use_s2() is TRUE</code></pre>
+<pre class="r"><code>library(blogdown)
+library(plotly)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<pre class="r"><code>library(htmlwidgets)
+library(gridExtra)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;gridExtra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     combine</code></pre>
+<pre class="r"><code># Import data
+RDI_monthly &lt;- read_csv(&quot;RDI_monthly.csv&quot;)</code></pre>
+<pre><code>## New names:
+## • `` -&gt; `...5`
+## • `` -&gt; `...6`
+## • `` -&gt; `...7`</code></pre>
+<pre><code>## Rows: 761 Columns: 7
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## dbl  (3): DSPIC96, quarter_yr, quarter_cycle
+## lgl  (3): ...5, ...6, ...7
+## date (1): date
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>RDI_quaterly &lt;- read_csv(&quot;RDI_quarterly.csv&quot;)</code></pre>
+<pre><code>## New names:
+## Rows: 254 Columns: 9
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (2): date, year_qt dbl (7): ...1, year, quarter_yr, quarter_cycle, DSPIC_qt,
+## DSPIC_change_qt, D...
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`</code></pre>
+<pre class="r"><code>CPI_monthly &lt;- read_csv(&quot;CPI_monthly.csv&quot;)</code></pre>
+<pre><code>## Rows: 906 Columns: 2
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## dbl  (1): CPIAUCSL
+## date (1): DATE
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>GDP_quaterly &lt;- read_csv(&quot;GDP_quarterly.csv&quot;)</code></pre>
+<pre><code>## New names:
+## Rows: 302 Columns: 10
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (2): date, year_qt dbl (8): ...1, ...2, GDPC1, quarter_yr, quarter_cycle, year,
+## GDP_growth_qt, ...
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`
+## • `...1` -&gt; `...2`</code></pre>
+<pre class="r"><code>unemployment_national_quaterly &lt;- read_csv(&quot;unemployment_national_quarterly_final.csv&quot;)</code></pre>
+<pre><code>## New names:
+## Rows: 298 Columns: 9
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (2): DATE, year_qt dbl (7): ...1, ...2, UNRATE, year, quarter_yr,
+## quarter_cycle, unrate_qt_total
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`
+## • `...1` -&gt; `...2`</code></pre>
+<pre class="r"><code>unemployment_state_monthly &lt;- read_csv(&quot;unemployment_state_monthly.csv&quot;)</code></pre>
+<pre><code>## Rows: 29521 Columns: 12
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (1): State and area
+## dbl (11): Count, FIPS Code, Year, Month, Population, LaborForce, LaborForce_...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>election_data &lt;- read_csv(&quot;house_popvote_seats.csv&quot;)</code></pre>
+<pre><code>## New names:
+## Rows: 37 Columns: 21
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (4): AreaAll, winner_party, president_party, H_incumbent_party dbl (16): ...1,
+## year, R_seats, D_seats, Other_seats, total_votes, R_votes, D... lgl (1):
+## H_incumbent_party_winner
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = incumbent_pres_majorvote ~ midterm_dummy, data = model_1_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.3063 -1.9363 -0.4483  2.0637  8.1537 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    49.1163     0.7742  63.442   &lt;2e-16 ***
+## midterm_dummy  -1.5780     1.1100  -1.422    0.164    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.375 on 35 degrees of freedom
+## Multiple R-squared:  0.05459,    Adjusted R-squared:  0.02758 
+## F-statistic: 2.021 on 1 and 35 DF,  p-value: 0.164</code></pre>
+<p><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-2-1.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-2-2.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-2-3.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-2-4.png" width="672" /></p>
+<pre><code>## 
+## Call:
+## lm(formula = incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, 
+##     data = model_2_data)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -5.182 -2.420 -1.274  2.426  6.225 
+## 
+## Coefficients:
+##                         Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)              45.6566     1.2336  37.011   &lt;2e-16 ***
+## DSPIC_change_pct_yearly   0.6910     0.2977   2.321   0.0275 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.296 on 29 degrees of freedom
+## Multiple R-squared:  0.1567, Adjusted R-squared:  0.1276 
+## F-statistic: 5.387 on 1 and 29 DF,  p-value: 0.02752</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = incumbent_pres_seats ~ DSPIC_change_pct_yearly, 
+##     data = model_2_data)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -58.53 -23.77  -5.43  20.21  67.18 
+## 
+## Coefficients:
+##                         Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)              178.692     12.654  14.122 1.58e-14 ***
+## DSPIC_change_pct_yearly    6.757      3.054   2.213   0.0349 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 33.81 on 29 degrees of freedom
+## Multiple R-squared:  0.1444, Adjusted R-squared:  0.1149 
+## F-statistic: 4.896 on 1 and 29 DF,  p-value: 0.03495</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = incumbent_pres_majorvote ~ GDPC1_growth_pct_yearly, 
+##     data = model_3_data)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -6.279 -2.331 -1.278  1.918  7.930 
+## 
+## Coefficients:
+##                         Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)              46.8694     0.8098   57.88   &lt;2e-16 ***
+## GDPC1_growth_pct_yearly   0.4476     0.1857    2.41   0.0213 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.214 on 35 degrees of freedom
+## Multiple R-squared:  0.1424, Adjusted R-squared:  0.1179 
+## F-statistic:  5.81 on 1 and 35 DF,  p-value: 0.02132</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = incumbent_pres_seats ~ GDPC1_growth_pct_yearly, 
+##     data = model_3_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -70.248 -25.220  -4.546  19.919  78.796 
+## 
+## Coefficients:
+##                         Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)              187.135      8.248  22.689  &lt; 2e-16 ***
+## GDPC1_growth_pct_yearly    5.266      1.891   2.785  0.00858 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 32.73 on 35 degrees of freedom
+## Multiple R-squared:  0.1814, Adjusted R-squared:  0.158 
+## F-statistic: 7.755 on 1 and 35 DF,  p-value: 0.008585</code></pre>
+<p><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-3-1.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-3-2.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-3-3.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-3-4.png" width="672" /></p>
+<pre><code>## [1] 3.187533</code></pre>
+<pre><code>## [1] 32.69646</code></pre>
+<pre><code>## [1] 3.126095</code></pre>
+<pre><code>## [1] 31.83785</code></pre>
+<pre><code>## [1] 3.469777</code></pre>
+<pre><code>## [1] 3.024201</code></pre>
+<pre><code>## [1] 1.123221</code></pre>
+<pre><code>## [1] 3.187533</code></pre>
+<pre><code>## [1] 2.292633e-16</code></pre>
+<pre><code>## [1] 2.781221</code></pre>
+
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/post/2022-09-09-test-post-1/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			
+			<span>
+			&copy; <time datetime="2022-09-18 21:23:22.213834 -0400 EDT m=&#43;0.265981353">2022</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
