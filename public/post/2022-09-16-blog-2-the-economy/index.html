@@ -101,6 +101,33 @@ library(gridExtra)</code></pre>
 <pre><code>## The following object is masked from &#39;package:dplyr&#39;:
 ## 
 ##     combine</code></pre>
+<pre class="r"><code>library(knitr)
+library(sjPlot)</code></pre>
+<pre><code>## Learn more about sjPlot with &#39;browseVignettes(&quot;sjPlot&quot;)&#39;.</code></pre>
+<pre class="r"><code>library(sjmisc)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;sjmisc&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     is_empty</code></pre>
+<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
+## 
+##     replace_na</code></pre>
+<pre><code>## The following object is masked from &#39;package:tibble&#39;:
+## 
+##     add_case</code></pre>
+<pre class="r"><code>library(sjlabelled)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;sjlabelled&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:forcats&#39;:
+## 
+##     as_factor</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     as_label</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     as_label</code></pre>
 <pre class="r"><code># Import data
 RDI_monthly &lt;- read_csv(&quot;RDI_monthly.csv&quot;)</code></pre>
 <pre><code>## New names:
@@ -177,24 +204,6 @@ RDI_monthly &lt;- read_csv(&quot;RDI_monthly.csv&quot;)</code></pre>
 ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
 ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...1`</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = incumbent_pres_majorvote ~ midterm_dummy, data = model_1_data)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -6.3063 -1.9363 -0.4483  2.0637  8.1537 
-## 
-## Coefficients:
-##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)    49.1163     0.7742  63.442   &lt;2e-16 ***
-## midterm_dummy  -1.5780     1.1100  -1.422    0.164    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 3.375 on 35 degrees of freedom
-## Multiple R-squared:  0.05459,    Adjusted R-squared:  0.02758 
-## F-statistic: 2.021 on 1 and 35 DF,  p-value: 0.164</code></pre>
 <p><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-2-1.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-2-2.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-2-3.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-2-4.png" width="672" /></p>
 <pre><code>## 
 ## Call:
@@ -272,17 +281,256 @@ RDI_monthly &lt;- read_csv(&quot;RDI_monthly.csv&quot;)</code></pre>
 ## Residual standard error: 32.73 on 35 degrees of freedom
 ## Multiple R-squared:  0.1814, Adjusted R-squared:  0.158 
 ## F-statistic: 7.755 on 1 and 35 DF,  p-value: 0.008585</code></pre>
-<p><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-3-1.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-3-2.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-3-3.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-3-4.png" width="672" /></p>
+<img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+incumbent_pres_majorvote
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+45.66
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+43.13 – 48.18
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+DSPIC change pct yearly
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.69
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.08 – 1.30
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>0.028</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
+31
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+0.157 / 0.128
+</td>
+</tr>
+</table>
+<img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-3-2.png" width="672" />
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+incumbent_pres_seats
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+178.69
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+152.81 – 204.57
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+DSPIC change pct yearly
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+6.76
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.51 – 13.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>0.035</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
+31
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+0.144 / 0.115
+</td>
+</tr>
+</table>
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+incumbent_pres_majorvote
+</th>
+<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+incumbent_pres_seats
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col7">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+45.66
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+43.13 – 48.18
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+178.69
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+152.81 – 204.57
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+DSPIC change pct yearly
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.69
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.08 – 1.30
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>0.028</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+6.76
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.51 – 13.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<strong>0.035</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
+31
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
+31
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+0.157 / 0.128
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+0.144 / 0.115
+</td>
+</tr>
+</table>
+<p><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-4-2.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-4-3.png" width="672" /><img src="http://example.org/post/2022-09-16-blog-2-the-economy/index_files/figure-html/unnamed-chunk-4-4.png" width="672" /></p>
 <pre><code>## [1] 3.187533</code></pre>
 <pre><code>## [1] 32.69646</code></pre>
 <pre><code>## [1] 3.126095</code></pre>
 <pre><code>## [1] 31.83785</code></pre>
-<pre><code>## [1] 3.469777</code></pre>
-<pre><code>## [1] 3.024201</code></pre>
-<pre><code>## [1] 1.123221</code></pre>
-<pre><code>## [1] 3.187533</code></pre>
-<pre><code>## [1] 2.292633e-16</code></pre>
-<pre><code>## [1] 2.781221</code></pre>
+<pre><code>## [1] 3.483598</code></pre>
+<pre><code>## [1] 3.029576</code></pre>
+<pre><code>## [1] 1.123308</code></pre>
 
 
 		
@@ -299,7 +547,7 @@ RDI_monthly &lt;- read_csv(&quot;RDI_monthly.csv&quot;)</code></pre>
         		<footer>
 			
 			<span>
-			&copy; <time datetime="2022-09-18 21:23:22.213834 -0400 EDT m=&#43;0.265981353">2022</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2022-09-18 22:07:27.465015 -0400 EDT m=&#43;0.242793522">2022</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

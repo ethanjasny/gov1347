@@ -19,6 +19,12 @@ library(blogdown)
 library(plotly)
 library(htmlwidgets)
 library(gridExtra)
+library(knitr)
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+
+
 
 # Import data
 RDI_monthly <- read_csv("RDI_monthly.csv")
@@ -47,10 +53,6 @@ model_1_data <- election_data %>%
   mutate(incumbent_pres_majorvote = ifelse(incumbent_president == "D", D_majorvote_pct, R_majorvote_pct),
          incumbent_pres_seats = ifelse(incumbent_president == "D", D_seats, R_seats)) %>%
   select(year, midterm_dummy, incumbent_pres_majorvote, incumbent_pres_seats)
-
-model_midterm <- lm(incumbent_pres_majorvote ~ midterm_dummy, data = model_1_data)
-
-summary(model_midterm)
 
 
 ## Models
@@ -95,6 +97,46 @@ summary(lm_GDP_seat)
 
 
 ```
+
+```{r}
+## Real Disposable Income Models
+
+
+## Load Data
+model_2_data <- RDI_quaterly %>%
+  filter(quarter_yr == 3) %>%
+  mutate(DSPIC_change_pct_yearly = 100*(DSPIC_qt - lag(DSPIC_qt))/(lag(DSPIC_qt))) %>%
+  inner_join(model_1_data, by = "year")
+
+## RDI and Vote Share
+
+## Plot Relationship
+ggplot(model_2_data, aes(x = DSPIC_change_pct_yearly, y = incumbent_pres_majorvote, label = year)) +
+  geom_text() +
+  geom_smooth(method="lm", formula = y ~ x)
+
+## Model
+lm_RDI_vote <- lm(incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, data = model_2_data)
+tab_model(lm_RDI_vote )
+
+## RDI and Seat Share
+
+## Plot Relationship
+ggplot(model_2_data, aes(x = DSPIC_change_pct_yearly, y = incumbent_pres_seats, label = year)) +
+  geom_text() +
+  geom_smooth(method="lm", formula = y ~ x)
+
+## Model
+lm_RDI_seat <- lm(incumbent_pres_seats ~ DSPIC_change_pct_yearly, data = model_2_data)
+tab_model(lm_RDI_seat)
+
+tab_model(lm_RDI_vote, lm_RDI_seat)
+
+
+
+
+```
+
 
 ```{r}
 ## Testing model fit
@@ -161,16 +203,6 @@ mean(abs(outsamp_error)) # Mean absolute error
 
 
 
-
-
-
-```{r}
-## Model 1: The Incumbency-Midterm Model
-
-sqrt(mean((lm_RDI_vote$model$incumbent_pres_majorvote - lm_RDI_vote$fitted.values)^2))
-mean(lm_RDI_vote$model$incumbent_pres_majorvote - lm_RDI_vote$fitted.values)
-mean(abs(lm_RDI_vote$model$incumbent_pres_majorvote - lm_RDI_vote$fitted.values))
-```
 
 ```{r}
 ## Model 2: RDI
