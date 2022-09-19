@@ -57,11 +57,11 @@ election_data <- read_csv("house_popvote_seats.csv")
 ## Prepare Election Returns Data Set
 model_1_data <- election_data %>%
   select(year, R_seats, D_seats, R_majorvote_pct, D_majorvote_pct, president_party) %>%
-  mutate(incumbent_president = c("D","D","D","R","R","R","R","D","D","D","D","R","R","R","R","D","D","R","R","R","R","R", "R","D","D","D","D", "R", "R", "R","R","D","D","D","D","R","R")) %>%
-  mutate(incumbent_president_dummy = ifelse(incumbent_president == "D", 1, 0)) %>%
-  mutate(midterm_dummy = ifelse(year %% 4, 1, 0)) %>%
+  mutate(incumbent_president = c("D","D","D","R","R","R","R","D","D","D","D","R","R","R","R","D","D","R","R","R","R","R", "R","D","D","D","D", "R", "R", "R","R","D","D","D","D","R","R")) %>% # Add list of incumbent presidents
+  mutate(incumbent_president_dummy = ifelse(incumbent_president == "D", 1, 0)) %>% # Incumbent president dummy variable
+  mutate(midterm_dummy = ifelse(year %% 4, 1, 0)) %>% # Midterm election dummy variable
   mutate(incumbent_pres_majorvote = ifelse(incumbent_president == "D", D_majorvote_pct, R_majorvote_pct),
-         incumbent_pres_seats = ifelse(incumbent_president == "D", D_seats, R_seats)) %>%
+         incumbent_pres_seats = ifelse(incumbent_president == "D", D_seats, R_seats)) %>% # Assign vote/seat share for incumbent party's president to new variables
   select(year, midterm_dummy, incumbent_pres_majorvote, incumbent_pres_seats)
 
 ```
@@ -70,9 +70,9 @@ model_1_data <- election_data %>%
 ## Real Disposable Income
 ## Load Data
 model_2_data <- RDI_quaterly %>%
-  filter(quarter_yr == 3) %>%
-  mutate(DSPIC_change_pct_yearly = 100*(DSPIC_qt - lag(DSPIC_qt))/(lag(DSPIC_qt))) %>%
-  inner_join(model_1_data, by = "year")
+  filter(quarter_yr == 3) %>% # Filter Q3
+  mutate(DSPIC_change_pct_yearly = 100*(DSPIC_qt - lag(DSPIC_qt))/(lag(DSPIC_qt))) %>% # Find annual percentage growth between third quarters
+  inner_join(model_1_data, by = "year") # Filter for election years
 
 ## RDI and Vote Share
 
@@ -144,9 +144,9 @@ I'll use the same approach to predict House seat and vote shares with GDP. The m
 ## GDP
 ## Load Data
 model_3_data <- GDP_quaterly %>%
-  filter(quarter_yr == 3) %>%
-  mutate(GDPC1_growth_pct_yearly = 100*(GDPC1 - lag(GDPC1))/(lag(GDPC1))) %>%
-  inner_join(model_1_data, by = "year")
+  filter(quarter_yr == 3) %>% # Filter for quarter 3
+  mutate(GDPC1_growth_pct_yearly = 100*(GDPC1 - lag(GDPC1))/(lag(GDPC1))) %>% # Find annual percentage growth between third quarters
+  inner_join(model_1_data, by = "year") # Filter for election years
 
 ## GDP and Vote Share
 
