@@ -9,8 +9,17 @@ tags: []
 
 
 
+<p><em>This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor <a href="https://www.ryandenos.com">Ryan Enos</a>. It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.</em></p>
+<p>“It’s the economy, stupid,” became a slogan of Bill Clinton’s 1992 presidential campaign. With recession hitting the country under incumbent President George H.W. Bush, political strategist James Carville <a href="https://www.nytimes.com/1992/10/31/us/1992-campaign-democrats-clinton-bush-compete-be-champion-change-democrat-fights.html">coined the phrase</a> to keep the campaign focused on the big picture. This notion that the economy is paramount is not only the subject of pithy sound bites, but also the basis of statistical models. Econometrician Ray Fair has been <a href="https://www.nytimes.com/2022/08/19/business/economy-midterm-elections-trump.html">predicting</a> elections since 1978 using only economic inputs. Political scientist Alan Abramowitz’s noted <a href="https://www.washingtonpost.com/blogs/ezra-klein/files/2012/08/abramowitz.pdf">“Time For Change”</a> model uses GDP as one of its three inputs. Thus, in this second blog post, I’ll present my first models of the 2022 midterms, based solely on national economic data. I will complete blog extensions 1 and 2.
+<br/>
+It’s impossible to disentangle the economy from incumbency. Obviously, in presidential elections, the incumbent is on the ballot and will be judged for his handling of the economy. But midterm elections are also often <a href="https://muse-jhu-edu.ezp-prod1.hul.harvard.edu/chapter/2341029/pdf">viewed</a> as referendums on the incumbent president. Thus, for the following election models, I will predict the vote and seat share of the <strong>incumbent president’s party</strong> in the House of Representatives based on economic variables, including data from both presidential and midterm cycles. If the conventional wisdom holds, we should expect poor economic performance to coincide with bad results for the president’s party in House elections.</p>
+<div id="real-disposable-income" class="section level1">
+<h1>Real Disposable Income</h1>
+<p>I’ll begin by using changes in real disposable income to predict House election results. One key question when using economic data to determine voter behavior is how far back we should look. In theory, if members of the electorate do vote based on how the president and his party have handled the economy, we should include 2-4 years of economic data to consider the president’s full tenure. But, as Andrew Healy and Gabriel S. Lenz <a href="https://onlinelibrary-wiley-com.ezp-prod1.hul.harvard.edu/doi/pdfdirect/10.1111/ajps.12053">demonstrate</a>, short-term economic indicators often cloud out larger economic trends in voters’ minds. In their book <a href="https://press.princeton.edu/books/hardcover/9780691169446/democracy-for-realists"><em>Democracy for Realists</em></a>, Christopher Achen and Larry Bartels model presidential elections based on real disposable income — along with a host of other variables. They find that short term growth in real disposable income over the last financial quarter before the election is a better predictor of the incumbent presidential popular vote than total income growth over the course of most of the four-year term.
+<br/>
+In the models below, I will split the difference: use the growth in real disposable income from <strong>one year</strong> in advance of the election by comparing income in the third quarter of the election year and the third quarter of the year prior. The following scatterplot compares the annual growth in real disposable income in the year before the election with the House popular vote of the incumbent president’s party.</p>
 <pre class="r"><code># Hide all code output
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 # Import libraries
 library(tidyverse)</code></pre>
@@ -47,9 +56,8 @@ library(gridExtra)</code></pre>
 ## 
 ##     combine</code></pre>
 <pre class="r"><code>library(knitr)
-library(sjPlot)</code></pre>
-<pre><code>## Learn more about sjPlot with &#39;browseVignettes(&quot;sjPlot&quot;)&#39;.</code></pre>
-<pre class="r"><code>library(sjmisc)</code></pre>
+library(sjPlot)
+library(sjmisc)</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;sjmisc&#39;</code></pre>
 <pre><code>## The following object is masked from &#39;package:purrr&#39;:
@@ -149,90 +157,15 @@ RDI_monthly &lt;- read_csv(&quot;RDI_monthly.csv&quot;)</code></pre>
 ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
 ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...1`</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" /><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-2.png" width="672" /><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-3.png" width="672" /><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-4.png" width="672" /></p>
-<pre><code>## 
-## Call:
-## lm(formula = incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, 
-##     data = model_2_data)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -5.182 -2.420 -1.274  2.426  6.225 
-## 
-## Coefficients:
-##                         Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)              45.6566     1.2336  37.011   &lt;2e-16 ***
-## DSPIC_change_pct_yearly   0.6910     0.2977   2.321   0.0275 *  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 3.296 on 29 degrees of freedom
-## Multiple R-squared:  0.1567, Adjusted R-squared:  0.1276 
-## F-statistic: 5.387 on 1 and 29 DF,  p-value: 0.02752</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = incumbent_pres_seats ~ DSPIC_change_pct_yearly, 
-##     data = model_2_data)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -58.53 -23.77  -5.43  20.21  67.18 
-## 
-## Coefficients:
-##                         Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)              178.692     12.654  14.122 1.58e-14 ***
-## DSPIC_change_pct_yearly    6.757      3.054   2.213   0.0349 *  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 33.81 on 29 degrees of freedom
-## Multiple R-squared:  0.1444, Adjusted R-squared:  0.1149 
-## F-statistic: 4.896 on 1 and 29 DF,  p-value: 0.03495</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = incumbent_pres_majorvote ~ GDPC1_growth_pct_yearly, 
-##     data = model_3_data)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -6.279 -2.331 -1.278  1.918  7.930 
-## 
-## Coefficients:
-##                         Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)              46.8694     0.8098   57.88   &lt;2e-16 ***
-## GDPC1_growth_pct_yearly   0.4476     0.1857    2.41   0.0213 *  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 3.214 on 35 degrees of freedom
-## Multiple R-squared:  0.1424, Adjusted R-squared:  0.1179 
-## F-statistic:  5.81 on 1 and 35 DF,  p-value: 0.02132</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = incumbent_pres_seats ~ GDPC1_growth_pct_yearly, 
-##     data = model_3_data)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -70.248 -25.220  -4.546  19.919  78.796 
-## 
-## Coefficients:
-##                         Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)              187.135      8.248  22.689  &lt; 2e-16 ***
-## GDPC1_growth_pct_yearly    5.266      1.891   2.785  0.00858 ** 
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 32.73 on 35 degrees of freedom
-## Multiple R-squared:  0.1814, Adjusted R-squared:  0.158 
-## F-statistic: 7.755 on 1 and 35 DF,  p-value: 0.008585</code></pre>
 <img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+<br/>
+Below is the regression table for the relationship between real disposable income and House vote share of the incumbent president’s party.
 <table style="border-collapse:collapse; border:none;">
 <tr>
 <th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
  
 </th>
-<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
 incumbent_pres_majorvote
 </th>
 </tr>
@@ -242,6 +175,9 @@ Predictors
 </td>
 <td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
 Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
 </td>
 <td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
 CI
@@ -258,6 +194,9 @@ p
 45.66
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.23
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 43.13 – 48.18
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -272,6 +211,9 @@ DSPIC change pct yearly
 0.69
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.30
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.08 – 1.30
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -282,7 +224,7 @@ DSPIC change pct yearly
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
 Observations
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
 31
 </td>
 </tr>
@@ -290,18 +232,22 @@ Observations
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
 R<sup>2</sup> / R<sup>2</sup> adjusted
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
 0.157 / 0.128
 </td>
 </tr>
 </table>
-<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-2.png" width="672" />
+<p><br/>
+Next, I’ll conduct the same model, but with House seat share rather than vote share as the dependent variable. The scatterplot is shown below.</p>
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+<br/>
+The regression table for this model is shown below.
 <table style="border-collapse:collapse; border:none;">
 <tr>
 <th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
  
 </th>
-<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
 incumbent_pres_seats
 </th>
 </tr>
@@ -311,6 +257,9 @@ Predictors
 </td>
 <td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
 Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
 </td>
 <td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
 CI
@@ -327,6 +276,9 @@ p
 178.69
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+12.65
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 152.81 – 204.57
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -341,6 +293,9 @@ DSPIC change pct yearly
 6.76
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+3.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.51 – 13.00
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -351,7 +306,7 @@ DSPIC change pct yearly
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
 Observations
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
 31
 </td>
 </tr>
@@ -359,20 +314,111 @@ Observations
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
 R<sup>2</sup> / R<sup>2</sup> adjusted
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
 0.144 / 0.115
 </td>
 </tr>
 </table>
+<p><br/>
+There are a few key takeaways from these models. First, as expected, there is a positive relationship between annual disposable income growth in the run-up to the election and the electoral performance of the incumbent president’s party. However, these relationships are not very strong — the relatively low R-squared values suggest that annual income growth is only somewhat predictive of electoral outcomes. The root-mean-square errors for the vote and seat models are 3.188 and 32.696, respectively. And over a series of cross-validation simulations, the mean absolute errors are 3.035 and 28.860, respectively. These errors are fairly large considering the close vote and seat margins that often decide control of the House.
+<br/>
+So while it is clear that these simple bivariate models are far from perfect, we can still use them to develop predictions for the 2022 midterms. Unfortunately, the data input used to test these models is unavailable as 2022’s third economic quarter is not yet over. But we can use the real disposable income change from the first quarter of 2021 to the first quarter of 2022 to get an estimate for the model’s input. Real disposable income actually <strong>shrunk by 12 percentage points</strong> from the first quarter of 2021 to the first quarter of 2022, and the models thus predict disastrous results for incumbent President Joe Biden’s Democratic Party. Per the two models, Democrats would only win around <strong>37%</strong> of the two-party vote and only around <strong>98 seats</strong> with a negative 12 point annual decrease in RDI. These outcomes are obviously quite extreme, requiring a nearly total collapse in Democratic support. Still, these predictions align with the broader economic theory surrounding this election: a bad economy will be bad for Democrats.
+<br/>
+Notably, the seats model is more extreme than the votes model: 37% of the vote corresponds to around 160 seats, far greater than the 98 seats predicted by the seats model. This could suggest that seat share swings more violently with economic trends than vote share does.</p>
+<div id="gross-domestic-product" class="section level2">
+<h2>Gross Domestic Product</h2>
+<p>I’ll use the same approach to predict House seat and vote shares with GDP. The models below forecast election results based on GDP growth between the third quarter of the year before the election and the third quarter of the election year. The scatterplot below uses vote share as the dependent variabke.</p>
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+<br/>
+Below is the regression output.
 <table style="border-collapse:collapse; border:none;">
 <tr>
 <th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
  
 </th>
-<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
 incumbent_pres_majorvote
 </th>
-<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+46.87
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.81
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+45.23 – 48.51
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+GDPC1 growth pct yearly
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.45
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.19
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.07 – 0.82
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>0.021</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+37
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.142 / 0.118
+</td>
+</tr>
+</table>
+<p><br/>
+The next model predicts the House seat share of the incumbent party’s president based on annual GDP growth.</p>
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+<br/>
+Below is the regression table.
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
 incumbent_pres_seats
 </th>
 </tr>
@@ -384,18 +430,12 @@ Predictors
 Estimates
 </td>
 <td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
-CI
-</td>
-<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
-p
-</td>
-<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
-Estimates
+std. Error
 </td>
 <td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
 CI
 </td>
-<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col7">
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
 p
 </td>
 </tr>
@@ -404,75 +444,64 @@ p
 (Intercept)
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-45.66
+187.13
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-43.13 – 48.18
+8.25
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-<strong>&lt;0.001</strong>
+170.39 – 203.88
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-178.69
-</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-152.81 – 204.57
-</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
 <strong>&lt;0.001</strong>
 </td>
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
-DSPIC change pct yearly
+GDPC1 growth pct yearly
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.69
+5.27
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.08 – 1.30
+1.89
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-<strong>0.028</strong>
+1.43 – 9.11
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-6.76
-</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.51 – 13.00
-</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-<strong>0.035</strong>
+<strong>0.009</strong>
 </td>
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
 Observations
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
-31
-</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
-31
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+37
 </td>
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
 R<sup>2</sup> / R<sup>2</sup> adjusted
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
-0.157 / 0.128
-</td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
-0.144 / 0.115
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.181 / 0.158
 </td>
 </tr>
 </table>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-2.png" width="672" /><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-3.png" width="672" /><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-4.png" width="672" /></p>
-<pre><code>## [1] 3.187533</code></pre>
-<pre><code>## [1] 32.69646</code></pre>
-<pre><code>## [1] 3.126095</code></pre>
-<pre><code>## [1] 31.83785</code></pre>
-<pre><code>## [1] 3.483598</code></pre>
-<pre><code>## [1] 3.029576</code></pre>
-<pre><code>## [1] 1.123308</code></pre>
+<p><br/>
+Once again, as expected, there appears to be a positive relationship between annual GDP growth and the president’s party’s performance in the House. Still, the relationships remain fairly weak, as judged by the R-squared values. The root-mean-square errors for the vote and seat models are 3.126 and 31.838, respectively. The mean absolute errors derived from cross-validation simulations are are 2.876 and 26.695, respectively. These errors are fairly large considering how close House elections often are.
+<br/>
+Clearly, annual GDP growth does not tell the full story of why parties perform well or poorly in House elections, but we can still use our models to generate predictions. I’ll again turn to GDP data from the first quarter of 2021 and the first quarter of 2022 to determine an estimate for annual GDP growth. GDP actually grew by around 10.7%, and as a result of this strong economic growth, these models show Joe Biden’s Democrats winning the midterms. Democrats are predicted to win around <strong>51.6%</strong> of the House popular vote and <strong>243</strong> by the respective vote and seat share models. This strong performance for the Democrats runs counter the results of our RDI model.
+<br/>
+Once again, using seat share as the dependent variable seems to predict more extreme results. 51.6% of the popular vote corresponds to around 225 seats, less than 243. This again could suggest that seat share is more responsive to large economic trends.</p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>Ultimately, I am quite skeptical of these models. The low R-squared values and high error indicators suggest that annual RDI and GDP only loosely fit the House election data. The following residual plots, with the predicted results represented by dots and actual results represented by lines, similarly demonstrate the imprecision of the models.
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+<br/>
+Of course, it is not surprising that these models are imprecise. If one or two broad economic indicators could super accurately predict election results, it would be a lot easier to forecast elections. Still, there are some important lessons from this exercise. The linear models explored above do demonstrate that, broadly speaking, the incumbent president party tends to fare better in the House when the economy is doing well. But the specific measure used to the state of the economy can have a drastic impact on our predictions The model based on real disposable income produced a nearly opposite prediction compared to our model based on GDP. As i continue to refine my predictions, I’ll thus be certain to consider a range of different variables — both economic and otherwise — when constructing my models.</p>
+</div>

@@ -6,9 +6,19 @@ slug: []
 categories: []
 tags: []
 ---
+*This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
+
+"It's the economy, stupid," became a slogan of Bill Clinton's 1992 presidential campaign. With recession hitting the country under incumbent President George H.W. Bush, political strategist James Carville [coined the phrase](https://www.nytimes.com/1992/10/31/us/1992-campaign-democrats-clinton-bush-compete-be-champion-change-democrat-fights.html) to keep the campaign focused on the big picture. This notion that the economy is paramount is not only the subject of pithy sound bites, but also the basis of statistical models. Econometrician Ray Fair has been [predicting](https://www.nytimes.com/2022/08/19/business/economy-midterm-elections-trump.html) elections since 1978 using only economic inputs. Political scientist Alan Abramowitz's noted ["Time For Change"](https://www.washingtonpost.com/blogs/ezra-klein/files/2012/08/abramowitz.pdf) model uses GDP as one of its three inputs. Thus, in this second blog post, I'll present my first models of the 2022 midterms, based solely on national economic data. I will complete blog extensions 1 and 2. 
+<br/>
+It's impossible to disentangle the economy from incumbency. Obviously, in presidential elections, the incumbent is on the ballot and will be judged for his handling of the economy. But midterm elections are also often [viewed](https://muse-jhu-edu.ezp-prod1.hul.harvard.edu/chapter/2341029/pdf) as referendums on the incumbent president. Thus, for the following election models, I will predict the vote and seat share of the **incumbent president's party** in the House of Representatives based on economic variables, including data from both presidential and midterm cycles. If the conventional wisdom holds, we should expect poor economic performance to coincide with bad results for the president's party in House elections. 
+
+# Real Disposable Income
+I'll begin by using changes in real disposable income to predict House election results. One key question when using economic data to determine voter behavior is how far back we should look. In theory, if members of the electorate do vote based on how the president and his party have handled the economy, we should include 2-4 years of economic data to consider the president's full tenure. But, as Andrew Healy and Gabriel S. Lenz [demonstrate](https://onlinelibrary-wiley-com.ezp-prod1.hul.harvard.edu/doi/pdfdirect/10.1111/ajps.12053), short-term economic indicators often cloud out larger economic trends in voters' minds. In their book [*Democracy for Realists*](https://press.princeton.edu/books/hardcover/9780691169446/democracy-for-realists), Christopher Achen and Larry Bartels model presidential elections based on real disposable income — along with a host of other variables. They find that short term growth in real disposable income over the last financial quarter before the election is a better predictor of the incumbent presidential popular vote than total income growth over the course of most of the four-year term.
+<br/>
+In the models below, I will split the difference: use the growth in real disposable income from **one year** in advance of the election by comparing income in the third quarter of the election year and the third quarter of the year prior. The following scatterplot compares the annual growth in real disposable income in the year before the election with the House popular vote of the incumbent president's party.
 ```{r}
 # Hide all code output
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 # Import libraries
 library(tidyverse)
@@ -23,8 +33,6 @@ library(knitr)
 library(sjPlot)
 library(sjmisc)
 library(sjlabelled)
-
-
 
 # Import data
 RDI_monthly <- read_csv("RDI_monthly.csv")
@@ -54,54 +62,10 @@ model_1_data <- election_data %>%
          incumbent_pres_seats = ifelse(incumbent_president == "D", D_seats, R_seats)) %>%
   select(year, midterm_dummy, incumbent_pres_majorvote, incumbent_pres_seats)
 
-
-## Models
-model_2_data <- RDI_quaterly %>%
-  filter(quarter_yr == 3) %>%
-  mutate(DSPIC_change_pct_yearly = 100*(DSPIC_qt - lag(DSPIC_qt))/(lag(DSPIC_qt))) %>%
-  inner_join(model_1_data, by = "year")
-
-ggplot(model_2_data, aes(x = DSPIC_change_pct_yearly, y = incumbent_pres_majorvote, label = year)) +
-  geom_text() +
-  geom_smooth(method="lm", formula = y ~ x)
-
-ggplot(model_2_data, aes(x = DSPIC_change_pct_yearly, y = incumbent_pres_seats, label = year)) +
-  geom_text() +
-  geom_smooth(method="lm", formula = y ~ x)
-
-model_3_data <- GDP_quaterly %>%
-  filter(quarter_yr == 3) %>%
-  mutate(GDPC1_growth_pct_yearly = 100*(GDPC1 - lag(GDPC1))/(lag(GDPC1))) %>%
-  inner_join(model_1_data, by = "year")
-
-ggplot(model_3_data, aes(x = GDPC1_growth_pct_yearly, y = incumbent_pres_majorvote, label = year)) +
-  geom_text() +
-  geom_smooth(method="lm", formula = y ~ x)
-
-ggplot(model_3_data, aes(x = GDPC1_growth_pct_yearly, y = incumbent_pres_seats, label = year)) +
-  geom_text() +
-  geom_smooth(method="lm", formula = y ~ x)
-
-lm_RDI_vote <- lm(incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, data = model_2_data)
-lm_RDI_seat <- lm(incumbent_pres_seats ~ DSPIC_change_pct_yearly, data = model_2_data)
-lm_GDP_vote <- lm(incumbent_pres_majorvote ~ GDPC1_growth_pct_yearly, data = model_3_data)
-lm_GDP_seat <- lm(incumbent_pres_seats ~ GDPC1_growth_pct_yearly, data = model_3_data)
-
-
-summary(lm_RDI_vote)
-summary(lm_RDI_seat)
-summary(lm_GDP_vote)
-summary(lm_GDP_seat)
-
-
-
-
 ```
 
 ```{r}
-## Real Disposable Income Models
-
-
+## Real Disposable Income
 ## Load Data
 model_2_data <- RDI_quaterly %>%
   filter(quarter_yr == 3) %>%
@@ -110,54 +74,173 @@ model_2_data <- RDI_quaterly %>%
 
 ## RDI and Vote Share
 
+## Model
+lm_RDI_vote <- lm(incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, data = model_2_data)
+
+## Prediction
+RDI_predict <- RDI_quaterly %>%
+  filter(quarter_yr == 1, year == 2021 | year == 2022) %>%
+  mutate(DSPIC_change_pct_yearly = 100*(DSPIC_qt - lag(DSPIC_qt))/(lag(DSPIC_qt))) %>%
+  filter(year == 2022) %>%
+  select(DSPIC_change_pct_yearly)
+
+model_1_prediction <- predict(lm_RDI_vote, RDI_predict)
+
+
 ## Plot Relationship
 ggplot(model_2_data, aes(x = DSPIC_change_pct_yearly, y = incumbent_pres_majorvote, label = year)) +
   geom_text() +
-  geom_smooth(method="lm", formula = y ~ x)
+  geom_smooth(method="lm", formula = y ~ x) + xlab("Annual Percent Change in Real Disposable Income") + ylab("Incumbent President Two-Party House Vote Share") + ggtitle("Model 1: RDI and Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+<br/>
+Below is the regression table for the relationship between real disposable income and House vote share of the incumbent president's party. 
+```{r}
+tab_model(lm_RDI_vote, show.se = TRUE)
+
+```
+<br/>
+Next, I'll conduct the same model, but with House seat share rather than vote share as the dependent variable. The scatterplot is shown below.
+
+```{r}
+## RDI and Seat Share
 
 ## Model
-lm_RDI_vote <- lm(incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, data = model_2_data)
-tab_model(lm_RDI_vote )
+lm_RDI_seat <- lm(incumbent_pres_seats ~ DSPIC_change_pct_yearly, data = model_2_data)
 
-## RDI and Seat Share
+## Prediction
+model_2_prediction <- predict(lm_RDI_seat, RDI_predict)
+
 
 ## Plot Relationship
 ggplot(model_2_data, aes(x = DSPIC_change_pct_yearly, y = incumbent_pres_seats, label = year)) +
   geom_text() +
-  geom_smooth(method="lm", formula = y ~ x)
-
-## Model
-lm_RDI_seat <- lm(incumbent_pres_seats ~ DSPIC_change_pct_yearly, data = model_2_data)
-tab_model(lm_RDI_seat)
-
-tab_model(lm_RDI_vote, lm_RDI_seat)
-
-
-
+  geom_smooth(method="lm", formula = y ~ x) + xlab("Annual Percent Change in Real Disposable Income") + ylab("Incumbent President House Seats Won") + ggtitle("Model 2: RDI and Seat Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+<br/>
+The regression table for this model is shown below.
+```{r}
+tab_model(lm_RDI_seat, show.se = TRUE)
 
 ```
+<br/>
+There are a few key takeaways from these models. First, as expected, there is a positive relationship between annual disposable income growth in the run-up to the election and the electoral performance of the incumbent president's party. However, these relationships are not very strong — the relatively low R-squared values suggest that annual income growth is only somewhat predictive of electoral outcomes. The root-mean-square errors for the vote and seat models are 3.188 and 32.696, respectively. And over a series of cross-validation simulations, the mean absolute errors are 3.035 and 28.860, respectively. These errors are fairly large considering the close vote and seat margins that often decide control of the House.
+<br/>
+So while it is clear that these simple bivariate models are far from perfect, we can still use them to develop predictions for the 2022 midterms. Unfortunately, the data input used to test these models is unavailable as 2022's third economic quarter is not yet over. But we can use the real disposable income change from the first quarter of 2021 to the first quarter of 2022 to get an estimate for the model's input. Real disposable income actually **shrunk by 12 percentage points** from the first quarter of 2021 to the first quarter of 2022, and the models thus predict disastrous results for incumbent President Joe Biden's Democratic Party. Per the two models, Democrats would only win around **37%** of the two-party vote and only around **98 seats** with a negative 12 point annual decrease in RDI. These outcomes are obviously quite extreme, requiring a nearly total collapse in Democratic support. Still, these predictions align with the broader economic theory surrounding this election: a bad economy will be bad for Democrats.
+<br/>
+Notably, the seats model is more extreme than the votes model: 37% of the vote corresponds to around 160 seats, far greater than the 98 seats predicted by the seats model. This could suggest that seat share swings more violently with economic trends than vote share does.
+
+## Gross Domestic Product
+I'll use the same approach to predict House seat and vote shares with GDP. The models below forecast election results based on GDP growth between the third quarter of the year before the election and the third quarter of the election year. The scatterplot below uses vote share as the dependent variabke.
+
+```{r}
+## GDP
+## Load Data
+model_3_data <- GDP_quaterly %>%
+  filter(quarter_yr == 3) %>%
+  mutate(GDPC1_growth_pct_yearly = 100*(GDPC1 - lag(GDPC1))/(lag(GDPC1))) %>%
+  inner_join(model_1_data, by = "year")
+
+## GDP and Vote Share
+
+## Model
+lm_GDP_vote <- lm(incumbent_pres_majorvote ~ GDPC1_growth_pct_yearly, data = model_3_data)
+
+## Prediction
+GDP_predict <- GDP_quaterly %>%
+  filter(quarter_yr == 1, year == 2021 | year == 2022) %>%
+  mutate(GDPC1_growth_pct_yearly = 100*((GDPC1 - lag(GDPC1))/(lag(GDPC1)))) %>%
+  filter(year == 2022) %>%
+  select(GDPC1_growth_pct_yearly)
+
+model_3_prediction <- predict(lm_GDP_vote,GDP_predict)
+
+## Plot Relationship
+ggplot(model_3_data, aes(x = GDPC1_growth_pct_yearly, y = incumbent_pres_majorvote, label = year)) +
+  geom_text() +
+  geom_smooth(method="lm", formula = y ~ x) + xlab("Annual Percent Change in GDP") + ylab("Incumbent President Two-Party House Vote Share") + ggtitle("Model 3: GDP and Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+<br/>
+Below is the regression output.
+```{r}
+tab_model(lm_GDP_vote, show.se = TRUE)
+
+```
+<br/>
+The next model predicts the House seat share of the incumbent party's president based on annual GDP growth.
+
+```{r}
+## GDP and Seat Share
+
+## Model
+lm_GDP_seat <- lm(incumbent_pres_seats ~ GDPC1_growth_pct_yearly, data = model_3_data)
 
 
+## Prediction
+model_4_prediction <- predict(lm_GDP_seat,GDP_predict)
+
+## Plot Relationship
+ggplot(model_3_data, aes(x = GDPC1_growth_pct_yearly, y = incumbent_pres_seats, label = year)) +
+  geom_text() +
+  geom_smooth(method="lm", formula = y ~ x) + xlab("Annual Percent Change in GDP") + ylab("Incumbent President House Seats Won") + ggtitle("Model 4: GDP and Seat Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+<br/>
+Below is the regression table.
+```{r}
+tab_model(lm_GDP_seat, show.se = TRUE)
+```
+<br/>
+Once again, as expected, there appears to be a positive relationship between annual GDP growth and the president's party's performance in the House. Still, the relationships remain fairly weak, as judged by the R-squared values. The root-mean-square errors for the vote and seat models are 3.126 and 31.838, respectively. The mean absolute errors derived from cross-validation simulations are are 2.876 and 26.695, respectively. These errors are fairly large considering how close House elections often are.
+<br/>
+Clearly, annual GDP growth does not tell the full story of why parties perform well or poorly in House elections, but we can still use our models to generate predictions. I'll again turn to GDP data from the first quarter of 2021 and the first quarter of 2022 to determine an estimate for annual GDP growth. GDP actually grew by around 10.7%, and as a result of this strong economic growth, these models show Joe Biden's Democrats winning the midterms. Democrats are predicted to win around **51.6%** of the House popular vote and **243** by the respective vote and seat share models. This strong performance for the Democrats runs counter the results of our RDI model. 
+<br/>
+Once again, using seat share as the dependent variable seems to predict more extreme results. 51.6% of the popular vote corresponds to around 225 seats, less than 243. This again could suggest that seat share is more responsive to large economic trends. 
+
+# Conclusion
+Ultimately, I am quite skeptical of these models. The low R-squared values and high error indicators suggest that annual RDI and GDP only loosely fit the House election data. The following residual plots, with the predicted results represented by dots and actual results represented by lines, similarly demonstrate the imprecision of the models. 
 ```{r}
 ## Testing model fit
 
 # Residual plots
 
-ggplot(model_2_data, aes(x = year)) +
+resid1 <- ggplot(model_2_data, aes(x = year)) +
   geom_line(aes(y = incumbent_pres_majorvote)) +
-  geom_point(aes(y = predict(lm_RDI_vote, model_2_data)))
+  geom_point(aes(y = predict(lm_RDI_vote, model_2_data))) +
+  ggtitle("RDI-Votes Model") +
+  theme(plot.title = element_text(hjust = 0.5))
 
-ggplot(model_2_data, aes(x = year)) +
+resid2 <- ggplot(model_2_data, aes(x = year)) +
   geom_line(aes(y = incumbent_pres_seats)) +
-  geom_point(aes(y = predict(lm_RDI_seat, model_2_data)))
+  geom_point(aes(y = predict(lm_RDI_seat, model_2_data))) +
+  ggtitle("RDI-Seats Model") +
+  theme(plot.title = element_text(hjust = 0.5))
 
-ggplot(model_3_data, aes(x = year)) +
+resid3 <- ggplot(model_3_data, aes(x = year)) +
   geom_line(aes(y = incumbent_pres_majorvote)) +
-  geom_point(aes(y = predict(lm_GDP_vote, model_3_data)))
+  geom_point(aes(y = predict(lm_GDP_vote, model_3_data))) +
+  ggtitle("GDP-Votes Model") +
+  theme(plot.title = element_text(hjust = 0.5))
 
-ggplot(model_3_data, aes(x = year)) +
+resid4 <- ggplot(model_3_data, aes(x = year)) +
   geom_line(aes(y = incumbent_pres_seats)) +
-  geom_point(aes(y = predict(lm_GDP_seat, model_3_data)))
+  geom_point(aes(y = predict(lm_GDP_seat, model_3_data))) +
+  ggtitle("GDP-Seats Model") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+grid.arrange(resid1,resid2,resid3,resid4,ncol = 2, nrow = 2, name = "Predicted (dots) and Actual (lines) Election Results")
+
+```
+<br/>
+Of course, it is not surprising that these models are imprecise. If one or two broad economic indicators could super accurately predict election results, it would be a lot easier to forecast elections. Still, there are some important lessons from this exercise. The linear models explored above do demonstrate that, broadly speaking, the incumbent president party tends to fare better in the House when the economy is doing well. But the specific measure used to the state of the economy can have a drastic impact on our predictions The model based on real disposable income produced a nearly opposite prediction compared to our model based on GDP. As i continue to refine my predictions, I'll thus be certain to consider a range of different variables — both economic and otherwise — when constructing my models.
+
+
+```{r, results = FALSE}
+## Further Tests of Model Fit (output hidden but cited earlier in blog)
 
 ## RMSE
 
@@ -167,16 +250,9 @@ sqrt(mean((lm_GDP_vote$model$incumbent_pres_majorvote - lm_GDP_vote$fitted.value
 sqrt(mean((lm_GDP_seat$model$incumbent_pres_seats - lm_GDP_seat$fitted.values)^2))
 
 ## Cross-validation
-outsamp_RMSE <- sapply(1:1000, function(i){
-outsample_years <- sample(model_2_data$year, 8)
-lm_RDI_vote_cv <- lm(incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, data = model_2_data[!(model_2_data$year %in% outsample_years),])
-prediction_cv <- predict(lm_RDI_vote_cv, model_2_data[model_2_data$year %in% outsample_years,])
-actual_cv <- model_2_data$incumbent_pres_majorvote[model_2_data$year %in% outsample_years]
 
-sqrt(mean((prediction_cv - actual_cv)^2))
-})
-
-outsamp_abs_error <- sapply(1:1000, function(i){
+## RDI-Votes
+outsamp_abs_error_1 <- sapply(1:1000, function(i){
 outsample_years <- sample(model_2_data$year, 8)
 lm_RDI_vote_cv <- lm(incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, data = model_2_data[!(model_2_data$year %in% outsample_years),])
 prediction_cv <- predict(lm_RDI_vote_cv, model_2_data[model_2_data$year %in% outsample_years,])
@@ -185,34 +261,44 @@ actual_cv <- model_2_data$incumbent_pres_majorvote[model_2_data$year %in% outsam
 mean(abs(prediction_cv - actual_cv))
 })
 
-outsamp_error <- sapply(1:1000, function(i){
-outsample_years <- sample(model_2_data$year, 8)
-lm_RDI_vote_cv <- lm(incumbent_pres_majorvote ~ DSPIC_change_pct_yearly, data = model_2_data[!(model_2_data$year %in% outsample_years),])
-prediction_cv <- predict(lm_RDI_vote_cv, model_2_data[model_2_data$year %in% outsample_years,])
-actual_cv <- model_2_data$incumbent_pres_majorvote[model_2_data$year %in% outsample_years]
+mean(abs(outsamp_abs_error_1)) # Mean absolute error
 
-mean(prediction_cv - actual_cv)
+## RDI-Seats
+
+outsamp_abs_error_2 <- sapply(1:1000, function(i){
+outsample_years <- sample(model_2_data$year, 8)
+lm_RDI_seat_cv <- lm(incumbent_pres_seats ~ DSPIC_change_pct_yearly, data = model_2_data[!(model_2_data$year %in% outsample_years),])
+prediction_cv <- predict(lm_RDI_seat_cv, model_2_data[model_2_data$year %in% outsample_years,])
+actual_cv <- model_2_data$incumbent_pres_seats[model_2_data$year %in% outsample_years]
+
+mean(abs(prediction_cv - actual_cv))
 })
 
-mean(abs(outsamp_RMSE)) # RMSE
-mean(abs(outsamp_abs_error)) # Mean error
-mean(abs(outsamp_error)) # Mean absolute error
+mean(abs(outsamp_abs_error_2)) # Mean absolute error
+
+## GDP-Votes
+outsamp_abs_error_3 <- sapply(1:1000, function(i){
+outsample_years <- sample(model_3_data$year, 8)
+lm_GDP_vote_cv <- lm(incumbent_pres_majorvote ~ GDPC1_growth_pct_yearly, data = model_3_data[!(model_3_data$year %in% outsample_years),])
+prediction_cv <- predict(lm_GDP_vote_cv, model_3_data[model_3_data$year %in% outsample_years,])
+actual_cv <- model_3_data$incumbent_pres_majorvote[model_3_data$year %in% outsample_years]
+
+mean(abs(prediction_cv - actual_cv))
+})
+
+mean(abs(outsamp_abs_error_3)) # Mean absolute error
+
+## GDP-Sears
+outsamp_abs_error_4 <- sapply(1:1000, function(i){
+outsample_years <- sample(model_3_data$year, 8)
+lm_GDP_seats_cv <- lm(incumbent_pres_seats ~ GDPC1_growth_pct_yearly, data = model_3_data[!(model_3_data$year %in% outsample_years),])
+prediction_cv <- predict(lm_GDP_seats_cv, model_3_data[model_3_data$year %in% outsample_years,])
+actual_cv <- model_3_data$incumbent_pres_seats[model_3_data$year %in% outsample_years]
+
+mean(abs(prediction_cv - actual_cv))
+})
+
+mean(abs(outsamp_abs_error_4)) # Mean absolute error
 
 ```
-
-
-
-
-
-```{r}
-## Model 2: RDI
-```
-
-```{r}
-## Model 3: RDI + Incumbency-Midterm
-```
-
-
-
-
 
