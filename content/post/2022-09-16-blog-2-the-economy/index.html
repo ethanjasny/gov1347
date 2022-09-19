@@ -1,6 +1,6 @@
 ---
 title: 'Blog 2: The Economy'
-author: R package build
+author: Ethan Jasny
 date: '2022-09-16'
 slug: []
 categories: []
@@ -10,7 +10,7 @@ tags: []
 
 
 <p><em>This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor <a href="https://www.ryandenos.com">Ryan Enos</a>. It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.</em></p>
-<p>“It’s the economy, stupid,” became a slogan of Bill Clinton’s 1992 presidential campaign. With the nation facing recession under incumbent President George H.W. Bush, political strategist James Carville <a href="https://www.nytimes.com/1992/10/31/us/1992-campaign-democrats-clinton-bush-compete-be-champion-change-democrat-fights.html">coined the phrase</a> to keep the campaign focused on the big picture. This notion that the economy is paramount is not only the subject of pithy sound bites, but also the basis of statistical models. Econometrician Ray Fair has been <a href="https://www.nytimes.com/2022/08/19/business/economy-midterm-elections-trump.html">predicting</a> elections since 1978 using only economic inputs. Political scientist Alan Abramowitz’s noted straightforward <a href="https://www.washingtonpost.com/blogs/ezra-klein/files/2012/08/abramowitz.pdf">“Time For Change”</a> model uses GDP as one of its three variables Thus, in this second blog post, I’ll present my first models of the 2022 midterms, based solely on national economic data. I will complete blog extensions 1 and 2.
+<p>“It’s the economy, stupid,” became a slogan of Bill Clinton’s 1992 presidential campaign. With the nation facing recession under incumbent President George H.W. Bush, political strategist James Carville <a href="https://www.nytimes.com/1992/10/31/us/1992-campaign-democrats-clinton-bush-compete-be-champion-change-democrat-fights.html">coined the phrase</a> to keep the campaign focused on the big picture. This notion that the economy is paramount is not only the subject of pithy sound bites, but also the basis of statistical models. Econometrician Ray Fair has been <a href="https://www.nytimes.com/2022/08/19/business/economy-midterm-elections-trump.html">predicting</a> elections since 1978 using only economic inputs. Political scientist Alan Abramowitz’s noted straightforward <a href="https://www.washingtonpost.com/blogs/ezra-klein/files/2012/08/abramowitz.pdf">“Time For Change”</a> model uses GDP as one of its three variables. Thus, in this second blog post, I’ll present my first models of the 2022 midterms, based solely on national economic data. I will complete blog extensions 1 and 2.
 <br/>
 <br/>
 It’s impossible to disentangle the economy from incumbency. Obviously, in presidential elections, the incumbent is on the ballot and will be judged for his or her handling of the economy. But midterm elections are also often <a href="https://muse-jhu-edu.ezp-prod1.hul.harvard.edu/chapter/2341029/pdf">viewed</a> as referendums on the incumbent president. Thus, for the following election models, I will predict the vote and seat share of the <strong>incumbent president’s party</strong> in the House of Representatives based on economic variables, including data from both presidential and midterm cycles. If the conventional wisdom holds, we should expect poor economic performance to coincide with bad results for the president’s party in House elections.</p>
@@ -363,10 +363,10 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 Once again, as expected, there appears to be a positive relationship between annual GDP growth and the president’s party’s performance in the House. Still, the relationships remain fairly weak, as judged by the R-squared values. The root-mean-square errors for the vote and seat models are 3.126 and 31.838, respectively. The mean absolute errors derived from cross-validation simulations are 2.876 and 26.695, respectively.
 <br/>
 <br/>
-Clearly, annual GDP growth does not tell the full story of why parties perform well or poorly in House elections, but we can still use our models to generate predictions. I’ll again turn to GDP data from the first quarter of 2021 and the first quarter of 2022 to determine an estimate for annual GDP growth. GDP actually <strong>grew by around 10.7%</strong>, and as a result of this strong economic growth, these models show Joe Biden’s Democrats winning the House Democrats are predicted to win around <strong>51.6%</strong> of the House popular vote and <strong>243</strong> seats. This strong performance for the Democrats runs directly counter to the results of my RDI model.
+Clearly, annual GDP growth does not tell the full story of why parties perform well or poorly in House elections, but we can still use our models to generate predictions. I’ll again turn to GDP data from the first quarter of 2021 and the first quarter of 2022 to determine an estimate for annual GDP growth. GDP actually <strong>grew by around 10.7%</strong>, and as a result of this strong economic growth, these models show Joe Biden’s Democrats winning the House. Democrats are predicted to win around <strong>51.6%</strong> of the House popular vote and <strong>243</strong> seats. This strong performance for the Democrats runs directly counter to the results of my RDI model.
 <br/>
 <br/>
-Once again, using seat share as the dependent variable seems to predict more extreme results. 51.6% of the popular vote corresponds to around 225 seats, less than 243. This again could suggest that seat share is more responsive to large economic trends.</p>
+Once again, using seat share as the dependent variable seems to predict more extreme results. 51.6% of the popular vote corresponds to around 225 seats, less than 243. This again could suggest that seat share is more responsive than the popular vote to broad economic trends.</p>
 </div>
 </div>
 <div id="conclusion" class="section level1">
