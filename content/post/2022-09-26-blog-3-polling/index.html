@@ -1,904 +1,371 @@
 ---
 title: 'Blog 3: Polling'
-author: R package build
+author: "Ethan Jasny"
 date: '2022-09-26'
 slug: []
 categories: []
 tags: []
 ---
 
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
 
 
-<pre><code>##                  District  PVI      DEM      REP
-## 1               Alabama 1 R+16       NA       NA
-## 2               Alabama 2 R+17       NA       NA
-## 3               Alabama 3 R+19       NA       NA
-## 4               Alabama 4 R+33       NA       NA
-## 5               Alabama 5 R+17       NA       NA
-## 6               Alabama 6 R+18       NA       NA
-## 7               Alabama 7 D+14       NA       NA
-## 8         Alaska at-large  R+8       NA       NA
-## 9               Arizona 1  R+2       NA       NA
-## 10              Arizona 2  R+6       NA       NA
-## 11              Arizona 3 D+24       NA       NA
-## 12              Arizona 4  D+2       NA       NA
-## 13              Arizona 5 R+11       NA       NA
-## 14              Arizona 6  R+3       NA       NA
-## 15              Arizona 7 D+15       NA       NA
-## 16              Arizona 8 R+10       NA       NA
-## 17              Arizona 9 R+16       NA       NA
-## 18             Arkansas 1 R+22       NA       NA
-## 19             Arkansas 2  R+9       NA       NA
-## 20             Arkansas 3 R+15       NA       NA
-## 21             Arkansas 4 R+20       NA       NA
-## 22           California 1 R+12       NA       NA
-## 23           California 2 D+23       NA       NA
-## 24           California 3  R+4       NA       NA
-## 25           California 4 D+17       NA       NA
-## 26           California 5  R+9       NA       NA
-## 27           California 6  D+7       NA       NA
-## 28           California 7 D+17       NA       NA
-## 29           California 8 D+26       NA       NA
-## 30           California 9  D+5       NA       NA
-## 31          California 10 D+18       NA       NA
-## 32          California 11 D+37       NA       NA
-## 33          California 12 D+40       NA       NA
-## 34          California 13  D+4       NA       NA
-## 35          California 14 D+22       NA       NA
-## 36          California 15 D+28       NA       NA
-## 37          California 16 D+26       NA       NA
-## 38          California 17 D+23       NA       NA
-## 39          California 18 D+21       NA       NA
-## 40          California 19 D+18       NA       NA
-## 41          California 20 R+16       NA       NA
-## 42          California 21  D+9       NA       NA
-## 43          California 22  D+5       NA       NA
-## 44          California 23  R+8       NA       NA
-## 45          California 24 D+13       NA       NA
-## 46          California 25  D+6       NA       NA
-## 47          California 26  D+8       NA       NA
-## 48          California 27  D+4 43.00000 47.00000
-## 49          California 28 D+16       NA       NA
-## 50          California 29 D+26       NA       NA
-## 51          California 30 D+23       NA       NA
-## 52          California 31 D+15       NA       NA
-## 53          California 32 D+20       NA       NA
-## 54          California 33 D+12       NA       NA
-## 55          California 34 D+32       NA       NA
-## 56          California 35 D+13       NA       NA
-## 57          California 36 D+21       NA       NA
-## 58          California 37 D+37       NA       NA
-## 59          California 38 D+14       NA       NA
-## 60          California 39 D+12       NA       NA
-## 61          California 40  R+2       NA       NA
-## 62          California 41  R+3       NA       NA
-## 63          California 42 D+22       NA       NA
-## 64          California 43 D+32       NA       NA
-## 65          California 44 D+24       NA       NA
-## 66          California 45  D+2       NA       NA
-## 67          California 46 D+15       NA       NA
-## 68          California 47  D+3       NA       NA
-## 69          California 48  R+9       NA       NA
-## 70          California 49  D+3       NA       NA
-## 71          California 50 D+14       NA       NA
-## 72          California 51 D+12       NA       NA
-## 73          California 52 D+18       NA       NA
-## 74             Colorado 1 D+29       NA       NA
-## 75             Colorado 2 D+17       NA       NA
-## 76             Colorado 3  R+7       NA       NA
-## 77             Colorado 4 R+13       NA       NA
-## 78             Colorado 5  R+9       NA       NA
-## 79             Colorado 6  D+9       NA       NA
-## 80             Colorado 7  D+4       NA       NA
-## 81             Colorado 8 EVEN 36.00000 44.00000
-## 82          Connecticut 1 D+12       NA       NA
-## 83          Connecticut 2  D+3       NA       NA
-## 84          Connecticut 3  D+7       NA       NA
-## 85          Connecticut 4 D+13       NA       NA
-## 86          Connecticut 5  D+3 46.00000 41.00000
-## 87      Delaware at-large  D+7       NA       NA
-## 88              Florida 1 R+19       NA       NA
-## 89              Florida 2  R+8 40.00000 43.00000
-## 90              Florida 3  R+9       NA       NA
-## 91              Florida 4  R+6       NA       NA
-## 92              Florida 5 R+11       NA       NA
-## 93              Florida 6 R+14       NA       NA
-## 94              Florida 7  R+5       NA       NA
-## 95              Florida 8 R+11       NA       NA
-## 96              Florida 9  D+8       NA       NA
-## 97             Florida 10 D+14       NA       NA
-## 98             Florida 11  R+8       NA       NA
-## 99             Florida 12 R+17       NA       NA
-## 100            Florida 13  R+6 37.66667 43.33333
-## 101            Florida 14  D+8       NA       NA
-## 102            Florida 15  R+4       NA       NA
-## 103            Florida 16  R+7       NA       NA
-## 104            Florida 17 R+10       NA       NA
-## 105            Florida 18 R+13       NA       NA
-## 106            Florida 19 R+13       NA       NA
-## 107            Florida 20 D+25       NA       NA
-## 108            Florida 21  R+7       NA       NA
-## 109            Florida 22  D+7       NA       NA
-## 110            Florida 23  D+5       NA       NA
-## 111            Florida 24 D+25       NA       NA
-## 112            Florida 25  D+9       NA       NA
-## 113            Florida 26  R+8       NA       NA
-## 114            Florida 27 EVEN 43.00000 45.00000
-## 115            Florida 28  R+2       NA       NA
-## 116             Georgia 1  R+9       NA       NA
-## 117             Georgia 2  D+3       NA       NA
-## 118             Georgia 3 R+18       NA       NA
-## 119             Georgia 4 D+27       NA       NA
-## 120             Georgia 5 D+32       NA       NA
-## 121             Georgia 6 R+11       NA       NA
-## 122             Georgia 7 D+10       NA       NA
-## 123             Georgia 8 R+16       NA       NA
-## 124             Georgia 9 R+22       NA       NA
-## 125            Georgia 10 R+15       NA       NA
-## 126            Georgia 11 R+11       NA       NA
-## 127            Georgia 12  R+8       NA       NA
-## 128            Georgia 13 D+28       NA       NA
-## 129            Georgia 14 R+22       NA       NA
-## 130              Hawaii 1 D+14       NA       NA
-## 131              Hawaii 2 D+14       NA       NA
-## 132               Idaho 1 R+22       NA       NA
-## 133               Idaho 2 R+14       NA       NA
-## 134            Illinois 1 D+20       NA       NA
-## 135            Illinois 2 D+19       NA       NA
-## 136            Illinois 3 D+20       NA       NA
-## 137            Illinois 4 D+22       NA       NA
-## 138            Illinois 5 D+18       NA       NA
-## 139            Illinois 6  D+3       NA       NA
-## 140            Illinois 7 D+36       NA       NA
-## 141            Illinois 8  D+6       NA       NA
-## 142            Illinois 9 D+19       NA       NA
-## 143           Illinois 10 D+11       NA       NA
-## 144           Illinois 11  D+5       NA       NA
-## 145           Illinois 12 R+24       NA       NA
-## 146           Illinois 13  D+3       NA       NA
-## 147           Illinois 14  D+4       NA       NA
-## 148           Illinois 15 R+22       NA       NA
-## 149           Illinois 16 R+13       NA       NA
-## 150           Illinois 17  D+2       NA       NA
-## 151             Indiana 1  D+3 47.00000 40.00000
-## 152             Indiana 2 R+14       NA       NA
-## 153             Indiana 3 R+18       NA       NA
-## 154             Indiana 4 R+18       NA       NA
-## 155             Indiana 5 R+11       NA       NA
-## 156             Indiana 6 R+19       NA       NA
-## 157             Indiana 7 D+19       NA       NA
-## 158             Indiana 8 R+19       NA       NA
-## 159             Indiana 9 R+16       NA       NA
-## 160                Iowa 1  R+3 40.00000 41.00000
-## 161                Iowa 2  R+4       NA       NA
-## 162                Iowa 3  R+3 43.00000 43.00000
-## 163                Iowa 4 R+16       NA       NA
-## 164              Kansas 1 R+18       NA       NA
-## 165              Kansas 2 R+11       NA       NA
-## 166              Kansas 3  R+1       NA       NA
-## 167              Kansas 4 R+14       NA       NA
-## 168            Kentucky 1 R+24       NA       NA
-## 169            Kentucky 2 R+21       NA       NA
-## 170            Kentucky 3  D+9       NA       NA
-## 171            Kentucky 4 R+19       NA       NA
-## 172            Kentucky 5 R+32       NA       NA
-## 173            Kentucky 6  R+9       NA       NA
-## 174           Louisiana 1 R+23       NA       NA
-## 175           Louisiana 2 D+25       NA       NA
-## 176           Louisiana 3 R+21       NA       NA
-## 177           Louisiana 4 R+14       NA       NA
-## 178           Louisiana 5 R+17       NA       NA
-## 179           Louisiana 6 R+19       NA       NA
-## 180               Maine 1  D+9 54.15000 32.00000
-## 181               Maine 2  R+6 47.65000 39.70000
-## 182            Maryland 1 R+11       NA       NA
-## 183            Maryland 2  D+7       NA       NA
-## 184            Maryland 3 D+10       NA       NA
-## 185            Maryland 4 D+40       NA       NA
-## 186            Maryland 5 D+15       NA       NA
-## 187            Maryland 6  D+2 44.50000 40.00000
-## 188            Maryland 7 D+30       NA       NA
-## 189            Maryland 8 D+29       NA       NA
-## 190       Massachusetts 1  D+9       NA       NA
-## 191       Massachusetts 2 D+13       NA       NA
-## 192       Massachusetts 3 D+11       NA       NA
-## 193       Massachusetts 4 D+12       NA       NA
-## 194       Massachusetts 5 D+23       NA       NA
-## 195       Massachusetts 6 D+11       NA       NA
-## 196       Massachusetts 7 D+35       NA       NA
-## 197       Massachusetts 8 D+15       NA       NA
-## 198       Massachusetts 9  D+6       NA       NA
-## 199            Michigan 1 R+13       NA       NA
-## 200            Michigan 2 R+16       NA       NA
-## 201            Michigan 3  D+1 41.50000 36.00000
-## 202            Michigan 4  R+5       NA       NA
-## 203            Michigan 5 R+15       NA       NA
-## 204            Michigan 6 D+11       NA       NA
-## 205            Michigan 7  R+2 41.80000 40.05000
-## 206            Michigan 8  R+1       NA       NA
-## 207            Michigan 9 R+18       NA       NA
-## 208           Michigan 10  R+3 42.50000 43.50000
-## 209           Michigan 11  D+7       NA       NA
-## 210           Michigan 12 D+23       NA       NA
-## 211           Michigan 13 D+23       NA       NA
-## 212           Minnesota 1  R+7 47.00000 48.00000
-## 213           Minnesota 2  D+1       NA       NA
-## 214           Minnesota 3  D+8       NA       NA
-## 215           Minnesota 4 D+17       NA       NA
-## 216           Minnesota 5 D+30       NA       NA
-## 217           Minnesota 6 R+12       NA       NA
-## 218           Minnesota 7 R+19       NA       NA
-## 219           Minnesota 8  R+8       NA       NA
-## 220         Mississippi 1 R+18       NA       NA
-## 221         Mississippi 2 D+11       NA       NA
-## 222         Mississippi 3 R+15       NA       NA
-## 223         Mississippi 4 R+22       NA       NA
-## 224            Missouri 1 D+27       NA       NA
-## 225            Missouri 2  R+7       NA       NA
-## 226            Missouri 3 R+16       NA       NA
-## 227            Missouri 4 R+23       NA       NA
-## 228            Missouri 5 D+11       NA       NA
-## 229            Missouri 6 R+21       NA       NA
-## 230            Missouri 7 R+24       NA       NA
-## 231            Missouri 8 R+28       NA       NA
-## 232             Montana 1  R+6       NA       NA
-## 233             Montana 2 R+16       NA       NA
-## 234            Nebraska 1  R+9       NA       NA
-## 235            Nebraska 2 EVEN 41.75000 44.25000
-## 236            Nebraska 3 R+29       NA       NA
-## 237              Nevada 1  D+3 41.10000 36.70000
-## 238              Nevada 2  R+8 35.90000 46.40000
-## 239              Nevada 3  D+1 42.90000 42.85000
-## 240              Nevada 4  D+3 41.70000 38.70000
-## 241       New Hampshire 1 EVEN       NA       NA
-## 242       New Hampshire 2  D+2       NA       NA
-## 243          New Jersey 1 D+10       NA       NA
-## 244          New Jersey 2  R+5       NA       NA
-## 245          New Jersey 3  D+5       NA       NA
-## 246          New Jersey 4 R+14       NA       NA
-## 247          New Jersey 5  D+4       NA       NA
-## 248          New Jersey 6  D+8       NA       NA
-## 249          New Jersey 7  R+1       NA       NA
-## 250          New Jersey 8 D+22       NA       NA
-## 251          New Jersey 9  D+8       NA       NA
-## 252         New Jersey 10 D+30       NA       NA
-## 253         New Jersey 11  D+6       NA       NA
-## 254         New Jersey 12 D+12       NA       NA
-## 255          New Mexico 1  D+5       NA       NA
-## 256          New Mexico 2  D+1       NA       NA
-## 257          New Mexico 3  D+4       NA       NA
-## 258            New York 1  R+3       NA       NA
-## 259            New York 2  R+3       NA       NA
-## 260            New York 3  D+2       NA       NA
-## 261            New York 4  D+5       NA       NA
-## 262            New York 5 D+30       NA       NA
-## 263            New York 6 D+15       NA       NA
-## 264            New York 7 D+31       NA       NA
-## 265            New York 8 D+26       NA       NA
-## 266            New York 9 D+25       NA       NA
-## 267           New York 10 D+35       NA       NA
-## 268           New York 11  R+6 36.00000 51.00000
-## 269           New York 12 D+34       NA       NA
-## 270           New York 13 D+38       NA       NA
-## 271           New York 14 D+28       NA       NA
-## 272           New York 15 D+35       NA       NA
-## 273           New York 16 D+20       NA       NA
-## 274           New York 17  D+3       NA       NA
-## 275           New York 18  D+1       NA       NA
-## 276           New York 19 EVEN 39.20000 47.30000
-## 277           New York 20  D+7       NA       NA
-## 278           New York 21  R+9       NA       NA
-## 279           New York 22  D+1       NA       NA
-## 280           New York 23 R+12       NA       NA
-## 281           New York 24 R+11       NA       NA
-## 282           New York 25  D+7       NA       NA
-## 283           New York 26  D+9       NA       NA
-## 284      North Carolina 1  D+2 45.00000 39.00000
-## 285      North Carolina 2 D+12       NA       NA
-## 286      North Carolina 3 R+15       NA       NA
-## 287      North Carolina 4 D+16       NA       NA
-## 288      North Carolina 5 R+13       NA       NA
-## 289      North Carolina 6  D+4 48.00000 39.00000
-## 290      North Carolina 7  R+8       NA       NA
-## 291      North Carolina 8 R+20       NA       NA
-## 292      North Carolina 9  R+6       NA       NA
-## 293     North Carolina 10 R+22       NA       NA
-## 294     North Carolina 11  R+8 40.00000 46.00000
-## 295     North Carolina 12 D+13       NA       NA
-## 296     North Carolina 13  R+2       NA       NA
-## 297     North Carolina 14  D+6       NA       NA
-## 298 North Dakota at-large R+20       NA       NA
-## 299                Ohio 1  D+2 47.00000 47.00000
-## 300                Ohio 2 R+25       NA       NA
-## 301                Ohio 3 D+20       NA       NA
-## 302                Ohio 4 R+20       NA       NA
-## 303                Ohio 5 R+15       NA       NA
-## 304                Ohio 6 R+16       NA       NA
-## 305                Ohio 7  R+7       NA       NA
-## 306                Ohio 8 R+14       NA       NA
-## 307                Ohio 9  R+3 47.00000 41.80000
-## 308               Ohio 10  R+4       NA       NA
-## 309               Ohio 11 D+28       NA       NA
-## 310               Ohio 12 R+18       NA       NA
-## 311               Ohio 13  R+1 42.00000 45.50000
-## 312               Ohio 14  R+9       NA       NA
-## 313               Ohio 15  R+6       NA       NA
-## 314            Oklahoma 1 R+14       NA       NA
-## 315            Oklahoma 2 R+29       NA       NA
-## 316            Oklahoma 3 R+24       NA       NA
-## 317            Oklahoma 4 R+19       NA       NA
-## 318            Oklahoma 5 R+12       NA       NA
-## 319              Oregon 1 D+18       NA       NA
-## 320              Oregon 2 R+15       NA       NA
-## 321              Oregon 3 D+22       NA       NA
-## 322              Oregon 4  D+4 46.00000 45.00000
-## 323              Oregon 5  D+2 41.00000 42.00000
-## 324              Oregon 6  D+4 46.00000 43.00000
-## 325        Pennsylvania 1 EVEN 38.00000 45.00000
-## 326        Pennsylvania 2 D+20       NA       NA
-## 327        Pennsylvania 3 D+39       NA       NA
-## 328        Pennsylvania 4  D+7       NA       NA
-## 329        Pennsylvania 5 D+14       NA       NA
-## 330        Pennsylvania 6  D+5       NA       NA
-## 331        Pennsylvania 7  R+2       NA       NA
-## 332        Pennsylvania 8  R+4 45.00000 46.00000
-## 333        Pennsylvania 9 R+21       NA       NA
-## 334       Pennsylvania 10  R+5       NA       NA
-## 335       Pennsylvania 11 R+13       NA       NA
-## 336       Pennsylvania 12  D+8       NA       NA
-## 337       Pennsylvania 13 R+25       NA       NA
-## 338       Pennsylvania 14 R+18       NA       NA
-## 339       Pennsylvania 15 R+21       NA       NA
-## 340       Pennsylvania 16 R+13       NA       NA
-## 341       Pennsylvania 17 EVEN 44.00000 42.50000
-## 342        Rhode Island 1 D+12       NA       NA
-## 343        Rhode Island 2  D+4 34.59500 44.60167
-## 344      South Carolina 1  R+7       NA       NA
-## 345      South Carolina 2  R+8       NA       NA
-## 346      South Carolina 3 R+21       NA       NA
-## 347      South Carolina 4 R+12       NA       NA
-## 348      South Carolina 5 R+12       NA       NA
-## 349      South Carolina 6 D+14       NA       NA
-## 350      South Carolina 7 R+11       NA       NA
-## 351 South Dakota at-large R+16       NA       NA
-## 352           Tennessee 1 R+30       NA       NA
-## 353           Tennessee 2 R+18       NA       NA
-## 354           Tennessee 3 R+19       NA       NA
-## 355           Tennessee 4 R+22       NA       NA
-## 356           Tennessee 5  R+9       NA       NA
-## 357           Tennessee 6 R+17       NA       NA
-## 358           Tennessee 7 R+10       NA       NA
-## 359           Tennessee 8 R+21       NA       NA
-## 360           Tennessee 9 D+22       NA       NA
-## 361               Texas 1 R+26       NA       NA
-## 362               Texas 2 R+15       NA       NA
-## 363               Texas 3 R+11       NA       NA
-## 364               Texas 4 R+16       NA       NA
-## 365               Texas 5 R+14       NA       NA
-## 366               Texas 6 R+15       NA       NA
-## 367               Texas 7 D+13       NA       NA
-## 368               Texas 8 R+16       NA       NA
-## 369               Texas 9 D+26       NA       NA
-## 370              Texas 10 R+13       NA       NA
-## 371              Texas 11 R+23       NA       NA
-## 372              Texas 12 R+12       NA       NA
-## 373              Texas 13 R+26       NA       NA
-## 374              Texas 14 R+17       NA       NA
-## 375              Texas 15  R+1       NA       NA
-## 376              Texas 16 D+17       NA       NA
-## 377              Texas 17 R+14       NA       NA
-## 378              Texas 18 D+23       NA       NA
-## 379              Texas 19 R+26       NA       NA
-## 380              Texas 20 D+15       NA       NA
-## 381              Texas 21 R+13       NA       NA
-## 382              Texas 22 R+11       NA       NA
-## 383              Texas 23  R+5       NA       NA
-## 384              Texas 24 R+10       NA       NA
-## 385              Texas 25 R+19       NA       NA
-## 386              Texas 26 R+13       NA       NA
-## 387              Texas 27 R+13       NA       NA
-## 388              Texas 28  D+3       NA       NA
-## 389              Texas 29 D+18       NA       NA
-## 390              Texas 30 D+27       NA       NA
-## 391              Texas 31 R+14       NA       NA
-## 392              Texas 32 D+14       NA       NA
-## 393              Texas 33 D+24       NA       NA
-## 394              Texas 34  D+9       NA       NA
-## 395              Texas 35 D+21       NA       NA
-## 396              Texas 36 R+18       NA       NA
-## 397              Texas 37 D+24       NA       NA
-## 398              Texas 38 R+12       NA       NA
-## 399                Utah 1 R+12       NA       NA
-## 400                Utah 2 R+11       NA       NA
-## 401                Utah 3 R+13       NA       NA
-## 402                Utah 4 R+16       NA       NA
-## 403      Vermont at-large D+16 46.50000 25.75000
-## 404            Virginia 1  R+6       NA       NA
-## 405            Virginia 2  R+2 38.50000 33.50000
-## 406            Virginia 3 D+17       NA       NA
-## 407            Virginia 4 D+16       NA       NA
-## 408            Virginia 5  R+7       NA       NA
-## 409            Virginia 6 R+14       NA       NA
-## 410            Virginia 7  D+1       NA       NA
-## 411            Virginia 8 D+26       NA       NA
-## 412            Virginia 9 R+23       NA       NA
-## 413           Virginia 10  D+6       NA       NA
-## 414           Virginia 11 D+18       NA       NA
-## 415          Washington 1 D+13       NA       NA
-## 416          Washington 2  D+9       NA       NA
-## 417          Washington 3  R+5       NA       NA
-## 418          Washington 4 R+11       NA 37.45000
-## 419          Washington 5  R+8       NA       NA
-## 420          Washington 6  D+6       NA       NA
-## 421          Washington 7 D+36       NA       NA
-## 422          Washington 8  D+1 48.00000 42.00000
-## 423          Washington 9 D+21       NA       NA
-## 424         Washington 10  D+7       NA       NA
-## 425       West Virginia 1 R+23       NA       NA
-## 426       West Virginia 2 R+22       NA       NA
-## 427           Wisconsin 1  R+3       NA       NA
-## 428           Wisconsin 2 D+19       NA       NA
-## 429           Wisconsin 3  R+4 38.00000 47.00000
-## 430           Wisconsin 4 D+25       NA       NA
-## 431           Wisconsin 5 R+14       NA       NA
-## 432           Wisconsin 6 R+10       NA       NA
-## 433           Wisconsin 7 R+12       NA       NA
-## 434           Wisconsin 8 R+10       NA       NA
-## 435      Wyoming at-large R+25       NA       NA</code></pre>
-<pre><code>##                  District  PVI      DEM      REP partymulti PVI_num
-## 1               Alabama 1 R+16       NA       NA         -1     -16
-## 2               Alabama 2 R+17       NA       NA         -1     -17
-## 3               Alabama 3 R+19       NA       NA         -1     -19
-## 4               Alabama 4 R+33       NA       NA         -1     -33
-## 5               Alabama 5 R+17       NA       NA         -1     -17
-## 6               Alabama 6 R+18       NA       NA         -1     -18
-## 7               Alabama 7 D+14       NA       NA          1      14
-## 8         Alaska at-large  R+8       NA       NA         -1      -8
-## 9               Arizona 1  R+2       NA       NA         -1      -2
-## 10              Arizona 2  R+6       NA       NA         -1      -6
-## 11              Arizona 3 D+24       NA       NA          1      24
-## 12              Arizona 4  D+2       NA       NA          1       2
-## 13              Arizona 5 R+11       NA       NA         -1     -11
-## 14              Arizona 6  R+3       NA       NA         -1      -3
-## 15              Arizona 7 D+15       NA       NA          1      15
-## 16              Arizona 8 R+10       NA       NA         -1     -10
-## 17              Arizona 9 R+16       NA       NA         -1     -16
-## 18             Arkansas 1 R+22       NA       NA         -1     -22
-## 19             Arkansas 2  R+9       NA       NA         -1      -9
-## 20             Arkansas 3 R+15       NA       NA         -1     -15
-## 21             Arkansas 4 R+20       NA       NA         -1     -20
-## 22           California 1 R+12       NA       NA         -1     -12
-## 23           California 2 D+23       NA       NA          1      23
-## 24           California 3  R+4       NA       NA         -1      -4
-## 25           California 4 D+17       NA       NA          1      17
-## 26           California 5  R+9       NA       NA         -1      -9
-## 27           California 6  D+7       NA       NA          1       7
-## 28           California 7 D+17       NA       NA          1      17
-## 29           California 8 D+26       NA       NA          1      26
-## 30           California 9  D+5       NA       NA          1       5
-## 31          California 10 D+18       NA       NA          1      18
-## 32          California 11 D+37       NA       NA          1      37
-## 33          California 12 D+40       NA       NA          1      40
-## 34          California 13  D+4       NA       NA          1       4
-## 35          California 14 D+22       NA       NA          1      22
-## 36          California 15 D+28       NA       NA          1      28
-## 37          California 16 D+26       NA       NA          1      26
-## 38          California 17 D+23       NA       NA          1      23
-## 39          California 18 D+21       NA       NA          1      21
-## 40          California 19 D+18       NA       NA          1      18
-## 41          California 20 R+16       NA       NA         -1     -16
-## 42          California 21  D+9       NA       NA          1       9
-## 43          California 22  D+5       NA       NA          1       5
-## 44          California 23  R+8       NA       NA         -1      -8
-## 45          California 24 D+13       NA       NA          1      13
-## 46          California 25  D+6       NA       NA          1       6
-## 47          California 26  D+8       NA       NA          1       8
-## 48          California 27  D+4 43.00000 47.00000          1       4
-## 49          California 28 D+16       NA       NA          1      16
-## 50          California 29 D+26       NA       NA          1      26
-## 51          California 30 D+23       NA       NA          1      23
-## 52          California 31 D+15       NA       NA          1      15
-## 53          California 32 D+20       NA       NA          1      20
-## 54          California 33 D+12       NA       NA          1      12
-## 55          California 34 D+32       NA       NA          1      32
-## 56          California 35 D+13       NA       NA          1      13
-## 57          California 36 D+21       NA       NA          1      21
-## 58          California 37 D+37       NA       NA          1      37
-## 59          California 38 D+14       NA       NA          1      14
-## 60          California 39 D+12       NA       NA          1      12
-## 61          California 40  R+2       NA       NA         -1      -2
-## 62          California 41  R+3       NA       NA         -1      -3
-## 63          California 42 D+22       NA       NA          1      22
-## 64          California 43 D+32       NA       NA          1      32
-## 65          California 44 D+24       NA       NA          1      24
-## 66          California 45  D+2       NA       NA          1       2
-## 67          California 46 D+15       NA       NA          1      15
-## 68          California 47  D+3       NA       NA          1       3
-## 69          California 48  R+9       NA       NA         -1      -9
-## 70          California 49  D+3       NA       NA          1       3
-## 71          California 50 D+14       NA       NA          1      14
-## 72          California 51 D+12       NA       NA          1      12
-## 73          California 52 D+18       NA       NA          1      18
-## 74             Colorado 1 D+29       NA       NA          1      29
-## 75             Colorado 2 D+17       NA       NA          1      17
-## 76             Colorado 3  R+7       NA       NA         -1      -7
-## 77             Colorado 4 R+13       NA       NA         -1     -13
-## 78             Colorado 5  R+9       NA       NA         -1      -9
-## 79             Colorado 6  D+9       NA       NA          1       9
-## 80             Colorado 7  D+4       NA       NA          1       4
-## 81             Colorado 8    0 36.00000 44.00000          0       0
-## 82          Connecticut 1 D+12       NA       NA          1      12
-## 83          Connecticut 2  D+3       NA       NA          1       3
-## 84          Connecticut 3  D+7       NA       NA          1       7
-## 85          Connecticut 4 D+13       NA       NA          1      13
-## 86          Connecticut 5  D+3 46.00000 41.00000          1       3
-## 87      Delaware at-large  D+7       NA       NA          1       7
-## 88              Florida 1 R+19       NA       NA         -1     -19
-## 89              Florida 2  R+8 40.00000 43.00000         -1      -8
-## 90              Florida 3  R+9       NA       NA         -1      -9
-## 91              Florida 4  R+6       NA       NA         -1      -6
-## 92              Florida 5 R+11       NA       NA         -1     -11
-## 93              Florida 6 R+14       NA       NA         -1     -14
-## 94              Florida 7  R+5       NA       NA         -1      -5
-## 95              Florida 8 R+11       NA       NA         -1     -11
-## 96              Florida 9  D+8       NA       NA          1       8
-## 97             Florida 10 D+14       NA       NA          1      14
-## 98             Florida 11  R+8       NA       NA         -1      -8
-## 99             Florida 12 R+17       NA       NA         -1     -17
-## 100            Florida 13  R+6 37.66667 43.33333         -1      -6
-## 101            Florida 14  D+8       NA       NA          1       8
-## 102            Florida 15  R+4       NA       NA         -1      -4
-## 103            Florida 16  R+7       NA       NA         -1      -7
-## 104            Florida 17 R+10       NA       NA         -1     -10
-## 105            Florida 18 R+13       NA       NA         -1     -13
-## 106            Florida 19 R+13       NA       NA         -1     -13
-## 107            Florida 20 D+25       NA       NA          1      25
-## 108            Florida 21  R+7       NA       NA         -1      -7
-## 109            Florida 22  D+7       NA       NA          1       7
-## 110            Florida 23  D+5       NA       NA          1       5
-## 111            Florida 24 D+25       NA       NA          1      25
-## 112            Florida 25  D+9       NA       NA          1       9
-## 113            Florida 26  R+8       NA       NA         -1      -8
-## 114            Florida 27    0 43.00000 45.00000          0       0
-## 115            Florida 28  R+2       NA       NA         -1      -2
-## 116             Georgia 1  R+9       NA       NA         -1      -9
-## 117             Georgia 2  D+3       NA       NA          1       3
-## 118             Georgia 3 R+18       NA       NA         -1     -18
-## 119             Georgia 4 D+27       NA       NA          1      27
-## 120             Georgia 5 D+32       NA       NA          1      32
-## 121             Georgia 6 R+11       NA       NA         -1     -11
-## 122             Georgia 7 D+10       NA       NA          1      10
-## 123             Georgia 8 R+16       NA       NA         -1     -16
-## 124             Georgia 9 R+22       NA       NA         -1     -22
-## 125            Georgia 10 R+15       NA       NA         -1     -15
-## 126            Georgia 11 R+11       NA       NA         -1     -11
-## 127            Georgia 12  R+8       NA       NA         -1      -8
-## 128            Georgia 13 D+28       NA       NA          1      28
-## 129            Georgia 14 R+22       NA       NA         -1     -22
-## 130              Hawaii 1 D+14       NA       NA          1      14
-## 131              Hawaii 2 D+14       NA       NA          1      14
-## 132               Idaho 1 R+22       NA       NA         -1     -22
-## 133               Idaho 2 R+14       NA       NA         -1     -14
-## 134            Illinois 1 D+20       NA       NA          1      20
-## 135            Illinois 2 D+19       NA       NA          1      19
-## 136            Illinois 3 D+20       NA       NA          1      20
-## 137            Illinois 4 D+22       NA       NA          1      22
-## 138            Illinois 5 D+18       NA       NA          1      18
-## 139            Illinois 6  D+3       NA       NA          1       3
-## 140            Illinois 7 D+36       NA       NA          1      36
-## 141            Illinois 8  D+6       NA       NA          1       6
-## 142            Illinois 9 D+19       NA       NA          1      19
-## 143           Illinois 10 D+11       NA       NA          1      11
-## 144           Illinois 11  D+5       NA       NA          1       5
-## 145           Illinois 12 R+24       NA       NA         -1     -24
-## 146           Illinois 13  D+3       NA       NA          1       3
-## 147           Illinois 14  D+4       NA       NA          1       4
-## 148           Illinois 15 R+22       NA       NA         -1     -22
-## 149           Illinois 16 R+13       NA       NA         -1     -13
-## 150           Illinois 17  D+2       NA       NA          1       2
-## 151             Indiana 1  D+3 47.00000 40.00000          1       3
-## 152             Indiana 2 R+14       NA       NA         -1     -14
-## 153             Indiana 3 R+18       NA       NA         -1     -18
-## 154             Indiana 4 R+18       NA       NA         -1     -18
-## 155             Indiana 5 R+11       NA       NA         -1     -11
-## 156             Indiana 6 R+19       NA       NA         -1     -19
-## 157             Indiana 7 D+19       NA       NA          1      19
-## 158             Indiana 8 R+19       NA       NA         -1     -19
-## 159             Indiana 9 R+16       NA       NA         -1     -16
-## 160                Iowa 1  R+3 40.00000 41.00000         -1      -3
-## 161                Iowa 2  R+4       NA       NA         -1      -4
-## 162                Iowa 3  R+3 43.00000 43.00000         -1      -3
-## 163                Iowa 4 R+16       NA       NA         -1     -16
-## 164              Kansas 1 R+18       NA       NA         -1     -18
-## 165              Kansas 2 R+11       NA       NA         -1     -11
-## 166              Kansas 3  R+1       NA       NA         -1      -1
-## 167              Kansas 4 R+14       NA       NA         -1     -14
-## 168            Kentucky 1 R+24       NA       NA         -1     -24
-## 169            Kentucky 2 R+21       NA       NA         -1     -21
-## 170            Kentucky 3  D+9       NA       NA          1       9
-## 171            Kentucky 4 R+19       NA       NA         -1     -19
-## 172            Kentucky 5 R+32       NA       NA         -1     -32
-## 173            Kentucky 6  R+9       NA       NA         -1      -9
-## 174           Louisiana 1 R+23       NA       NA         -1     -23
-## 175           Louisiana 2 D+25       NA       NA          1      25
-## 176           Louisiana 3 R+21       NA       NA         -1     -21
-## 177           Louisiana 4 R+14       NA       NA         -1     -14
-## 178           Louisiana 5 R+17       NA       NA         -1     -17
-## 179           Louisiana 6 R+19       NA       NA         -1     -19
-## 180               Maine 1  D+9 54.15000 32.00000          1       9
-## 181               Maine 2  R+6 47.65000 39.70000         -1      -6
-## 182            Maryland 1 R+11       NA       NA         -1     -11
-## 183            Maryland 2  D+7       NA       NA          1       7
-## 184            Maryland 3 D+10       NA       NA          1      10
-## 185            Maryland 4 D+40       NA       NA          1      40
-## 186            Maryland 5 D+15       NA       NA          1      15
-## 187            Maryland 6  D+2 44.50000 40.00000          1       2
-## 188            Maryland 7 D+30       NA       NA          1      30
-## 189            Maryland 8 D+29       NA       NA          1      29
-## 190       Massachusetts 1  D+9       NA       NA          1       9
-## 191       Massachusetts 2 D+13       NA       NA          1      13
-## 192       Massachusetts 3 D+11       NA       NA          1      11
-## 193       Massachusetts 4 D+12       NA       NA          1      12
-## 194       Massachusetts 5 D+23       NA       NA          1      23
-## 195       Massachusetts 6 D+11       NA       NA          1      11
-## 196       Massachusetts 7 D+35       NA       NA          1      35
-## 197       Massachusetts 8 D+15       NA       NA          1      15
-## 198       Massachusetts 9  D+6       NA       NA          1       6
-## 199            Michigan 1 R+13       NA       NA         -1     -13
-## 200            Michigan 2 R+16       NA       NA         -1     -16
-## 201            Michigan 3  D+1 41.50000 36.00000          1       1
-## 202            Michigan 4  R+5       NA       NA         -1      -5
-## 203            Michigan 5 R+15       NA       NA         -1     -15
-## 204            Michigan 6 D+11       NA       NA          1      11
-## 205            Michigan 7  R+2 41.80000 40.05000         -1      -2
-## 206            Michigan 8  R+1       NA       NA         -1      -1
-## 207            Michigan 9 R+18       NA       NA         -1     -18
-## 208           Michigan 10  R+3 42.50000 43.50000         -1      -3
-## 209           Michigan 11  D+7       NA       NA          1       7
-## 210           Michigan 12 D+23       NA       NA          1      23
-## 211           Michigan 13 D+23       NA       NA          1      23
-## 212           Minnesota 1  R+7 47.00000 48.00000         -1      -7
-## 213           Minnesota 2  D+1       NA       NA          1       1
-## 214           Minnesota 3  D+8       NA       NA          1       8
-## 215           Minnesota 4 D+17       NA       NA          1      17
-## 216           Minnesota 5 D+30       NA       NA          1      30
-## 217           Minnesota 6 R+12       NA       NA         -1     -12
-## 218           Minnesota 7 R+19       NA       NA         -1     -19
-## 219           Minnesota 8  R+8       NA       NA         -1      -8
-## 220         Mississippi 1 R+18       NA       NA         -1     -18
-## 221         Mississippi 2 D+11       NA       NA          1      11
-## 222         Mississippi 3 R+15       NA       NA         -1     -15
-## 223         Mississippi 4 R+22       NA       NA         -1     -22
-## 224            Missouri 1 D+27       NA       NA          1      27
-## 225            Missouri 2  R+7       NA       NA         -1      -7
-## 226            Missouri 3 R+16       NA       NA         -1     -16
-## 227            Missouri 4 R+23       NA       NA         -1     -23
-## 228            Missouri 5 D+11       NA       NA          1      11
-## 229            Missouri 6 R+21       NA       NA         -1     -21
-## 230            Missouri 7 R+24       NA       NA         -1     -24
-## 231            Missouri 8 R+28       NA       NA         -1     -28
-## 232             Montana 1  R+6       NA       NA         -1      -6
-## 233             Montana 2 R+16       NA       NA         -1     -16
-## 234            Nebraska 1  R+9       NA       NA         -1      -9
-## 235            Nebraska 2    0 41.75000 44.25000          0       0
-## 236            Nebraska 3 R+29       NA       NA         -1     -29
-## 237              Nevada 1  D+3 41.10000 36.70000          1       3
-## 238              Nevada 2  R+8 35.90000 46.40000         -1      -8
-## 239              Nevada 3  D+1 42.90000 42.85000          1       1
-## 240              Nevada 4  D+3 41.70000 38.70000          1       3
-## 241       New Hampshire 1    0       NA       NA          0       0
-## 242       New Hampshire 2  D+2       NA       NA          1       2
-## 243          New Jersey 1 D+10       NA       NA          1      10
-## 244          New Jersey 2  R+5       NA       NA         -1      -5
-## 245          New Jersey 3  D+5       NA       NA          1       5
-## 246          New Jersey 4 R+14       NA       NA         -1     -14
-## 247          New Jersey 5  D+4       NA       NA          1       4
-## 248          New Jersey 6  D+8       NA       NA          1       8
-## 249          New Jersey 7  R+1       NA       NA         -1      -1
-## 250          New Jersey 8 D+22       NA       NA          1      22
-## 251          New Jersey 9  D+8       NA       NA          1       8
-## 252         New Jersey 10 D+30       NA       NA          1      30
-## 253         New Jersey 11  D+6       NA       NA          1       6
-## 254         New Jersey 12 D+12       NA       NA          1      12
-## 255          New Mexico 1  D+5       NA       NA          1       5
-## 256          New Mexico 2  D+1       NA       NA          1       1
-## 257          New Mexico 3  D+4       NA       NA          1       4
-## 258            New York 1  R+3       NA       NA         -1      -3
-## 259            New York 2  R+3       NA       NA         -1      -3
-## 260            New York 3  D+2       NA       NA          1       2
-## 261            New York 4  D+5       NA       NA          1       5
-## 262            New York 5 D+30       NA       NA          1      30
-## 263            New York 6 D+15       NA       NA          1      15
-## 264            New York 7 D+31       NA       NA          1      31
-## 265            New York 8 D+26       NA       NA          1      26
-## 266            New York 9 D+25       NA       NA          1      25
-## 267           New York 10 D+35       NA       NA          1      35
-## 268           New York 11  R+6 36.00000 51.00000         -1      -6
-## 269           New York 12 D+34       NA       NA          1      34
-## 270           New York 13 D+38       NA       NA          1      38
-## 271           New York 14 D+28       NA       NA          1      28
-## 272           New York 15 D+35       NA       NA          1      35
-## 273           New York 16 D+20       NA       NA          1      20
-## 274           New York 17  D+3       NA       NA          1       3
-## 275           New York 18  D+1       NA       NA          1       1
-## 276           New York 19    0 39.20000 47.30000          0       0
-## 277           New York 20  D+7       NA       NA          1       7
-## 278           New York 21  R+9       NA       NA         -1      -9
-## 279           New York 22  D+1       NA       NA          1       1
-## 280           New York 23 R+12       NA       NA         -1     -12
-## 281           New York 24 R+11       NA       NA         -1     -11
-## 282           New York 25  D+7       NA       NA          1       7
-## 283           New York 26  D+9       NA       NA          1       9
-## 284      North Carolina 1  D+2 45.00000 39.00000          1       2
-## 285      North Carolina 2 D+12       NA       NA          1      12
-## 286      North Carolina 3 R+15       NA       NA         -1     -15
-## 287      North Carolina 4 D+16       NA       NA          1      16
-## 288      North Carolina 5 R+13       NA       NA         -1     -13
-## 289      North Carolina 6  D+4 48.00000 39.00000          1       4
-## 290      North Carolina 7  R+8       NA       NA         -1      -8
-## 291      North Carolina 8 R+20       NA       NA         -1     -20
-## 292      North Carolina 9  R+6       NA       NA         -1      -6
-## 293     North Carolina 10 R+22       NA       NA         -1     -22
-## 294     North Carolina 11  R+8 40.00000 46.00000         -1      -8
-## 295     North Carolina 12 D+13       NA       NA          1      13
-## 296     North Carolina 13  R+2       NA       NA         -1      -2
-## 297     North Carolina 14  D+6       NA       NA          1       6
-## 298 North Dakota at-large R+20       NA       NA         -1     -20
-## 299                Ohio 1  D+2 47.00000 47.00000          1       2
-## 300                Ohio 2 R+25       NA       NA         -1     -25
-## 301                Ohio 3 D+20       NA       NA          1      20
-## 302                Ohio 4 R+20       NA       NA         -1     -20
-## 303                Ohio 5 R+15       NA       NA         -1     -15
-## 304                Ohio 6 R+16       NA       NA         -1     -16
-## 305                Ohio 7  R+7       NA       NA         -1      -7
-## 306                Ohio 8 R+14       NA       NA         -1     -14
-## 307                Ohio 9  R+3 47.00000 41.80000         -1      -3
-## 308               Ohio 10  R+4       NA       NA         -1      -4
-## 309               Ohio 11 D+28       NA       NA          1      28
-## 310               Ohio 12 R+18       NA       NA         -1     -18
-## 311               Ohio 13  R+1 42.00000 45.50000         -1      -1
-## 312               Ohio 14  R+9       NA       NA         -1      -9
-## 313               Ohio 15  R+6       NA       NA         -1      -6
-## 314            Oklahoma 1 R+14       NA       NA         -1     -14
-## 315            Oklahoma 2 R+29       NA       NA         -1     -29
-## 316            Oklahoma 3 R+24       NA       NA         -1     -24
-## 317            Oklahoma 4 R+19       NA       NA         -1     -19
-## 318            Oklahoma 5 R+12       NA       NA         -1     -12
-## 319              Oregon 1 D+18       NA       NA          1      18
-## 320              Oregon 2 R+15       NA       NA         -1     -15
-## 321              Oregon 3 D+22       NA       NA          1      22
-## 322              Oregon 4  D+4 46.00000 45.00000          1       4
-## 323              Oregon 5  D+2 41.00000 42.00000          1       2
-## 324              Oregon 6  D+4 46.00000 43.00000          1       4
-## 325        Pennsylvania 1    0 38.00000 45.00000          0       0
-## 326        Pennsylvania 2 D+20       NA       NA          1      20
-## 327        Pennsylvania 3 D+39       NA       NA          1      39
-## 328        Pennsylvania 4  D+7       NA       NA          1       7
-## 329        Pennsylvania 5 D+14       NA       NA          1      14
-## 330        Pennsylvania 6  D+5       NA       NA          1       5
-## 331        Pennsylvania 7  R+2       NA       NA         -1      -2
-## 332        Pennsylvania 8  R+4 45.00000 46.00000         -1      -4
-## 333        Pennsylvania 9 R+21       NA       NA         -1     -21
-## 334       Pennsylvania 10  R+5       NA       NA         -1      -5
-## 335       Pennsylvania 11 R+13       NA       NA         -1     -13
-## 336       Pennsylvania 12  D+8       NA       NA          1       8
-## 337       Pennsylvania 13 R+25       NA       NA         -1     -25
-## 338       Pennsylvania 14 R+18       NA       NA         -1     -18
-## 339       Pennsylvania 15 R+21       NA       NA         -1     -21
-## 340       Pennsylvania 16 R+13       NA       NA         -1     -13
-## 341       Pennsylvania 17    0 44.00000 42.50000          0       0
-## 342        Rhode Island 1 D+12       NA       NA          1      12
-## 343        Rhode Island 2  D+4 34.59500 44.60167          1       4
-## 344      South Carolina 1  R+7       NA       NA         -1      -7
-## 345      South Carolina 2  R+8       NA       NA         -1      -8
-## 346      South Carolina 3 R+21       NA       NA         -1     -21
-## 347      South Carolina 4 R+12       NA       NA         -1     -12
-## 348      South Carolina 5 R+12       NA       NA         -1     -12
-## 349      South Carolina 6 D+14       NA       NA          1      14
-## 350      South Carolina 7 R+11       NA       NA         -1     -11
-## 351 South Dakota at-large R+16       NA       NA         -1     -16
-## 352           Tennessee 1 R+30       NA       NA         -1     -30
-## 353           Tennessee 2 R+18       NA       NA         -1     -18
-## 354           Tennessee 3 R+19       NA       NA         -1     -19
-## 355           Tennessee 4 R+22       NA       NA         -1     -22
-## 356           Tennessee 5  R+9       NA       NA         -1      -9
-## 357           Tennessee 6 R+17       NA       NA         -1     -17
-## 358           Tennessee 7 R+10       NA       NA         -1     -10
-## 359           Tennessee 8 R+21       NA       NA         -1     -21
-## 360           Tennessee 9 D+22       NA       NA          1      22
-## 361               Texas 1 R+26       NA       NA         -1     -26
-## 362               Texas 2 R+15       NA       NA         -1     -15
-## 363               Texas 3 R+11       NA       NA         -1     -11
-## 364               Texas 4 R+16       NA       NA         -1     -16
-## 365               Texas 5 R+14       NA       NA         -1     -14
-## 366               Texas 6 R+15       NA       NA         -1     -15
-## 367               Texas 7 D+13       NA       NA          1      13
-## 368               Texas 8 R+16       NA       NA         -1     -16
-## 369               Texas 9 D+26       NA       NA          1      26
-## 370              Texas 10 R+13       NA       NA         -1     -13
-## 371              Texas 11 R+23       NA       NA         -1     -23
-## 372              Texas 12 R+12       NA       NA         -1     -12
-## 373              Texas 13 R+26       NA       NA         -1     -26
-## 374              Texas 14 R+17       NA       NA         -1     -17
-## 375              Texas 15  R+1       NA       NA         -1      -1
-## 376              Texas 16 D+17       NA       NA          1      17
-## 377              Texas 17 R+14       NA       NA         -1     -14
-## 378              Texas 18 D+23       NA       NA          1      23
-## 379              Texas 19 R+26       NA       NA         -1     -26
-## 380              Texas 20 D+15       NA       NA          1      15
-## 381              Texas 21 R+13       NA       NA         -1     -13
-## 382              Texas 22 R+11       NA       NA         -1     -11
-## 383              Texas 23  R+5       NA       NA         -1      -5
-## 384              Texas 24 R+10       NA       NA         -1     -10
-## 385              Texas 25 R+19       NA       NA         -1     -19
-## 386              Texas 26 R+13       NA       NA         -1     -13
-## 387              Texas 27 R+13       NA       NA         -1     -13
-## 388              Texas 28  D+3       NA       NA          1       3
-## 389              Texas 29 D+18       NA       NA          1      18
-## 390              Texas 30 D+27       NA       NA          1      27
-## 391              Texas 31 R+14       NA       NA         -1     -14
-## 392              Texas 32 D+14       NA       NA          1      14
-## 393              Texas 33 D+24       NA       NA          1      24
-## 394              Texas 34  D+9       NA       NA          1       9
-## 395              Texas 35 D+21       NA       NA          1      21
-## 396              Texas 36 R+18       NA       NA         -1     -18
-## 397              Texas 37 D+24       NA       NA          1      24
-## 398              Texas 38 R+12       NA       NA         -1     -12
-## 399                Utah 1 R+12       NA       NA         -1     -12
-## 400                Utah 2 R+11       NA       NA         -1     -11
-## 401                Utah 3 R+13       NA       NA         -1     -13
-## 402                Utah 4 R+16       NA       NA         -1     -16
-## 403      Vermont at-large D+16 46.50000 25.75000          1      16
-## 404            Virginia 1  R+6       NA       NA         -1      -6
-## 405            Virginia 2  R+2 38.50000 33.50000         -1      -2
-## 406            Virginia 3 D+17       NA       NA          1      17
-## 407            Virginia 4 D+16       NA       NA          1      16
-## 408            Virginia 5  R+7       NA       NA         -1      -7
-## 409            Virginia 6 R+14       NA       NA         -1     -14
-## 410            Virginia 7  D+1       NA       NA          1       1
-## 411            Virginia 8 D+26       NA       NA          1      26
-## 412            Virginia 9 R+23       NA       NA         -1     -23
-## 413           Virginia 10  D+6       NA       NA          1       6
-## 414           Virginia 11 D+18       NA       NA          1      18
-## 415          Washington 1 D+13       NA       NA          1      13
-## 416          Washington 2  D+9       NA       NA          1       9
-## 417          Washington 3  R+5       NA       NA         -1      -5
-## 418          Washington 4 R+11       NA 37.45000         -1     -11
-## 419          Washington 5  R+8       NA       NA         -1      -8
-## 420          Washington 6  D+6       NA       NA          1       6
-## 421          Washington 7 D+36       NA       NA          1      36
-## 422          Washington 8  D+1 48.00000 42.00000          1       1
-## 423          Washington 9 D+21       NA       NA          1      21
-## 424         Washington 10  D+7       NA       NA          1       7
-## 425       West Virginia 1 R+23       NA       NA         -1     -23
-## 426       West Virginia 2 R+22       NA       NA         -1     -22
-## 427           Wisconsin 1  R+3       NA       NA         -1      -3
-## 428           Wisconsin 2 D+19       NA       NA          1      19
-## 429           Wisconsin 3  R+4 38.00000 47.00000         -1      -4
-## 430           Wisconsin 4 D+25       NA       NA          1      25
-## 431           Wisconsin 5 R+14       NA       NA         -1     -14
-## 432           Wisconsin 6 R+10       NA       NA         -1     -10
-## 433           Wisconsin 7 R+12       NA       NA         -1     -12
-## 434           Wisconsin 8 R+10       NA       NA         -1     -10
-## 435      Wyoming at-large R+25       NA       NA         -1     -25</code></pre>
+<p><em>This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor <a href="https://www.ryandenos.com">Ryan Enos</a>. It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.</em></p>
+<p>In this week’s blog, I will be incorporating polling into my predictive modelling. I will create predictions using polling in two ways. First, I’ll update a version of my economic fundamentals model from last week with polling data. Next, I’ll incorporate district-level polls and partisanship indicators to forecast seat share in the 2022 midterms, completing blog extension 3.</p>
+<div id="updating-the-fundamentals-model" class="section level2">
+<h2>Updating the Fundamentals Model</h2>
+</div>
+<div id="pure-economic-fundamentals-model" class="section level1">
+<h1>Pure Economic Fundamentals Model</h1>
+<p>I’ll begin with forecasting the popular vote. Last week, I considered a number of ways to model elections based on economic data. For this week, I’ll use an economic model that predicts the popular vote of the incumbent president’s party based on quarter 5 GDP growth (the GDP growth at the start of the election year). Quarter 5 growth is used since thus data is available for the 2022 election cycle and can thus be used to predict the 2022 midterms. I’ve also included a midterm dummy variable, which has a value of 1 if it’s a midterm election year and a value of 0 if it’s a presidential election year. The model output is displayed below:</p>
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+incumbent_pres_majorvote
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+48.22
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.87
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+46.44 – 50.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+GDP growth pct
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.85
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.44
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.05 – 1.74
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.064
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+midterm dummy
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.10
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-3.40 – 1.10
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.306
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+36
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.142 / 0.090
+</td>
+</tr>
+</table>
+<p><br/>
+With an R-squared value of 0.142, this is not a very predictive model. As we might expect, the coefficient for the midterm dummy is negative, given the <a href="https://fivethirtyeight.com/features/why-the-presidents-party-almost-always-has-a-bad-midterm/">conventional</a> <a href="https://news.gallup.com/poll/393626/usual-midterm-indicators-unfavorable-democrats.aspx">wisdom</a> that we generally the incumbent president’s party to fare poorly in the midterms. But given that the p-value for the midterm variable is around 0.3, we should be highly skeptical of its predictive power. The following scatter plot shows the actual versus predicted popular vote share of the incumbent in past elections with our fundamentals only model.
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+<br/>
+Clearly, the residuals are quite large, again suggesting that this model is not optimal. Using first quarter GDP growth from 2022, this model predicts that the incumbent president’s party (the Democrats) will win around <em>48.42% of the two-party popular vote</em>.</p>
+</div>
+<div id="pure-polling-model" class="section level1">
+<h1>Pure Polling Model</h1>
+Next, I’ll build a model solely based on polling data. I will predict the incumbent party’s two-party popular vote share based on generic ballot polling. I’ll determine each election year’s polling average by taking an average of all polls conducted within 45 days of election day. For the sake of simplicity, I will not weight the polls based on pollster quality — FiveThirtyEight, for example, <a href="https://fivethirtyeight.com/methodology/how-fivethirtyeights-house-and-senate-models-work/">weights</a> polls based on the past predictive performance of the pollster in question. I will also not weight polls based on their proximity to election day. As I continue to refine my model, I will consider different methods of weighting polls, drawing on the work of forecasters at FiveThirtyEight, The Economist, and other outlets. But for the purpose of this blog, which is focused on reconciling fundamentals- and polling-based models, I’ll go with a more parsimonious approach. The output for this polling model is shown below:
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+incumbent_pres_majorvote
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+26.77
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.43
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+21.84 – 31.71
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+incumbent pres polls
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.44
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.34 – 0.54
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+36
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.701 / 0.692
+</td>
+</tr>
+</table>
+<p><br/>
+Clearly, with an R-squared of around 0.701, this polling-based model is far more predictive than my previous economics-only model. A scatterplot comparing predicted and actual two-party vote share values is shown below
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+<br/>
+This model provides a much better fit of the data, with most election years falling on or near the 45 degree line. Averaging polls from the start of August to mid-September (roughly 45 days of polling) to determine the present 2022 polling average, thus model predicts that that the incumbent president’s party (the Democrats) will win around <em>49.36% of the two-party popular vote</em>.</p>
+</div>
+<div id="combined-model" class="section level1">
+<h1>Combined Model</h1>
+Finally, I’ll combine these two models to predict the popular vote based on both economic fundamentals and polling data. The combined regression, based on quarter 5 GDP growth, the polling average, and the midterm binary variable, is shown below.
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+incumbent_pres_majorvote
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+27.83
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.58
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+22.57 – 33.10
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+incumbent pres polls
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.43
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.32 – 0.53
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+GDP growth pct
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.27
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.40 – 0.71
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.579
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+midterm dummy
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.71
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.65
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-2.03 – 0.61
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.279
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+36
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.716 / 0.689
+</td>
+</tr>
+</table>
+<p><br/>
+This model does not seem much more predictive than the polls-only model. In fact, the adjusted R-squared is actually very slightly lower for the combined model than the polls-only model. This might suggest that we could remove the economic data from our model without affecting the predictiveness of the model. This is not to say that economic trends and other fundamentals do not matter at all in the midterms — it may just be that the chosen value of GDP growth is not a very useful predictor. Going forward, I’ll consider how to incorporate other indicators of the baseline political environment; I may use presidential approval ratings, for example, as a means of gauging election fundamentals.</p>
+The scatterplot for the combined model is shown below:
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+<br/>
+Again, there does not seem to be much improvement in model accuracy relative to my polls-only model. Using the previously mentioned data from 2022, this combined model predicts that the incumbent president’s party (the Democrats) will win around <em>49.09% of the two-party popular vote</em>. The predictions of Democratic two-party vote share for the three models are summarized below:
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+model
+</th>
+<th style="text-align:right;">
+fundamentals
+</th>
+<th style="text-align:right;">
+polls
+</th>
+<th style="text-align:right;">
+combined
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+prediction
+</td>
+<td style="text-align:right;">
+48.41781
+</td>
+<td style="text-align:right;">
+49.36225
+</td>
+<td style="text-align:right;">
+49.09388
+</td>
+</tr>
+</tbody>
+</table>
+<p>Despite varying significantly in predictive power, all three models predict very similar popular vote shares for the Democrats. The fundamentals-only model is the most pessimistic about Democrats’ chances, which aligns with the <a href="https://news.gallup.com/poll/393626/usual-midterm-indicators-unfavorable-democrats.aspx">thinking</a> that the 2022 midterms are fundamentally a tough cycle for Democrats. The polls-only forecast is more optimistic about the Democrats’ chances, due to <a href="https://projects.fivethirtyeight.com/polls/generic-ballot/">recent gains</a> for the Democrats in generic ballot polling. And the combined model is somewhere in the middle, which makes sense given it combines the fundamentals and polling forecasts.</p>
+<div id="district-level-polling-model" class="section level2">
+<h2>District-Level Polling Model</h2>
 <pre><code>## [1] 227</code></pre>
 <pre><code>## [1] 208</code></pre>
 <pre><code>## [1] 222</code></pre>
 <pre><code>## [1] 213</code></pre>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/data%20cleaning-1.png" width="672" /><img src="{{< blogdown/postref >}}index_files/figure-html/data%20cleaning-2.png" width="672" /></p>
-<pre><code>## # A tibble: 36 × 4
-## # Groups:   year [36]
-##     year     D     R poll_margin
-##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;
-##  1  1948  43.5  38          6.75
-##  2  1950  50.4  41.3        9.88
-##  3  1954  52.3  40         13.4 
-##  4  1956  51    42.7        8.90
-##  5  1958  53.5  36.5       18.9 
-##  6  1960  55.5  37.5       19.4 
-##  7  1962  56    40         16.7 
-##  8  1964  60    33         29.0 
-##  9  1966  51.8  40.6       12.1 
-## 10  1968  47    43.7        3.68
-## # … with 26 more rows
-## # ℹ Use `print(n = ...)` to see more rows</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/data%20cleaning-1.png" width="672" /><img src="{{< blogdown/postref >}}index_files/figure-html/data%20cleaning-2.png" width="672" /><img src="{{< blogdown/postref >}}index_files/figure-html/data%20cleaning-3.png" width="672" /></p>
+</div>
+</div>

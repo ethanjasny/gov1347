@@ -1,6 +1,6 @@
 ---
 title: 'Blog 3: Polling'
-author: R package build
+author: "Ethan Jasny"
 date: '2022-09-26'
 slug: []
 categories: []
@@ -19,7 +19,10 @@ library(blogdown)
 library(plotly)
 library(htmlwidgets)
 library(gridExtra)
-
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+library(kableExtra)
 
 
 district_polls <- read_csv("538_house_polls_2022.csv")
@@ -27,8 +30,144 @@ hist_polls <- read_csv("polls_df.csv")
 nat_polls <- read_csv("538_generic_poll_2022.csv")
 PVI <- read.csv("PVIe.csv") %>%
   select(District, PVI)
+GDP <- read_csv("GDP_quarterly.csv")
+election_data <- read_csv("house_popvote_seats.csv")
 ```
+*This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
 
+In this week's blog, I will be incorporating polling into my predictive modelling. I will create predictions using polling in two ways. First, I'll update a version of my economic fundamentals model from last week with polling data. Next, I'll incorporate district-level polls and partisanship indicators to forecast seat share in the 2022 midterms, completing blog extension 3.
+
+## Updating the Fundamentals Model
+# Pure Economic Fundamentals Model
+I'll begin with forecasting the popular vote. Last week, I considered a number of ways to model elections based on economic data. For this week, I'll use an economic model that predicts the popular vote of the incumbent president's party based on quarter 5 GDP growth (the GDP growth at the start of the election year). Quarter 5 growth is used since thus data is available for the 2022 election cycle and can thus be used to predict the 2022 midterms. I've also included a midterm dummy variable, which has a value of 1 if it's a midterm election year and a value of 0 if it's a presidential election year. The model output is displayed below:
+```{r}
+## Data Wrangling
+
+hist_polls_data <- hist_polls %>%
+  filter(days_until_election < 45) %>% 
+  group_by(year,party) %>% 
+  summarise(avg_support = mean(support)) %>%
+  spread(key = "party", value = "avg_support") %>%
+  mutate(poll_margin = 100*(D-R)/(D+R))
+
+GDP_data <- GDP %>%
+  filter(quarter_cycle == 5) %>%
+  select(year, GDPC1, GDP_growth_pct)
+
+model_elec_data <- election_data %>%
+  select(year, R_seats, D_seats, R_majorvote_pct, D_majorvote_pct, president_party) %>%
+  mutate(incumbent_president = c("D","D","D","R","R","R","R","D","D","D","D","R","R","R","R","D","D","R","R","R","R","R", "R","D","D","D","D", "R", "R", "R","R","D","D","D","D","R","R")) %>% # Add list of incumbent presidents
+  mutate(incumbent_president_dummy = ifelse(incumbent_president == "D", 1, 0)) %>% # Incumbent president dummy variable
+  mutate(midterm_dummy = ifelse(year %% 4, 1, 0)) %>% # Midterm election dummy variable
+  inner_join(hist_polls_data, by = "year") %>%
+  mutate(incumbent_pres_majorvote = ifelse(incumbent_president == "D", D_majorvote_pct, R_majorvote_pct),
+         incumbent_pres_seats = ifelse(incumbent_president == "D", D_seats, R_seats),
+         incumbent_pres_polls = ifelse(incumbent_president == "D", 100*D/(R+D), 100*R/(R+D))) %>% # Assign vote/seat share for incumbent party's president to new variables
+  select(year, midterm_dummy, incumbent_pres_majorvote, incumbent_pres_seats, incumbent_pres_polls, incumbent_president) %>%
+  inner_join(GDP_data, by = "year")
+
+
+## Model 1: Fundamentals only:
+fund_model <- lm(incumbent_pres_majorvote ~ GDP_growth_pct + midterm_dummy, data = model_elec_data)
+#summary(fund_model)
+#tab_model(fund_model, show.se = TRUE)
+
+## Model 2: Polls only:
+poll_model <- lm(incumbent_pres_majorvote ~ incumbent_pres_polls, data = model_elec_data)
+#summary(poll_model)
+#tab_model(poll_model, show.se = TRUE)
+
+## Model 3: Combined
+combo_model <-lm(incumbent_pres_majorvote ~ incumbent_pres_polls + GDP_growth_pct + midterm_dummy, data = model_elec_data)
+#summary(combo_model)
+#tab_model(combo_model, show.se = TRUE)
+
+## Plot Models
+fig1 <- ggplot(aes(x = predict(fund_model, model_elec_data), y = incumbent_pres_majorvote, label = year), data = model_elec_data) +
+  geom_text() +
+  geom_abline(intercept = 0, slope = 1) +
+  labs(title = "Fundamentals Model") +
+  xlab(label = "Predicted Incumbent President Vote Share") +
+  ylab(label = "Actual Incumbent President Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+fig2 <- ggplot(aes(x = predict(poll_model, model_elec_data), y = incumbent_pres_majorvote, label = year), data = model_elec_data) +
+  geom_text() +
+  geom_abline(intercept = 0, slope = 1) +
+  labs(title = "Polls Model") +
+  xlab(label = "Predicted Incumbent President Vote Share") +
+  ylab(label = "Actual Incumbent President Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+fig3 <- ggplot(aes(x = predict(combo_model, model_elec_data), y = incumbent_pres_majorvote, label = year), data = model_elec_data) +
+  geom_text() +
+  geom_abline(intercept = 0, slope = 1) +
+  labs(title = "Combined Model") +
+  xlab(label = "Predicted Incumbent President Vote Share") +
+  ylab(label = "Actual Incumbent President Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+## Make Predictions
+nat_polls$enddate <- as.Date(nat_polls$enddate, "%m/%d/%y")
+nat_polls_pred <- nat_polls %>%
+  filter(enddate > "2022-08-01") %>%
+  mutate(dem_tp = dem/(dem + rep))
+
+predictions_data <- NA
+predictions_data$incumbent_pres_polls <- 100*mean(nat_polls_pred$dem_tp)
+predictions_data$GDP_growth_pct <- GDP_data$GDP_growth_pct[GDP_data$year == 2022]
+predictions_data$midterm_dummy <- 1
+
+predict_table <- data.frame(model = "prediction", fundamentals = predict(fund_model, predictions_data), polls = predict(poll_model, predictions_data), combined = predict(combo_model, predictions_data))
+```
+```{r}
+tab_model(fund_model, show.se = TRUE)
+```
+<br/>
+With an R-squared value of 0.142, this is not a very predictive model. As we might expect, the coefficient for the midterm dummy is negative, given the [conventional](https://fivethirtyeight.com/features/why-the-presidents-party-almost-always-has-a-bad-midterm/) [wisdom](https://news.gallup.com/poll/393626/usual-midterm-indicators-unfavorable-democrats.aspx) that we generally the incumbent president's party to fare poorly in the midterms. But given that the p-value for the midterm variable is around 0.3, we should be highly skeptical of its predictive power. The following scatter plot shows the actual versus predicted popular vote share of the incumbent in past elections with our fundamentals only model.
+```{r}
+fig1
+```
+<br/>
+Clearly, the residuals are quite large, again suggesting that this model is not optimal. Using first quarter GDP growth from 2022, this model predicts that the incumbent president's party (the Democrats) will win around *48.42% of the two-party popular vote*. 
+
+# Pure Polling Model
+Next, I'll build a model solely based on polling data. I will predict the incumbent party's two-party popular vote share based on generic ballot polling. I'll determine each election year's polling average by taking an average of all polls conducted within 45 days of election day. For the sake of simplicity, I will not weight the polls based on pollster quality — FiveThirtyEight, for example, [weights](https://fivethirtyeight.com/methodology/how-fivethirtyeights-house-and-senate-models-work/) polls based on the past predictive performance of the pollster in question. I will also not weight polls based on their proximity to election day. As I continue to refine my model, I will consider different methods of weighting polls, drawing on the work of forecasters at FiveThirtyEight, The Economist, and other outlets. But for the purpose of this blog, which is focused on reconciling fundamentals- and polling-based models, I'll go with a more parsimonious approach. The output for this polling model is shown below:
+```{r}
+tab_model(poll_model, show.se = TRUE)
+```
+<br/>
+Clearly, with an R-squared of around 0.701, this polling-based model is far more predictive than my previous economics-only model. A scatterplot comparing predicted and actual two-party vote share values is shown below
+```{r}
+fig2
+```
+<br/>
+This model provides a much better fit of the data, with most election years falling on or near the 45 degree line. Averaging polls from the start of August to mid-September (roughly 45 days of polling) to determine the present 2022 polling average, thus model predicts that that the incumbent president's party (the Democrats) will win around *49.36% of the two-party popular vote*. 
+
+# Combined Model
+Finally, I'll combine these two models to predict the popular vote based on both economic fundamentals and polling data. The combined regression, based on quarter 5 GDP growth, the polling average, and the midterm binary variable, is shown below.
+```{r}
+tab_model(combo_model, show.se = TRUE)
+```
+<br/>
+This model does not seem much more predictive than the polls-only model. In fact, the adjusted R-squared is actually very slightly lower for the combined model than the polls-only model. This might suggest that we could remove the economic data from our model without affecting the predictiveness of the model. This is not to say that economic trends and other fundamentals do not matter at all in the midterms — it may just be that the chosen value of GDP growth is not a very useful predictor. Going forward, I'll consider how to incorporate other indicators of the baseline political environment; I may use presidential approval ratings, for example, as a means of gauging election fundamentals.
+
+The scatterplot for the combined model is shown below:
+```{r}
+fig3
+```
+<br/>
+Again, there does not seem to be much improvement in model accuracy relative to my polls-only model. Using the previously mentioned data from 2022, this combined model predicts that the incumbent president's party (the Democrats) will win around *49.09% of the two-party popular vote*. The predictions of Democratic two-party vote share for the three models are summarized below:
+```{r}
+predict_table %>%
+  kbl() %>%
+  kable_styling()
+```
+Despite varying significantly in predictive power, all three models predict very similar popular vote shares for the Democrats. The fundamentals-only model is the most pessimistic about Democrats' chances, which aligns with the [thinking](https://news.gallup.com/poll/393626/usual-midterm-indicators-unfavorable-democrats.aspx) that the 2022 midterms are fundamentally a tough cycle for Democrats. The polls-only forecast is more optimistic about the Democrats' chances, due to [recent gains](https://projects.fivethirtyeight.com/polls/generic-ballot/) for the Democrats in generic ballot polling. And the combined model is somewhere in the middle, which makes sense given it combines the fundamentals and polling forecasts.
+
+
+## District-Level Polling Model
 ```{r data cleaning}
 district_poll_avgs <- district_polls %>%
   select(state, candidate_name, end_date, seat_number, party, pct, stage) %>%
@@ -42,15 +181,13 @@ district_poll_avgs$District[district_poll_avgs$District == "Vermont 1"] <- "Verm
 
 district_poll_avgs_pvi <- full_join(PVI, district_poll_avgs, by = "District")
 
-district_poll_avgs_pvi
-  
+
 district_poll_avgs_pvi$partymulti[grep("R", district_poll_avgs_pvi$PVI)] <- -1
 district_poll_avgs_pvi$partymulti[grep("D", district_poll_avgs_pvi$PVI)] <- 1
 district_poll_avgs_pvi$partymulti[grep("EVEN", district_poll_avgs_pvi$PVI)] <- 0
 
 district_poll_avgs_pvi$PVI[district_poll_avgs_pvi$PVI == "EVEN"] <- 0
 district_poll_avgs_pvi$PVI_num <- parse_number(district_poll_avgs_pvi$PVI)*district_poll_avgs_pvi$partymulti
-district_poll_avgs_pvi
 
 district_poll_avgs_pvi <- district_poll_avgs_pvi %>%
   mutate(poll_margin = 100*(DEM - REP)/(DEM + REP)) %>%
@@ -77,16 +214,11 @@ ggplot(district_poll_avgs_pvi) +
 ggplot(district_poll_avgs_pvi) +
   geom_histogram(aes(x = district_poll_avgs_pvi$diff), color="darkblue", fill="lightblue")
 
-#ggplot(district_poll_avgs_pvi) +
-  #geom_histogram(aes(x = district_poll_avgs_pvi$PVI_num), color="darkblue", fill="lightblue", xlim(-40,40))
+ggplot(district_poll_avgs_pvi) +
+  geom_histogram(aes(x = district_poll_avgs_pvi$PVI_num), color="darkblue", fill="lightblue")
 ```
+
 ```{r}
-hist_polls %>%
-  filter(days_until_election < 45) %>% 
-  group_by(year,party) %>% 
-  summarise(avg_support = mean(support)) %>%
-  spread(key = "party", value = "avg_support") %>%
-  mutate(poll_margin = 100*(D-R)/(D+R))
 
 
 
