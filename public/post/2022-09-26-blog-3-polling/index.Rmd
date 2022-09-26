@@ -37,8 +37,8 @@ election_data <- read_csv("house_popvote_seats.csv")
 
 In this week's blog, I will be incorporating polling into my predictive modelling. I will create predictions using polling in two ways. First, I'll update a version of my economic fundamentals model from last week with polling data. Next, I'll incorporate district-level polls and partisanship indicators to forecast seat share in the 2022 midterms, completing blog extension 3.
 
-## Updating the Fundamentals Model
-# Pure Economic Fundamentals Model
+# National Popular Vote Model
+## Pure Economic Fundamentals Model
 I'll begin with forecasting the popular vote. Last week, I considered a number of ways to model elections based on economic data. For this week, I'll use an economic model that predicts the popular vote of the incumbent president's party based on quarter 5 GDP growth (the GDP growth at the start of the election year). Quarter 5 growth is used since thus data is available for the 2022 election cycle and can thus be used to predict the 2022 midterms. I've also included a midterm dummy variable, which has a value of 1 if it's a midterm election year and a value of 0 if it's a presidential election year. The model output is displayed below:
 ```{r}
 ## Data Wrangling
@@ -85,7 +85,7 @@ combo_model <-lm(incumbent_pres_majorvote ~ incumbent_pres_polls + GDP_growth_pc
 ## Plot Models
 fig1 <- ggplot(aes(x = predict(fund_model, model_elec_data), y = incumbent_pres_majorvote, label = year), data = model_elec_data) +
   geom_text() +
-  geom_abline(intercept = 0, slope = 1) +
+  geom_abline(intercept = 0, slope = 1, color = "darkseagreen4") +
   labs(title = "Fundamentals Model") +
   xlab(label = "Predicted Incumbent President Vote Share") +
   ylab(label = "Actual Incumbent President Vote Share") +
@@ -93,7 +93,7 @@ fig1 <- ggplot(aes(x = predict(fund_model, model_elec_data), y = incumbent_pres_
 
 fig2 <- ggplot(aes(x = predict(poll_model, model_elec_data), y = incumbent_pres_majorvote, label = year), data = model_elec_data) +
   geom_text() +
-  geom_abline(intercept = 0, slope = 1) +
+  geom_abline(intercept = 0, slope = 1, color = "darkseagreen4") +
   labs(title = "Polls Model") +
   xlab(label = "Predicted Incumbent President Vote Share") +
   ylab(label = "Actual Incumbent President Vote Share") +
@@ -101,7 +101,7 @@ fig2 <- ggplot(aes(x = predict(poll_model, model_elec_data), y = incumbent_pres_
 
 fig3 <- ggplot(aes(x = predict(combo_model, model_elec_data), y = incumbent_pres_majorvote, label = year), data = model_elec_data) +
   geom_text() +
-  geom_abline(intercept = 0, slope = 1) +
+  geom_abline(intercept = 0, slope = 1, color = "darkseagreen4") +
   labs(title = "Combined Model") +
   xlab(label = "Predicted Incumbent President Vote Share") +
   ylab(label = "Actual Incumbent President Vote Share") +
@@ -132,7 +132,7 @@ fig1
 <br/>
 Clearly, the residuals are quite large, again suggesting that this model is not optimal. Using first quarter GDP growth from 2022, this model predicts that the incumbent president's party (the Democrats) will win around *48.42% of the two-party popular vote*. 
 
-# Pure Polling Model
+## Pure Polling Model
 Next, I'll build a model solely based on polling data. I will predict the incumbent party's two-party popular vote share based on generic ballot polling. I'll determine each election year's polling average by taking an average of all polls conducted within 45 days of election day. For the sake of simplicity, I will not weight the polls based on pollster quality — FiveThirtyEight, for example, [weights](https://fivethirtyeight.com/methodology/how-fivethirtyeights-house-and-senate-models-work/) polls based on the past predictive performance of the pollster in question. I will also not weight polls based on their proximity to election day. As I continue to refine my model, I will consider different methods of weighting polls, drawing on the work of forecasters at FiveThirtyEight, The Economist, and other outlets. But for the purpose of this blog, which is focused on reconciling fundamentals- and polling-based models, I'll go with a more parsimonious approach. The output for this polling model is shown below:
 ```{r}
 tab_model(poll_model, show.se = TRUE)
@@ -145,7 +145,7 @@ fig2
 <br/>
 This model provides a much better fit of the data, with most election years falling on or near the 45 degree line. Averaging polls from the start of August to mid-September (roughly 45 days of polling) to determine the present 2022 polling average, thus model predicts that that the incumbent president's party (the Democrats) will win around *49.36% of the two-party popular vote*. 
 
-# Combined Model
+## Combined Model
 Finally, I'll combine these two models to predict the popular vote based on both economic fundamentals and polling data. The combined regression, based on quarter 5 GDP growth, the polling average, and the midterm binary variable, is shown below.
 ```{r}
 tab_model(combo_model, show.se = TRUE)
@@ -160,14 +160,17 @@ fig3
 <br/>
 Again, there does not seem to be much improvement in model accuracy relative to my polls-only model. Using the previously mentioned data from 2022, this combined model predicts that the incumbent president's party (the Democrats) will win around *49.09% of the two-party popular vote*. The predictions of Democratic two-party vote share for the three models are summarized below:
 ```{r}
-predict_table %>%
-  kbl() %>%
-  kable_styling()
+tab_df(predict_table)
 ```
 Despite varying significantly in predictive power, all three models predict very similar popular vote shares for the Democrats. The fundamentals-only model is the most pessimistic about Democrats' chances, which aligns with the [thinking](https://news.gallup.com/poll/393626/usual-midterm-indicators-unfavorable-democrats.aspx) that the 2022 midterms are fundamentally a tough cycle for Democrats. The polls-only forecast is more optimistic about the Democrats' chances, due to [recent gains](https://projects.fivethirtyeight.com/polls/generic-ballot/) for the Democrats in generic ballot polling. And the combined model is somewhere in the middle, which makes sense given it combines the fundamentals and polling forecasts.
 
+# District-Level Polling Model
+Of course, thus far I have only considered national generic-ballot polls, not district-level polling. In this next model, I'll use district-level polling to predict seat share in the 2022 midterms. Unfortunately, polling is not available for every district-level race. Polling is expensive, and there's little need to poll non-competitive districts. Thus, we need to be able to also predict results for congressional districts that have not been polled this cycle. To deal with this, forecasters like FiveThirtyEight use algorithms like [CANTOR](https://fivethirtyeight.com/methodology/how-fivethirtyeights-house-and-senate-models-work/) which is able to infer results in districts that have no polling based on demographically similar states that do have polling. For my model, I will use a simpler method to forecast the winner of districts that have little polling data available. The *Cook Political Report's* [Partisan Voter Index (PVI)](https://www.cookpolitical.com/cook-pvi/2022-partisan-voting-index/state-map-and-list) measures how Republican or Democratic a district is relative to the nation as a whole, based on presidential election data from previous cycles. For example, a district with a PVI of D+3 is around 3 points more Democratic than the nation as a whole in terms of two-party vote share. 
 
-## District-Level Polling Model
+We can't just use PVI on its own to predict the results of congressional districts since this would presume we're in a national environment where Democratic and Republican support is equal. But we know from my previous popular vote model that the national environment currently skews Republicans: based on my combined fundamentals/polling model, Democrats are only on track to win 49.09 percent of the two-party vote. In other words, relative to electoral equilibrium, Democrats trail by -0.91 percentage points in terms of the two-party vote. If we trust my national popular vote model, we can take this value to represent the national partisan environment from which congressional districts deviate. We can thus predict the two-party outcome in electoral districts by adding our value for national partisanship to the PVI of each district. This method assumes that all districts undergo uniform swing from election to election. This assumption likely fails since some demographically similar districts may behave differently than other groups of demographically similar districts. But for now we can use [uniform swing as a heuristic](https://www.cambridge.org/core/journals/ps-political-science-and-politics/article/abs/predictive-power-of-uniform-swing/571192E6749DBB5108D71D0DF7A656BC). 
+
+Outlined below are the outputs for two district-level models. The `PVI` model simply relies on the PVI of each district, accounting for the previously-modeled national environment. The `PVI_polls` model only uses `PVI` when district-level polling is unavailable, but otherwise defers to district-level polling.
+
 ```{r data cleaning}
 district_poll_avgs <- district_polls %>%
   select(state, candidate_name, end_date, seat_number, party, pct, stage) %>%
@@ -190,8 +193,8 @@ district_poll_avgs_pvi$PVI[district_poll_avgs_pvi$PVI == "EVEN"] <- 0
 district_poll_avgs_pvi$PVI_num <- parse_number(district_poll_avgs_pvi$PVI)*district_poll_avgs_pvi$partymulti
 
 district_poll_avgs_pvi <- district_poll_avgs_pvi %>%
-  mutate(poll_margin = 100*(DEM - REP)/(DEM + REP)) %>%
-  select(District, PVI_num, poll_margin)
+  mutate(poll_lean = 50*(DEM - REP)/(DEM + REP)) %>%
+  select(District, PVI_num, poll_lean, DEM, REP)
 
 nat_polls$enddate <- as.Date(nat_polls$enddate, "%m/%d/%y")
 nat_polls_margins <- nat_polls %>%
@@ -199,30 +202,53 @@ nat_polls_margins <- nat_polls %>%
   mutate(margin = 100*(dem - rep)/(dem + rep)) %>%
   mutate(margin_adj = 100*(adjusted_dem - adjusted_rep)/(adjusted_dem + adjusted_rep))
 
-district_poll_avgs_pvi$diff <- district_poll_avgs_pvi$PVI_num + mean(nat_polls_margins$margin)
-district_poll_avgs_pvi$diff_poll <- ifelse(is.na(district_poll_avgs_pvi$poll_margin), district_poll_avgs_pvi$diff, (district_poll_avgs_pvi$diff + district_poll_avgs_pvi$poll_margin)/2)
+predicted_pop_vote_margin <- predict_table$combined - 50
 
-sum(district_poll_avgs_pvi$diff > 0)
-sum(district_poll_avgs_pvi$diff < 0)
+district_poll_avgs_pvi$diff <- district_poll_avgs_pvi$PVI_num + predicted_pop_vote_margin
+district_poll_avgs_pvi$diff_poll <- ifelse(is.na(district_poll_avgs_pvi$poll_lean), district_poll_avgs_pvi$diff, ((district_poll_avgs_pvi$poll_lean)))
 
-sum(district_poll_avgs_pvi$diff_poll > 0)
-sum(district_poll_avgs_pvi$diff_poll < 0)
+#sum(district_poll_avgs_pvi$diff > 0)
+#sum(district_poll_avgs_pvi$diff < 0)
 
-ggplot(district_poll_avgs_pvi) +
-  geom_histogram(aes(x = district_poll_avgs_pvi$diff_poll), color="darkblue", fill="lightblue")
+#sum(district_poll_avgs_pvi$diff_poll > 0)
+#sum(district_poll_avgs_pvi$diff_poll < 0)
+#sum(district_poll_avgs_pvi$diff_poll == 0)
 
-ggplot(district_poll_avgs_pvi) +
-  geom_histogram(aes(x = district_poll_avgs_pvi$diff), color="darkblue", fill="lightblue")
+seat_predict_table <- data.frame(model = c("Dem Wins", "Rep Wins", "Tied Seats", "Dem Seat Share", "Rep Seat Share"), PVI = c(sum(district_poll_avgs_pvi$diff > 0), sum(district_poll_avgs_pvi$diff < 0),0, sum(district_poll_avgs_pvi$diff > 0)/435, sum(district_poll_avgs_pvi$diff < 0)/435 ), PVI_polls = c(sum(district_poll_avgs_pvi$diff_poll > 0), sum(district_poll_avgs_pvi$diff_poll < 0), sum(district_poll_avgs_pvi$diff_poll == 0), sum(district_poll_avgs_pvi$diff_poll > 0)/435, sum(district_poll_avgs_pvi$diff_poll < 0)/435))
 
-ggplot(district_poll_avgs_pvi) +
-  geom_histogram(aes(x = district_poll_avgs_pvi$PVI_num), color="darkblue", fill="lightblue")
+plot1 <- ggplot(district_poll_avgs_pvi) +
+  geom_histogram(aes(x = district_poll_avgs_pvi$PVI_num), color="darkseagreen4", fill="darkseagreen3") +
+  xlim(-40,40) +
+  ylim(0, 38) +
+  labs(title = "PVI Distribution") +
+  xlab(label = "District Partisanship (+D)") +
+  ylab(label = "Number of Seats") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+plot2 <- ggplot(district_poll_avgs_pvi) +
+  geom_histogram(aes(x = district_poll_avgs_pvi$diff_poll), color="darkseagreen4", fill="darkseagreen3") +
+  xlim(-40,40) +
+  ylim(0, 38) +
+  labs(title = "Prediction (PVI only)") +
+  xlab(label = "District Partisanship (+D)") +
+  ylab(label = "Number of Seats") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+plot3 <- ggplot(district_poll_avgs_pvi) +
+  geom_histogram(aes(x = district_poll_avgs_pvi$diff), color="darkseagreen4", fill="darkseagreen3") +
+  xlim(-40,40) +
+  ylim(0, 38) +
+  labs(title = "Prediction (PVI and District Polls)") +
+  xlab(label = "District Partisanship (+D)") +
+  ylab(label = "Number of Seats") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+tab_df(seat_predict_table)
 ```
-
+<br/>
+Both models predict very similar seat counts for both parties, suggesting that PVI with adjustments for the national environment may be a decent stand-in for district-level polling in unpolled districts. Shown below are histograms plotting the distribution of the predicted district partisanship for the two models. (Note that a district partisanship value of 20, means we'd expect Democrats to to win roughly 50 + 20 = 70% of th two-party vote.) Plotted on the bottom is simply the distribution of baseline PVI for all congressional districts, without adjusting for the national environment.
 ```{r}
-
-
-
-
-
+grid.arrange(plot2,plot3,plot1,ncol=2)
 ```
-
+<br/>
+Overall, PVI provides a helpful heuristic for modelling district-level results when district-level polls are unavailable. I'll continue to explore the value of these types of district ratings as we consider expert predictions next week.
