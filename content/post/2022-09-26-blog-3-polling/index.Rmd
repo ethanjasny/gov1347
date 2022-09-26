@@ -1,0 +1,96 @@
+---
+title: 'Blog 3: Polling'
+author: R package build
+date: '2022-09-26'
+slug: []
+categories: []
+tags: []
+---
+```{r setup, include=FALSE}
+# Hide all code output
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+# Import libraries
+library(tidyverse)
+library(ggplot2)
+library(usmap)
+library(sf)
+library(blogdown)
+library(plotly)
+library(htmlwidgets)
+library(gridExtra)
+
+
+
+district_polls <- read_csv("538_house_polls_2022.csv")
+hist_polls <- read_csv("polls_df.csv")
+nat_polls <- read_csv("538_generic_poll_2022.csv")
+PVI <- read.csv("PVIe.csv") %>%
+  select(District, PVI)
+```
+
+```{r data cleaning}
+district_poll_avgs <- district_polls %>%
+  select(state, candidate_name, end_date, seat_number, party, pct, stage) %>%
+  mutate(District = paste(state, seat_number, sep = " ")) %>%
+  filter(stage == "general", state != "Alaska", party == c("REP", "DEM")) %>%
+  group_by(District, party) %>%
+  summarise(mean(pct)) %>%
+  spread(key = "party", value = "mean(pct)")
+
+district_poll_avgs$District[district_poll_avgs$District == "Vermont 1"] <- "Vermont at-large"
+
+district_poll_avgs_pvi <- full_join(PVI, district_poll_avgs, by = "District")
+
+district_poll_avgs_pvi
+  
+district_poll_avgs_pvi$partymulti[grep("R", district_poll_avgs_pvi$PVI)] <- -1
+district_poll_avgs_pvi$partymulti[grep("D", district_poll_avgs_pvi$PVI)] <- 1
+district_poll_avgs_pvi$partymulti[grep("EVEN", district_poll_avgs_pvi$PVI)] <- 0
+
+district_poll_avgs_pvi$PVI[district_poll_avgs_pvi$PVI == "EVEN"] <- 0
+district_poll_avgs_pvi$PVI_num <- parse_number(district_poll_avgs_pvi$PVI)*district_poll_avgs_pvi$partymulti
+district_poll_avgs_pvi
+
+district_poll_avgs_pvi <- district_poll_avgs_pvi %>%
+  mutate(poll_margin = 100*(DEM - REP)/(DEM + REP)) %>%
+  select(District, PVI_num, poll_margin)
+
+nat_polls$enddate <- as.Date(nat_polls$enddate, "%m/%d/%y")
+nat_polls_margins <- nat_polls %>%
+  filter(enddate > "2022-08-01") %>%
+  mutate(margin = 100*(dem - rep)/(dem + rep)) %>%
+  mutate(margin_adj = 100*(adjusted_dem - adjusted_rep)/(adjusted_dem + adjusted_rep))
+
+district_poll_avgs_pvi$diff <- district_poll_avgs_pvi$PVI_num + mean(nat_polls_margins$margin)
+district_poll_avgs_pvi$diff_poll <- ifelse(is.na(district_poll_avgs_pvi$poll_margin), district_poll_avgs_pvi$diff, (district_poll_avgs_pvi$diff + district_poll_avgs_pvi$poll_margin)/2)
+
+sum(district_poll_avgs_pvi$diff > 0)
+sum(district_poll_avgs_pvi$diff < 0)
+
+sum(district_poll_avgs_pvi$diff_poll > 0)
+sum(district_poll_avgs_pvi$diff_poll < 0)
+
+ggplot(district_poll_avgs_pvi) +
+  geom_histogram(aes(x = district_poll_avgs_pvi$diff_poll), color="darkblue", fill="lightblue")
+
+ggplot(district_poll_avgs_pvi) +
+  geom_histogram(aes(x = district_poll_avgs_pvi$diff), color="darkblue", fill="lightblue")
+
+ggplot(district_poll_avgs_pvi) +
+  geom_histogram(aes(x = district_poll_avgs_pvi$PVI_num), color="darkblue", fill="lightblue", xlim(-40,40))
+```
+```{r}
+hist_polls %>%
+  filter(days_until_election < 45) %>% 
+  group_by(year,party) %>% 
+  summarise(avg_support = mean(support)) %>%
+  spread(key = "party", value = "avg_support") %>%
+  mutate(poll_margin = 100*(D-R)/(D+R))
+
+
+
+
+
+```
+
