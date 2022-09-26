@@ -77,8 +77,8 @@ ggplot(district_poll_avgs_pvi) +
 ggplot(district_poll_avgs_pvi) +
   geom_histogram(aes(x = district_poll_avgs_pvi$diff), color="darkblue", fill="lightblue")
 
-ggplot(district_poll_avgs_pvi) +
-  geom_histogram(aes(x = district_poll_avgs_pvi$PVI_num), color="darkblue", fill="lightblue")
+#ggplot(district_poll_avgs_pvi) +
+  #geom_histogram(aes(x = district_poll_avgs_pvi$PVI_num), color="darkblue", fill="lightblue", xlim(-40,40))
 ```
 ```{r}
 hist_polls %>%
