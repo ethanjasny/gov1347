@@ -27,7 +27,7 @@ library(rmapshaper)
 ```
 *This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
 
-This week, I'll focus on the value of expert predictions and incumbency in building my model for the 2022 midterms. First, I'll analyze the accuracy of experts in predicting the 2018 midterm elections, completing blog extensions 1 and 2. Next, I'll return to models I built last week to consider the important of incumbency and expert predictions. 
+This week, I'll focus on the value of expert predictions and incumbency in building my model for the 2022 midterms. First, I'll analyze the accuracy of experts in predicting the 2018 midterm elections, completing blog extensions 1 and 2. Next, I'll return to the models I built last week to consider the importance of incumbency and expert predictions. 
 
 # Assessing the Accuracy of Expert Predictions
 Many political scientists, media organizations, and think tanks put forward predictions for the 2018 midterms. In this blog post, I'll assess the accuracy of the predictions from the [Cook Political Report](https://www.cookpolitical.com/ratings/house-race-ratings/187562), [Inside Elections](https://insideelections.com/archive/year/2018), and [Larry Sabato's Crystal Ball](https://centerforpolitics.org/crystalball/articles/final-picks-for-2018/). I decided to focus on these three expert prediction houses for a few main reasons. First, they're all generally well-respected and trusted: FiveThirtyEight actually [incorporates](https://fivethirtyeight.com/methodology/how-fivethirtyeights-house-and-senate-models-work/) their forecasts in its "Deluxe" model. Second, Cook, Inside Elections, and Crystal Ball use similar scales to rate the competitiveness of races, which allows for easy comparison. I've assigned scores ranging from 1 to 7 to the race ratings. Scores 1 through 3 represent congressional districts predicted to vote Blue (Solid Dem, Likely Dem, and Lean Dem), and scores 5 through 7 represent congressional districts predicted to vote Red (Lean Rep, Likely Rep, and Solid Rep). A score of 4 represents a pure toss-up seat. Note that Crystal Ball uses "Safe" Dem/Rep as an analog for what Cook and Inside Elections call "Solid" seats. Additionally, Inside Elections have "Tilt" Dem/Rep ratings for districts between toss-ups and leans, which I've thus coded as 3.5 and 4.5, respectively.
@@ -242,21 +242,25 @@ avg_acc <- data.frame(Winning_Party = c("D","R"),
 ```{r}
 tab_df(cook_acc, title = "Cook 2018 Prediction Accuracy")
 ```
+<br/>
 ```{r}
 tab_df(ie_acc, title = "Inside Elections 2018 Prediction Accuracy")
 ```
+<br/>
 ```{r}
 tab_df(cb_acc, title = "Crystal Ball 2018 Prediction Accuracy")
 
 ```
+<br/>
 ```{r}
 tab_df(avg_acc, title = "Forecaster Average 2018 Prediction Accuracy")
 
 ```
-Upon first glance, it seems Cook's forecasts where most accurate — only 4 races were called incorrectly. But Cook was also the most cautious — it kept 30 districts in the toss-up pile, whereas Inside Elections only had 20 toss-up districts, and Crystal Ball and the average of the three forecasters had 0 toss-ups. Across the board, the forecasters seemed to underestimate the Democrats. For all three forecasters greater proportion of the projected Republican seats went Democratic than projected Democratic seats that went Republican. In fact, not a single seat projected by Cook or Inside Elections to go Democratic actually voted red. Overall, the expert predictions from all three forecasters seem fairly accurate, though the fact that they all underestimated Democrats is concerning. It suggests that there could be underlying variables advantaging Democrats that these fairly subjective methods of election forecasting do not consider.
+<br/>
+Upon first glance, it seems Cook's forecasts were most accurate — only 4 races were called incorrectly. But Cook was also the most cautious — it kept 30 districts in the toss-up pile, whereas Inside Elections only had 20 toss-up districts, and Crystal Ball and the average of the three forecasters had 0 toss-ups. Across the board, the forecasters seemed to underestimate the Democrats. For all three forecasters, a greater proportion of the projected Republican seats went Democratic than projected Democratic seats that went Republican. In fact, not a single seat projected by Cook or Inside Elections to go Democratic actually voted red. Overall, the expert predictions from all three forecasters seem fairly accurate, though the fact that they all underestimated Democrats is concerning. It suggests that there could be underlying variables advantaging Democrats that these fairly subjective methods of election forecasting do not consider.
 
 # The Role of Experts and Incumbency in My Model
-For this week, I'm not going to construct a brand new new model, as my predictions from [last week](https://ethanjasny.github.io/gov1347/post/2022-09-26-blog-3-polling/) already consider aspects of incumbency and expert prediction. My national popular vote model, shown in the below chart, predicts the two-party vote share of the **incumbent president's party**, drawing on the [obsveration](https://fivethirtyeight.com/features/why-the-presidents-party-almost-always-has-a-bad-midterm/) that the president's party often fares poorly in midterm election years, especially under [bad economic conditions](https://www.nytimes.com/2022/08/19/business/economy-midterm-elections-trump.html). 
+For this week, I'm not going to construct a brand new model, as my predictions from [last week](https://ethanjasny.github.io/gov1347/post/2022-09-26-blog-3-polling/) already consider aspects of incumbency and expert prediction. My national popular vote model, shown in the below chart, predicts the two-party vote share of the **incumbent president's party**, drawing on the [obsveration](https://fivethirtyeight.com/features/why-the-presidents-party-almost-always-has-a-bad-midterm/) that the president's party often fares poorly in midterm election years, especially under [bad economic conditions](https://www.nytimes.com/2022/08/19/business/economy-midterm-elections-trump.html). 
 
 ```{r, include = FALSE}
 ## Data Wrangling
@@ -363,6 +367,7 @@ predict_table <- data.frame(model = "prediction", fundamentals = predict(fund_mo
 ```{r}
 tab_model(combo_model, show.se = TRUE)
 ```
+<br/>
 My district-level model, with predictions displayed below, also considers expert predictions as a heuristic by relying on the Cook Political Report's Partisan Voter Index when district-level polling data is unavailable. 
 ```{r, include=FALSE}
 district_poll_avgs <- district_polls %>%
@@ -414,7 +419,7 @@ seat_predict_table <- data.frame(model = c("Dem Wins", "Rep Wins", "Tied Seats",
 ```{r}
 tab_df(seat_predict_table)
 ```
-
-This, to me, seems like the optimal use of expert predictions in constructing my own forecast of the 2022 midterms — using expert opinion to fill gaps when polls and other data are unavailable. I've decided against more directly incorporating expert predictions into my model for a number of reasons. First, it to some extent defeats the purpose of election forecasting as an intellectual, exploratory enterprise if my model is simply derived by compiling other predictions and models. As Nate Silver [points out](https://fivethirtyeight.com/methodology/how-fivethirtyeights-house-and-senate-models-work/) when discussing his Deluxe forecast, "it’s kind of cheating to borrow other people’s forecasts and make them part of our own." Second, simply aggregating expert predictions may not produce a more accurate result if all of the expert predictions are off in the same direction. As we saw in 2018, all three major district-raters underestimated Democrats on net. Expert predictions are a useful tool for filling missing gaps in the data and gaining a better sense for the national electoral environment, but they won't form the central basis for my 2022 midterms model.
+<br/>
+This, to me, seems like the optimal use of expert predictions in constructing my own forecast of the 2022 midterms — using expert opinion to fill gaps when polls and other data are unavailable. I've decided against more directly incorporating expert predictions into my model for a number of reasons. First, it to some extent defeats the purpose of election forecasting as an intellectual, exploratory enterprise if my model is simply derived by compiling other predictions and models. As Nate Silver [points out](https://fivethirtyeight.com/methodology/how-fivethirtyeights-house-and-senate-models-work/) when discussing his Deluxe forecast, "it’s kind of cheating to borrow other people’s forecasts and make them part of our own." Second, simply aggregating expert predictions may not produce a more accurate result if all of the expert predictions are off in the same direction. As we saw in 2018, all three major forecasters underestimated Democrats on net. Expert predictions are a useful tool for filling missing gaps in the data and gaining a better sense of the national electoral environment, but they won't form the central basis for my 2022 midterms model.
 
 
