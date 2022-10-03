@@ -51,7 +51,7 @@
         <div class="post">
 		<div class="post-info">
     <span>Written by</span>
-        R package build
+        Ethan Jasny
         <br>
         <span>on&nbsp;</span><time datetime="2022-10-02 00:00:00 &#43;0000 UTC">October 2, 2022</time>
 </div>
@@ -65,15 +65,395 @@
 
 
 <p><em>This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor <a href="https://www.ryandenos.com">Ryan Enos</a>. It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.</em></p>
-<pre><code>## Reading layer `districts114&#39; from data source 
-##   `/private/var/folders/15/4j6_3bvs73l7c5csfb9y0_w80000gn/T/RtmpSpenAg/districtShapes/districts114.shp&#39; 
-##   using driver `ESRI Shapefile&#39;
-## Simple feature collection with 436 features and 15 fields (with 1 geometry empty)
-## Geometry type: MULTIPOLYGON
-## Dimension:     XY
-## Bounding box:  xmin: -179.1473 ymin: 18.91383 xmax: 179.7785 ymax: 71.35256
-## Geodetic CRS:  NAD83</code></pre>
-<p><img src="http://example.org/post/2022-10-02-blog-4-expert-predictions-and-incumbency/index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>This week, I’ll focus on the value of expert predictions and incumbency in building my model for the 2022 midterms. First, I’ll analyze the accuracy of experts in predicting the 2018 midterm elections, completing blog extensions 1 and 2. Next, I’ll return to models I built last week to consider the important of incumbency and expert predictions.</p>
+<div id="assessing-the-accuracy-of-expert-predictions" class="section level1">
+<h1>Assessing the Accuracy of Expert Predictions</h1>
+<p>Many political scientists, media organizations, and think tanks put forward predictions for the 2018 midterms. In this blog post, I’ll assess the accuracy of the predictions from the <a href="https://www.cookpolitical.com/ratings/house-race-ratings/187562">Cook Political Report</a>, <a href="https://insideelections.com/archive/year/2018">Inside Elections</a>, and <a href="https://centerforpolitics.org/crystalball/articles/final-picks-for-2018/">Larry Sabato’s Crystal Ball</a>. I decided to focus on these three expert prediction houses for a few main reasons. First, they’re all generally well-respected and trusted: FiveThirtyEight actually <a href="https://fivethirtyeight.com/methodology/how-fivethirtyeights-house-and-senate-models-work/">incorporates</a> their forecasts in its “Deluxe” model. Second, Cook, Inside Elections, and Crystal Ball use similar scales to rate the competitiveness of races, which allows for easy comparison. I’ve assigned scores ranging from 1 to 7 to the race ratings. Scores 1 through 3 represent congressional districts predicted to vote Blue (Solid Dem, Likely Dem, and Lean Dem), and scores 5 through 7 represent congressional districts predicted to vote Red (Lean Rep, Likely Rep, and Solid Rep). A score of 4 represents a pure toss-up seat. Note that Crystal Ball uses “Safe” Dem/Rep as an analog for what Cook and Inside Elections call “Solid” seats. Additionally, Inside Elections have “Tilt” Dem/Rep ratings for districts between toss-ups and leans, which I’ve thus coded as 3.5 and 4.5, respectively.</p>
+<p>The following map displays the true two-party Republican vote share in congressional districts in the 2018 House election.</p>
+<p><img src="http://example.org/post/2022-10-02-blog-4-expert-predictions-and-incumbency/index_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Now, plotted below is the 7-point scale race rating for each congressional district, calculated by averaging the race ratings from Cook, Inside Elections, and Crystal Ball.
+<img src="http://example.org/post/2022-10-02-blog-4-expert-predictions-and-incumbency/index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+The expert ratings seem to broadly align with district vote share. But for a more direct comparison, I will translate the race ratings into vote share measures. I define a toss-up district as one where Republicans and Democrats are projected to tie 50-50 in the two-party vote, a lean district with a predicted 53-47 result, a likely district with a predicted 56-44 result, and a solid district with a predicted 60-40 result. This is, of course, fairly arbitrary, but it provides a useful heuristic for comparing expert predictions with actual results. This “predicted” vote share is mapped below.</p>
+<p><img src="http://example.org/post/2022-10-02-blog-4-expert-predictions-and-incumbency/index_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+Finally, the following map plots the difference between the expert-predicted vote share and actual vote share and the congressional-district level.
+<img src="http://example.org/post/2022-10-02-blog-4-expert-predictions-and-incumbency/index_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+Positive (blue) values represent districts where Democrats performed better than the experts predicted, and negative (red) values represent districts where Republicans performed better than the experts predicted. For the most part, congressional districts are colored purple, suggesting fairly accurate predictions. And in the few races where there is significant error — such as California’s 8th district or Alabama’s 7th district — the large difference between the predicted actual vote share was the result of the incumbent candidate running unopposed. Because a Solid Dem/Rep race predicts a 60-40 margin, there will be an error of 40 percentage points if the incumbent runs without partisan opposition. This again speaks to the limits of assigning predicted vote share values to probabilistic race ratings.</p>
+<p>But perhaps the most direct way to assess the accuracy of these types of expert predictions is to calculate the number of races called correctly. After all, the goal of these ratings is not to determine by what margin a candidate will win a district, but rather the likelihood they will win at all. The following charts display the accuracy of Cook, Inside Elections, and Crystal Ball’s 2018 race ratings. Any district in the Republican basket (whether it’s lean Republican or solid Republican) is considered a projected Republican victory.</p>
+<table style="border-collapse:collapse; border:none;">
+<caption style="font-weight: bold; text-align:left;">
+Cook 2018 Prediction Accuracy
+</caption>
+<tr>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; text-align:left; ">
+Winning_Party
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+Projected_Rep
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+Projected_Dem
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+Projected_Tossup
+</th>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+D
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+4
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+210
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+21
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; border-bottom: double; ">
+R
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+191
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+0
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+9
+</td>
+</tr>
+</table>
+<table style="border-collapse:collapse; border:none;">
+<caption style="font-weight: bold; text-align:left;">
+Inside Elections 2018 Prediction Accuracy
+</caption>
+<tr>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; text-align:left; ">
+Winning_Party
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+Projected_Rep
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+Projected_Dem
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+Projected_Tossup
+</th>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+D
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+8
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+213
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+14
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; border-bottom: double; ">
+R
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+194
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+0
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+6
+</td>
+</tr>
+</table>
+<table style="border-collapse:collapse; border:none;">
+<caption style="font-weight: bold; text-align:left;">
+Crystal Ball 2018 Prediction Accuracy
+</caption>
+<tr>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; text-align:left; ">
+Winning_Party
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+Projected_Rep
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+Projected_Dem
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+Projected_Tossup
+</th>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+D
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+9
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+226
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+0
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; border-bottom: double; ">
+R
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+197
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+3
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+0
+</td>
+</tr>
+</table>
+<table style="border-collapse:collapse; border:none;">
+<caption style="font-weight: bold; text-align:left;">
+Forecaster Average 2018 Prediction Accuracy
+</caption>
+<tr>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; text-align:left; ">
+Winning_Party
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+Projected_Rep
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+Projected_Dem
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+Projected_Tossup
+</th>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+D
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+9
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+226
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+0
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; border-bottom: double; ">
+R
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+197
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+3
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+0
+</td>
+</tr>
+</table>
+<p>Upon first glance, it seems Cook’s forecasts where most accurate — only 4 races were called incorrectly. But Cook was also the most cautious — it kept 30 districts in the toss-up pile, whereas Inside Elections only had 20 toss-up districts, and Crystal Ball and the average of the three forecasters had 0 toss-ups. Across the board, the forecasters seemed to underestimate the Democrats. For all three forecasters greater proportion of the projected Republican seats went Democratic than projected Democratic seats that went Republican. In fact, not a single seat projected by Cook or Inside Elections to go Democratic actually voted red. Overall, the expert predictions from all three forecasters seem fairly accurate, though the fact that they all underestimated Democrats is concerning. It suggests that there could be underlying variables advantaging Democrats that these fairly subjective methods of election forecasting do not consider.</p>
+</div>
+<div id="the-role-of-experts-and-incumbency-in-my-model" class="section level1">
+<h1>The Role of Experts and Incumbency in My Model</h1>
+<p>For this week, I’m not going to construct a brand new new model, as my predictions from <a href="https://ethanjasny.github.io/gov1347/post/2022-09-26-blog-3-polling/">last week</a> already consider aspects of incumbency and expert prediction. My national popular vote model, shown in the below chart, predicts the two-party vote share of the <strong>incumbent president’s party</strong>, drawing on the <a href="https://fivethirtyeight.com/features/why-the-presidents-party-almost-always-has-a-bad-midterm/">obsveration</a> that the president’s party often fares poorly in midterm election years, especially under <a href="https://www.nytimes.com/2022/08/19/business/economy-midterm-elections-trump.html">bad economic conditions</a>.</p>
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+incumbent pres majorvote
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+27.83
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.58
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+22.57 – 33.10
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+incumbent pres polls
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.43
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.32 – 0.53
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+GDP growth pct
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.27
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.40 – 0.71
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.579
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+midterm dummy
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.71
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.65
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-2.03 – 0.61
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.279
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+36
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.716 / 0.689
+</td>
+</tr>
+</table>
+<p>My district-level model, with predictions displayed below, also considers expert predictions as a heuristic by relying on the Cook Political Report’s Partisan Voter Index when district-level polling data is unavailable.</p>
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; text-align:left; ">
+model
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+PVI
+</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; ">
+PVI_polls
+</th>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+Dem Wins
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+208.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+209.00
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+Rep Wins
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+227.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+224.00
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+Tied Seats
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+0.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+2.00
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+Dem Seat Share
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+0.48
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; ">
+0.48
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; border-bottom: double; ">
+Rep Seat Share
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+0.52
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: double; ">
+0.51
+</td>
+</tr>
+</table>
+<p>This, to me, seems like the optimal use of expert predictions in constructing my own forecast of the 2022 midterms — using expert opinion to fill gaps when polls and other data are unavailable. I’ve decided against more directly incorporating expert predictions into my model for a number of reasons. First, it to some extent defeats the purpose of election forecasting as an intellectual, exploratory enterprise if my model is simply derived by compiling other predictions and models. As Nate Silver <a href="https://fivethirtyeight.com/methodology/how-fivethirtyeights-house-and-senate-models-work/">points out</a> when discussing his Deluxe forecast, “it’s kind of cheating to borrow other people’s forecasts and make them part of our own.” Second, simply aggregating expert predictions may not produce a more accurate result if all of the expert predictions are off in the same direction. As we saw in 2018, all three major district-raters underestimated Democrats on net. Expert predictions are a useful tool for filling missing gaps in the data and gaining a better sense for the national electoral environment, but they won’t form the central basis for my 2022 midterms model.</p>
+</div>
 
 
 		
@@ -90,7 +470,7 @@
         		<footer>
 			
 			<span>
-			&copy; <time datetime="2022-10-02 22:56:34.245094 -0400 EDT m=&#43;0.280426489">2022</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2022-10-03 02:14:49.747361 -0400 EDT m=&#43;0.356195910">2022</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 

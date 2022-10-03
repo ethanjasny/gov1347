@@ -1,6 +1,6 @@
 ---
 title: 'Blog 4: Expert Predictions and Incumbency'
-author: R package build
+author: "Ethan Jasny"
 date: '2022-10-02'
 slug: []
 categories: []
@@ -27,7 +27,15 @@ library(rmapshaper)
 ```
 *This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
 
-```{r}
+This week, I'll focus on the value of expert predictions and incumbency in building my model for the 2022 midterms. First, I'll analyze the accuracy of experts in predicting the 2018 midterm elections, completing blog extensions 1 and 2. Next, I'll return to models I built last week to consider the important of incumbency and expert predictions. 
+
+# Assessing the Accuracy of Expert Predictions
+Many political scientists, media organizations, and think tanks put forward predictions for the 2018 midterms. In this blog post, I'll assess the accuracy of the predictions from the [Cook Political Report](https://www.cookpolitical.com/ratings/house-race-ratings/187562), [Inside Elections](https://insideelections.com/archive/year/2018), and [Larry Sabato's Crystal Ball](https://centerforpolitics.org/crystalball/articles/final-picks-for-2018/). I decided to focus on these three expert prediction houses for a few main reasons. First, they're all generally well-respected and trusted: FiveThirtyEight actually [incorporates](https://fivethirtyeight.com/methodology/how-fivethirtyeights-house-and-senate-models-work/) their forecasts in its "Deluxe" model. Second, Cook, Inside Elections, and Crystal Ball use similar scales to rate the competitiveness of races, which allows for easy comparison. I've assigned scores ranging from 1 to 7 to the race ratings. Scores 1 through 3 represent congressional districts predicted to vote Blue (Solid Dem, Likely Dem, and Lean Dem), and scores 5 through 7 represent congressional districts predicted to vote Red (Lean Rep, Likely Rep, and Solid Rep). A score of 4 represents a pure toss-up seat. Note that Crystal Ball uses "Safe" Dem/Rep as an analog for what Cook and Inside Elections call "Solid" seats. Additionally, Inside Elections have "Tilt" Dem/Rep ratings for districts between toss-ups and leans, which I've thus coded as 3.5 and 4.5, respectively.
+
+The following map displays the true two-party Republican vote share in congressional districts in the 2018 House election. 
+
+```{r, include=FALSE}
+## Assign race ratings numerical values
 data <- read_csv("Race_Ratings_2018.csv") %>%
   mutate(cpr_num = case_when(
     cpr == "Solid Democratic" ~ 1,
@@ -89,13 +97,15 @@ data <- read_csv("Race_Ratings_2018.csv") %>%
   mutate(avg = (cpr_num + inside_elections_num + crystal_ball_num)/3,
          avg_margin = (cpr_margin + inside_elections_margin + crystal_ball_margin)/3)
 
+## Read and clean election data
 elect.data <- read.csv("house party vote share by district 1948-2020.csv") %>%
   filter(raceYear == 2018, RepVotesMajorPercent != 50.41) %>%
   select(State, raceYear, Area, RepVotesMajorPercent, DemVotesMajorPercent, st_fips, state_abb, CD, district_num, district_id, WinnerParty)
 
-
+## Clean data to prepare for join
 elect.data$CD[grep(pattern = "-AL", x = elect.data$CD)] <- c("AK-01","DE-01","MT-01","ND-01","SD-01", "VT-01","WY-01")
 
+## Join election data and expert data
 elect.data <- elect.data %>%  
   inner_join(data, by = "CD") %>%
   rename(DISTRICT = district_num, STATENAME = State) %>%
@@ -103,7 +113,7 @@ elect.data <- elect.data %>%
          diff = avg_margin - RepVotesMajorPercent)
 
 
-# load geographic data
+## load geographic data
 get_congress_map <- function(cong=114) {
   tmp_file <- tempfile()
   tmp_dir  <- tempdir()
@@ -114,12 +124,13 @@ get_congress_map <- function(cong=114) {
   st_read(fpath)
 }
 
-# load 114th congress
+## load 114th congress
 cd114 <- get_congress_map(114)
 cd114 <- cd114 %>% left_join(elect.data, by=c("DISTRICT", "STATENAME"))
-# simplify district boundaries
+## simplify district boundaries
 districts_simp <- rmapshaper::ms_simplify(cd114, keep = 0.01)
 
+## Plot Voteshare
 fig1 <- ggplot() + 
   geom_sf(data=districts_simp,aes(fill=RepVotesMajorPercent),
           inherit.aes=FALSE,alpha=0.9) + 
@@ -135,6 +146,7 @@ fig1 <- ggplot() +
         plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
   labs(fill = "GOP Two-Party Vote Share", title = "2018 Republican Vote Share by Congressional District")
 
+## Plot 1-7 prediction scale
 fig2 <- ggplot() + 
   geom_sf(data=districts_simp,aes(fill=avg),
           inherit.aes=FALSE,alpha=0.9) + 
@@ -150,10 +162,11 @@ fig2 <- ggplot() +
         plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
   labs(fill = "Expert Predictions (Solid D-Solid R)", title = "2018 Expert Predictions")
 
+## Plot prediction vote share
 fig3 <- ggplot() + 
   geom_sf(data=districts_simp,aes(fill= avg_margin),
           inherit.aes=FALSE,alpha=0.9) + 
-  scale_fill_gradient(low = "blue", high = "red", limits=c(0,100)) +
+  scale_fill_gradient(low = "blue", high = "red", limits=c(40,60)) +
   coord_sf(xlim = c(-124.43, -66.57), ylim = c(23, 49), expand = FALSE) +  
   theme_void() +
   theme(axis.title.x=element_blank(),
@@ -163,8 +176,9 @@ fig3 <- ggplot() +
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
         plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
-  labs(fill = "2018 Expert Predictions ", title = "Expert Predictions (Solid D-Solid R)")
+  labs(fill = "Predicted Republican Vote Share", title = "2018 Expert Predictions — Vote Share")
 
+## Plot prediction accuracy
 fig4 <- ggplot() + 
   geom_sf(data=districts_simp,aes(fill= diff),
           inherit.aes=FALSE,alpha=0.9) + 
@@ -179,5 +193,228 @@ fig4 <- ggplot() +
         axis.ticks.y=element_blank(),
         plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
   labs(fill = "Predicted Minus Actual GOP Vote Share", title = "Accuracy of Expert Predictions")
+```
+
+```{r}
 fig1
 ```
+
+
+Now, plotted below is the 7-point scale race rating for each congressional district, calculated by averaging the race ratings from Cook, Inside Elections, and Crystal Ball.
+```{r}
+fig2
+```
+The expert ratings seem to broadly align with district vote share. But for a more direct comparison, I will translate the race ratings into vote share measures. I define a toss-up district as one where Republicans and Democrats are projected to tie 50-50 in the two-party vote, a lean district with a predicted 53-47 result, a likely district with a predicted 56-44 result, and a solid district with a predicted 60-40 result. This is, of course, fairly arbitrary, but it provides a useful heuristic for comparing expert predictions with actual results. This "predicted" vote share is mapped below.
+
+```{r}
+fig3
+```
+Finally, the following map plots the difference between the expert-predicted vote share and actual vote share and the congressional-district level. 
+```{r}
+fig4
+```
+Positive (blue) values represent districts where Democrats performed better than the experts predicted, and negative (red) values represent districts where Republicans performed better than the experts predicted. For the most part, congressional districts are colored purple, suggesting fairly accurate predictions. And in the few races where there is significant error — such as California's 8th district or Alabama's 7th district — the large difference between the predicted actual vote share was the result of the incumbent candidate running unopposed. Because a Solid Dem/Rep race predicts a 60-40 margin, there will be an error of 40 percentage points if the incumbent runs without partisan opposition. This again speaks to the limits of assigning predicted vote share values to probabilistic race ratings.
+
+But perhaps the most direct way to assess the accuracy of these types of expert predictions is to calculate the number of races called correctly. After all, the goal of these ratings is not to determine by what margin a candidate will win a district, but rather the likelihood they will win at all. The following charts display the accuracy of Cook, Inside Elections, and Crystal Ball's 2018 race ratings. Any district in the Republican basket (whether it's lean Republican or solid Republican) is considered a projected Republican victory.
+```{r}
+## Test accuracy
+## Cook
+cook_acc <- data.frame(Winning_Party = c("D","R"), 
+           Projected_Rep = c(sum(elect.data$WinnerParty[elect.data$cpr_num > 4] == "D"), sum(elect.data$WinnerParty[elect.data$cpr_num > 4] == "R")),
+           Projected_Dem = c(sum(elect.data$WinnerParty[elect.data$cpr_num < 4] == "D"), sum(elect.data$WinnerParty[elect.data$cpr_num < 4] == "R")),
+           Projected_Tossup = c(sum(elect.data$WinnerParty[elect.data$cpr_num == 4] == "D"), sum(elect.data$WinnerParty[elect.data$cpr_num == 4] == "R")))
+
+ie_acc <- data.frame(Winning_Party = c("D","R"), 
+           Projected_Rep = c(sum(elect.data$WinnerParty[elect.data$inside_elections_num > 4] == "D"), sum(elect.data$WinnerParty[elect.data$inside_elections_num > 4] == "R")),
+           Projected_Dem = c(sum(elect.data$WinnerParty[elect.data$inside_elections_num < 4] == "D"), sum(elect.data$WinnerParty[elect.data$inside_elections_num < 4] == "R")),
+           Projected_Tossup = c(sum(elect.data$WinnerParty[elect.data$inside_elections_num == 4] == "D"), sum(elect.data$WinnerParty[elect.data$inside_elections_num == 4] == "R")))
+
+cb_acc <- data.frame(Winning_Party = c("D","R"), 
+           Projected_Rep = c(sum(elect.data$WinnerParty[elect.data$crystal_ball_num > 4] == "D"), sum(elect.data$WinnerParty[elect.data$crystal_ball_num > 4] == "R")),
+           Projected_Dem = c(sum(elect.data$WinnerParty[elect.data$crystal_ball_num < 4] == "D"), sum(elect.data$WinnerParty[elect.data$crystal_ball_num < 4] == "R")),
+           Projected_Tossup = c(sum(elect.data$WinnerParty[elect.data$crystal_ball_num == 4] == "D"), sum(elect.data$WinnerParty[elect.data$crystal_ball_num == 4] == "R")))
+
+avg_acc <- data.frame(Winning_Party = c("D","R"), 
+           Projected_Rep = c(sum(elect.data$WinnerParty[elect.data$avg > 4] == "D"), sum(elect.data$WinnerParty[elect.data$avg > 4] == "R")),
+           Projected_Dem = c(sum(elect.data$WinnerParty[elect.data$avg < 4] == "D"), sum(elect.data$WinnerParty[elect.data$avg < 4] == "R")),
+           Projected_Tossup = c(sum(elect.data$WinnerParty[elect.data$avg == 4] == "D"), sum(elect.data$WinnerParty[elect.data$avg == 4] == "R")))
+```
+```{r}
+tab_df(cook_acc, title = "Cook 2018 Prediction Accuracy")
+```
+```{r}
+tab_df(ie_acc, title = "Inside Elections 2018 Prediction Accuracy")
+```
+```{r}
+tab_df(cb_acc, title = "Crystal Ball 2018 Prediction Accuracy")
+
+```
+```{r}
+tab_df(avg_acc, title = "Forecaster Average 2018 Prediction Accuracy")
+
+```
+Upon first glance, it seems Cook's forecasts where most accurate — only 4 races were called incorrectly. But Cook was also the most cautious — it kept 30 districts in the toss-up pile, whereas Inside Elections only had 20 toss-up districts, and Crystal Ball and the average of the three forecasters had 0 toss-ups. Across the board, the forecasters seemed to underestimate the Democrats. For all three forecasters greater proportion of the projected Republican seats went Democratic than projected Democratic seats that went Republican. In fact, not a single seat projected by Cook or Inside Elections to go Democratic actually voted red. Overall, the expert predictions from all three forecasters seem fairly accurate, though the fact that they all underestimated Democrats is concerning. It suggests that there could be underlying variables advantaging Democrats that these fairly subjective methods of election forecasting do not consider.
+
+# The Role of Experts and Incumbency in My Model
+For this week, I'm not going to construct a brand new new model, as my predictions from [last week](https://ethanjasny.github.io/gov1347/post/2022-09-26-blog-3-polling/) already consider aspects of incumbency and expert prediction. My national popular vote model, shown in the below chart, predicts the two-party vote share of the **incumbent president's party**, drawing on the [obsveration](https://fivethirtyeight.com/features/why-the-presidents-party-almost-always-has-a-bad-midterm/) that the president's party often fares poorly in midterm election years, especially under [bad economic conditions](https://www.nytimes.com/2022/08/19/business/economy-midterm-elections-trump.html). 
+
+```{r, include = FALSE}
+## Data Wrangling
+district_polls <- read_csv("538_house_polls_2022.csv")
+hist_polls <- read_csv("polls_df.csv")
+nat_polls <- read_csv("538_generic_poll_2022.csv")
+PVI <- read.csv("PVIe.csv") %>%
+  select(District, PVI)
+GDP <- read_csv("GDP_quarterly.csv")
+election_data <- read_csv("house_popvote_seats.csv")
+
+PVI_share <- PVI
+
+  
+PVI_share$partymulti[grep("R", PVI_share$PVI)] <- -1
+PVI_share$partymulti[grep("D", PVI_share$PVI)] <- 1
+PVI_share$partymulti[grep("EVEN", PVI_share$PVI)] <- 0
+PVI_share$PVI[PVI_share$PVI == "EVEN"] <- 0
+PVI_share$PVI_num <- parse_number(PVI_share$PVI)*PVI_share$partymulti
+
+PVI_share
+write.csv(PVI_share, file = "PVI_share.csv")
+median(PVI_share$PVI_num)
+
+hist_polls_data <- hist_polls %>%
+  filter(days_until_election < 45) %>% 
+  group_by(year,party) %>% 
+  summarise(avg_support = mean(support)) %>%
+  spread(key = "party", value = "avg_support") %>%
+  mutate(poll_margin = 100*(D-R)/(D+R))
+
+GDP_data <- GDP %>%
+  filter(quarter_cycle == 5) %>%
+  select(year, GDPC1, GDP_growth_pct)
+
+model_elec_data <- election_data %>%
+  select(year, R_seats, D_seats, R_majorvote_pct, D_majorvote_pct, president_party) %>%
+  mutate(incumbent_president = c("D","D","D","R","R","R","R","D","D","D","D","R","R","R","R","D","D","R","R","R","R","R", "R","D","D","D","D", "R", "R", "R","R","D","D","D","D","R","R")) %>% # Add list of incumbent presidents
+  mutate(incumbent_president_dummy = ifelse(incumbent_president == "D", 1, 0)) %>% # Incumbent president dummy variable
+  mutate(midterm_dummy = ifelse(year %% 4, 1, 0)) %>% # Midterm election dummy variable
+  inner_join(hist_polls_data, by = "year") %>%
+  mutate(incumbent_pres_majorvote = ifelse(incumbent_president == "D", D_majorvote_pct, R_majorvote_pct),
+         incumbent_pres_seats = ifelse(incumbent_president == "D", D_seats, R_seats),
+         incumbent_pres_polls = ifelse(incumbent_president == "D", 100*D/(R+D), 100*R/(R+D))) %>% # Assign vote/seat share for incumbent party's president to new variables
+  select(year, midterm_dummy, incumbent_pres_majorvote, incumbent_pres_seats, incumbent_pres_polls, incumbent_president) %>%
+  inner_join(GDP_data, by = "year")
+
+
+## Model 1: Fundamentals only:
+fund_model <- lm(incumbent_pres_majorvote ~ GDP_growth_pct + midterm_dummy, data = model_elec_data)
+#summary(fund_model)
+#tab_model(fund_model, show.se = TRUE)
+
+## Model 2: Polls only:
+poll_model <- lm(incumbent_pres_majorvote ~ incumbent_pres_polls, data = model_elec_data)
+#summary(poll_model)
+#tab_model(poll_model, show.se = TRUE)
+
+## Model 3: Combined
+combo_model <-lm(incumbent_pres_majorvote ~ incumbent_pres_polls + GDP_growth_pct + midterm_dummy, data = model_elec_data)
+#summary(combo_model)
+#tab_model(combo_model, show.se = TRUE)
+
+## Plot Models
+fig1 <- ggplot(aes(x = predict(fund_model, model_elec_data), y = incumbent_pres_majorvote, label = year), data = model_elec_data) +
+  geom_text() +
+  geom_abline(intercept = 0, slope = 1, color = "darkseagreen4") +
+  labs(title = "Fundamentals Model") +
+  xlab(label = "Predicted Incumbent President Vote Share") +
+  ylab(label = "Actual Incumbent President Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+fig2 <- ggplot(aes(x = predict(poll_model, model_elec_data), y = incumbent_pres_majorvote, label = year), data = model_elec_data) +
+  geom_text() +
+  geom_abline(intercept = 0, slope = 1, color = "darkseagreen4") +
+  labs(title = "Polls Model") +
+  xlab(label = "Predicted Incumbent President Vote Share") +
+  ylab(label = "Actual Incumbent President Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+fig3 <- ggplot(aes(x = predict(combo_model, model_elec_data), y = incumbent_pres_majorvote, label = year), data = model_elec_data) +
+  geom_text() +
+  geom_abline(intercept = 0, slope = 1, color = "darkseagreen4") +
+  labs(title = "Combined Model") +
+  xlab(label = "Predicted Incumbent President Vote Share") +
+  ylab(label = "Actual Incumbent President Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+## Make Predictions
+nat_polls$enddate <- as.Date(nat_polls$enddate, "%m/%d/%y")
+nat_polls_pred <- nat_polls %>%
+  filter(enddate > "2022-08-01") %>%
+  mutate(dem_tp = dem/(dem + rep))
+
+predictions_data <- NA
+predictions_data$incumbent_pres_polls <- 100*mean(nat_polls_pred$dem_tp)
+predictions_data$GDP_growth_pct <- GDP_data$GDP_growth_pct[GDP_data$year == 2022]
+predictions_data$midterm_dummy <- 1
+
+predict_table <- data.frame(model = "prediction", fundamentals = predict(fund_model, predictions_data), polls = predict(poll_model, predictions_data), combined = predict(combo_model, predictions_data))
+
+```
+```{r}
+tab_model(combo_model, show.se = TRUE)
+```
+My district-level model, with predictions displayed below, also considers expert predictions as a heuristic by relying on the Cook Political Report's Partisan Voter Index when district-level polling data is unavailable. 
+```{r, include=FALSE}
+district_poll_avgs <- district_polls %>%
+  select(state, candidate_name, end_date, seat_number, party, pct, stage) %>%
+  mutate(District = paste(state, seat_number, sep = " ")) %>%
+  filter(stage == "general", state != "Alaska", party == c("REP", "DEM")) %>%
+  group_by(District, party) %>%
+  summarise(mean(pct)) %>%
+  spread(key = "party", value = "mean(pct)")
+
+district_poll_avgs$District[district_poll_avgs$District == "Vermont 1"] <- "Vermont at-large"
+
+district_poll_avgs_pvi <- full_join(PVI, district_poll_avgs, by = "District")
+
+
+district_poll_avgs_pvi$partymulti[grep("R", district_poll_avgs_pvi$PVI)] <- -1
+district_poll_avgs_pvi$partymulti[grep("D", district_poll_avgs_pvi$PVI)] <- 1
+district_poll_avgs_pvi$partymulti[grep("EVEN", district_poll_avgs_pvi$PVI)] <- 0
+
+district_poll_avgs_pvi$PVI[district_poll_avgs_pvi$PVI == "EVEN"] <- 0
+district_poll_avgs_pvi$PVI_num <- parse_number(district_poll_avgs_pvi$PVI)*district_poll_avgs_pvi$partymulti
+
+district_poll_avgs_pvi <- district_poll_avgs_pvi %>%
+  mutate(poll_lean = 50*(DEM - REP)/(DEM + REP)) %>%
+  select(District, PVI_num, poll_lean, DEM, REP)
+
+nat_polls$enddate <- as.Date(nat_polls$enddate, "%m/%d/%y")
+nat_polls_margins <- nat_polls %>%
+  filter(enddate > "2022-08-01") %>%
+  mutate(margin = 100*(dem - rep)/(dem + rep)) %>%
+  mutate(margin_adj = 100*(adjusted_dem - adjusted_rep)/(adjusted_dem + adjusted_rep))
+
+predicted_pop_vote_margin <- predict_table$combined - 50
+
+district_poll_avgs_pvi$diff <- district_poll_avgs_pvi$PVI_num + predicted_pop_vote_margin
+district_poll_avgs_pvi$diff_poll <- ifelse(is.na(district_poll_avgs_pvi$poll_lean), district_poll_avgs_pvi$diff, ((district_poll_avgs_pvi$poll_lean)))
+
+#sum(district_poll_avgs_pvi$diff > 0)
+#sum(district_poll_avgs_pvi$diff < 0)
+
+#sum(district_poll_avgs_pvi$diff_poll > 0)
+#sum(district_poll_avgs_pvi$diff_poll < 0)
+#sum(district_poll_avgs_pvi$diff_poll == 0)
+
+seat_predict_table <- data.frame(model = c("Dem Wins", "Rep Wins", "Tied Seats", "Dem Seat Share", "Rep Seat Share"), PVI = c(sum(district_poll_avgs_pvi$diff > 0), sum(district_poll_avgs_pvi$diff < 0),0, sum(district_poll_avgs_pvi$diff > 0)/435, sum(district_poll_avgs_pvi$diff < 0)/435 ), PVI_polls = c(sum(district_poll_avgs_pvi$diff_poll > 0), sum(district_poll_avgs_pvi$diff_poll < 0), sum(district_poll_avgs_pvi$diff_poll == 0), sum(district_poll_avgs_pvi$diff_poll > 0)/435, sum(district_poll_avgs_pvi$diff_poll < 0)/435))
+
+```
+
+```{r}
+tab_df(seat_predict_table)
+```
+
+This, to me, seems like the optimal use of expert predictions in constructing my own forecast of the 2022 midterms — using expert opinion to fill gaps when polls and other data are unavailable. I've decided against more directly incorporating expert predictions into my model for a number of reasons. First, it to some extent defeats the purpose of election forecasting as an intellectual, exploratory enterprise if my model is simply derived by compiling other predictions and models. As Nate Silver [points out](https://fivethirtyeight.com/methodology/how-fivethirtyeights-house-and-senate-models-work/) when discussing his Deluxe forecast, "it’s kind of cheating to borrow other people’s forecasts and make them part of our own." Second, simply aggregating expert predictions may not produce a more accurate result if all of the expert predictions are off in the same direction. As we saw in 2018, all three major district-raters underestimated Democrats on net. Expert predictions are a useful tool for filling missing gaps in the data and gaining a better sense for the national electoral environment, but they won't form the central basis for my 2022 midterms model.
+
+
