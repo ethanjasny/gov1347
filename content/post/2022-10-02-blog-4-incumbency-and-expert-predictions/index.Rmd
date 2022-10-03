@@ -180,7 +180,7 @@ fig4 <- ggplot() +
         axis.ticks.y=element_blank(),
         plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
   labs(fill = "Predicted Minus Actual GOP Vote Share", title = "Accuracy of Expert Predictions")
-
+fig1
 ```
 ```{r}
 ## Test accuracy
