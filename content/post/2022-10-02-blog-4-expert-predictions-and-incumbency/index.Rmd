@@ -1,6 +1,6 @@
 ---
-title: 'Blog 4: Incumbency and Expert Predictions'
-author: "Ethan Jasny"
+title: 'Blog 4: Expert Predictions and Incumbency'
+author: R package build
 date: '2022-10-02'
 slug: []
 categories: []
@@ -181,30 +181,3 @@ fig4 <- ggplot() +
   labs(fill = "Predicted Minus Actual GOP Vote Share", title = "Accuracy of Expert Predictions")
 fig1
 ```
-```{r}
-## Test accuracy
-## Cook
-cook_acc <- data.frame(Winning_Party = c("D","R"), 
-           Projected_Dem = c(sum(elect.data$WinnerParty[elect.data$cpr_num > 4] == "D"), sum(elect.data$WinnerParty[elect.data$cpr_num > 4] == "R")),
-           Projected_Rep = c(sum(elect.data$WinnerParty[elect.data$cpr_num < 4] == "D"), sum(elect.data$WinnerParty[elect.data$cpr_num < 4] == "R")),
-           Projected_Tossup = c(sum(elect.data$WinnerParty[elect.data$cpr_num == 4] == "D"), sum(elect.data$WinnerParty[elect.data$cpr_num == 4] == "R")))
-
-ie_acc <- data.frame(Winning_Party = c("D","R"), 
-           Projected_Dem = c(sum(elect.data$WinnerParty[elect.data$inside_elections_num > 4] == "D"), sum(elect.data$WinnerParty[elect.data$inside_elections_num > 4] == "R")),
-           Projected_Rep = c(sum(elect.data$WinnerParty[elect.data$inside_elections_num < 4] == "D"), sum(elect.data$WinnerParty[elect.data$inside_elections_num < 4] == "R")),
-           Projected_Tossup = c(sum(elect.data$WinnerParty[elect.data$inside_elections_num == 4] == "D"), sum(elect.data$WinnerParty[elect.data$inside_elections_num == 4] == "R")))
-
-cb_acc <- data.frame(Winning_Party = c("D","R"), 
-           Projected_Dem = c(sum(elect.data$WinnerParty[elect.data$crystal_ball_num > 4] == "D"), sum(elect.data$WinnerParty[elect.data$crystal_ball_num > 4] == "R")),
-           Projected_Rep = c(sum(elect.data$WinnerParty[elect.data$crystal_ball_num < 4] == "D"), sum(elect.data$WinnerParty[elect.data$crystal_ball_num < 4] == "R")),
-           Projected_Tossup = c(sum(elect.data$WinnerParty[elect.data$crystal_ball_num == 4] == "D"), sum(elect.data$WinnerParty[elect.data$crystal_ball_num == 4] == "R")))
-
-avg_acc <- data.frame(Winning_Party = c("D","R"), 
-           Projected_Dem = c(sum(elect.data$WinnerParty[elect.data$avg > 4] == "D"), sum(elect.data$WinnerParty[elect.data$avg > 4] == "R")),
-           Projected_Rep = c(sum(elect.data$WinnerParty[elect.data$avg < 4] == "D"), sum(elect.data$WinnerParty[elect.data$avg < 4] == "R")),
-           Projected_Tossup = c(sum(elect.data$WinnerParty[elect.data$avg == 4] == "D"), sum(elect.data$WinnerParty[elect.data$avg == 4] == "R")))
-
-tab_df(ie_acc, title = "Inside Elections 2018 Prediction Accuracy")
-```
-
-
