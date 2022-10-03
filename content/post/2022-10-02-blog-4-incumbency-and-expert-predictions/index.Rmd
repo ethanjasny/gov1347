@@ -1,0 +1,211 @@
+---
+title: 'Blog 4: Incumbency and Expert Predictions'
+author: "Ethan Jasny"
+date: '2022-10-02'
+slug: []
+categories: []
+tags: []
+---
+
+```{r setup, include=FALSE}
+# Hide all code output
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+# Import libraries
+library(tidyverse)
+library(ggplot2)
+library(usmap)
+library(sf)
+library(blogdown)
+library(plotly)
+library(htmlwidgets)
+library(gridExtra)
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+library(kableExtra)
+library(rmapshaper)
+```
+*This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
+
+```{r}
+data <- read_csv("Race_Ratings_2018.csv") %>%
+  mutate(cpr_num = case_when(
+    cpr == "Solid Democratic" ~ 1,
+    cpr == "Likely Democratic" ~ 2,
+    cpr == "Lean Democratic" ~ 3,
+    cpr == "Toss-up" ~ 4,
+    cpr == "Lean Republican" ~ 5,
+    cpr == "Likely Republican" ~ 6,
+    cpr == "Solid Republican" ~ 7
+  )) %>%
+  mutate(inside_elections_num = case_when(
+    inside_elections == "Solid Democratic" ~ 1,
+    inside_elections == "Likely Democratic" ~ 2,
+    inside_elections == "Lean Democratic" ~ 3,
+    inside_elections == "Toss-up" ~ 4,
+    inside_elections == "Lean Republican" ~ 5,
+    inside_elections == "Likely Republican" ~ 6,
+    inside_elections == "Solid Republican" ~ 7,
+    inside_elections == "Tilt Democratic" ~ 3.5,
+    inside_elections == "Tilt Republican" ~ 4.5
+  )) %>%
+  mutate(crystal_ball_num = case_when(
+    crystal_ball == "Safe Democratic" ~ 1,
+    crystal_ball == "Likely Democratic" ~ 2,
+    crystal_ball == "Lean Democratic" ~ 3,
+    crystal_ball == "Toss-up" ~ 4,
+    crystal_ball == "Lean Republican" ~ 5,
+    crystal_ball == "Likely Republican" ~ 6,
+    crystal_ball == "Safe Republican" ~ 7
+  )) %>%
+    mutate(cpr_margin = case_when(
+    cpr == "Solid Democratic" ~ 40,
+    cpr == "Likely Democratic" ~ 44,
+    cpr == "Lean Democratic" ~ 47,
+    cpr == "Toss-up" ~ 50,
+    cpr == "Lean Republican" ~ 53,
+    cpr == "Likely Republican" ~ 56,
+    cpr == "Solid Republican" ~ 60)) %>%
+  mutate(inside_elections_margin = case_when(
+    inside_elections == "Solid Democratic" ~ 40,
+    inside_elections == "Likely Democratic" ~ 44,
+    inside_elections == "Lean Democratic" ~ 47,
+    inside_elections == "Toss-up" ~ 50,
+    inside_elections == "Lean Republican" ~ 53,
+    inside_elections == "Likely Republican" ~ 56,
+    inside_elections == "Solid Republican" ~ 60,
+    inside_elections == "Tilt Democratic" ~ 48.5,
+    inside_elections == "Tilt Republican" ~ 51.5)) %>%
+  mutate(crystal_ball_margin = case_when(
+    crystal_ball == "Safe Democratic" ~ 40,
+    crystal_ball == "Likely Democratic" ~ 44,
+    crystal_ball == "Lean Democratic" ~ 47,
+    crystal_ball == "Toss-up" ~ 50,
+    crystal_ball == "Lean Republican" ~ 53,
+    crystal_ball == "Likely Republican" ~ 56,
+    crystal_ball == "Safe Republican" ~ 60)) %>%
+  rename("avg" = ...8,
+         "CD" = District) %>%
+  mutate(avg = (cpr_num + inside_elections_num + crystal_ball_num)/3,
+         avg_margin = (cpr_margin + inside_elections_margin + crystal_ball_margin)/3)
+
+elect.data <- read.csv("house party vote share by district 1948-2020.csv") %>%
+  filter(raceYear == 2018, RepVotesMajorPercent != 50.41) %>%
+  select(State, raceYear, Area, RepVotesMajorPercent, DemVotesMajorPercent, st_fips, state_abb, CD, district_num, district_id, WinnerParty)
+
+
+elect.data$CD[grep(pattern = "-AL", x = elect.data$CD)] <- c("AK-01","DE-01","MT-01","ND-01","SD-01", "VT-01","WY-01")
+
+elect.data <- elect.data %>%  
+  inner_join(data, by = "CD") %>%
+  rename(DISTRICT = district_num, STATENAME = State) %>%
+  mutate(DISTRICT = as.character(DISTRICT),
+         diff = avg_margin - RepVotesMajorPercent)
+
+
+# load geographic data
+get_congress_map <- function(cong=114) {
+  tmp_file <- tempfile()
+  tmp_dir  <- tempdir()
+  zp <- sprintf("https://cdmaps.polisci.ucla.edu/shp/districts114.zip",cong)
+  download.file(zp, tmp_file)
+  unzip(zipfile = tmp_file, exdir = tmp_dir)
+  fpath <- paste(tmp_dir, sprintf("districtShapes/districts114.shp",cong), sep = "/")
+  st_read(fpath)
+}
+
+# load 114th congress
+cd114 <- get_congress_map(114)
+cd114 <- cd114 %>% left_join(elect.data, by=c("DISTRICT", "STATENAME"))
+# simplify district boundaries
+districts_simp <- rmapshaper::ms_simplify(cd114, keep = 0.01)
+
+fig1 <- ggplot() + 
+  geom_sf(data=districts_simp,aes(fill=RepVotesMajorPercent),
+          inherit.aes=FALSE,alpha=0.9) + 
+  scale_fill_gradient(low = "blue", high = "red", limits=c(0,100)) +
+  coord_sf(xlim = c(-124.43, -66.57), ylim = c(23, 49), expand = FALSE) +  
+  theme_void() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
+  labs(fill = "GOP Two-Party Vote Share", title = "2018 Republican Vote Share by Congressional District")
+
+fig2 <- ggplot() + 
+  geom_sf(data=districts_simp,aes(fill=avg),
+          inherit.aes=FALSE,alpha=0.9) + 
+  scale_fill_gradient(low = "blue", high = "red", limits=c(1,7)) +
+  coord_sf(xlim = c(-124.43, -66.57), ylim = c(23, 49), expand = FALSE) +  
+  theme_void() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
+  labs(fill = "Expert Predictions (Solid D-Solid R)", title = "2018 Expert Predictions")
+
+fig3 <- ggplot() + 
+  geom_sf(data=districts_simp,aes(fill= avg_margin),
+          inherit.aes=FALSE,alpha=0.9) + 
+  scale_fill_gradient(low = "blue", high = "red", limits=c(0,100)) +
+  coord_sf(xlim = c(-124.43, -66.57), ylim = c(23, 49), expand = FALSE) +  
+  theme_void() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
+  labs(fill = "2018 Expert Predictions ", title = "Expert Predictions (Solid D-Solid R)")
+
+fig4 <- ggplot() + 
+  geom_sf(data=districts_simp,aes(fill= diff),
+          inherit.aes=FALSE,alpha=0.9) + 
+  scale_fill_gradient(low = "red", high = "blue", limits=c(-40,40)) +
+  coord_sf(xlim = c(-124.43, -66.57), ylim = c(23, 49), expand = FALSE) +  
+  theme_void() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
+  labs(fill = "Predicted Minus Actual GOP Vote Share", title = "Accuracy of Expert Predictions")
+
+```
+```{r}
+## Test accuracy
+## Cook
+cook_acc <- data.frame(Winning_Party = c("D","R"), 
+           Projected_Dem = c(sum(elect.data$WinnerParty[elect.data$cpr_num > 4] == "D"), sum(elect.data$WinnerParty[elect.data$cpr_num > 4] == "R")),
+           Projected_Rep = c(sum(elect.data$WinnerParty[elect.data$cpr_num < 4] == "D"), sum(elect.data$WinnerParty[elect.data$cpr_num < 4] == "R")),
+           Projected_Tossup = c(sum(elect.data$WinnerParty[elect.data$cpr_num == 4] == "D"), sum(elect.data$WinnerParty[elect.data$cpr_num == 4] == "R")))
+
+ie_acc <- data.frame(Winning_Party = c("D","R"), 
+           Projected_Dem = c(sum(elect.data$WinnerParty[elect.data$inside_elections_num > 4] == "D"), sum(elect.data$WinnerParty[elect.data$inside_elections_num > 4] == "R")),
+           Projected_Rep = c(sum(elect.data$WinnerParty[elect.data$inside_elections_num < 4] == "D"), sum(elect.data$WinnerParty[elect.data$inside_elections_num < 4] == "R")),
+           Projected_Tossup = c(sum(elect.data$WinnerParty[elect.data$inside_elections_num == 4] == "D"), sum(elect.data$WinnerParty[elect.data$inside_elections_num == 4] == "R")))
+
+cb_acc <- data.frame(Winning_Party = c("D","R"), 
+           Projected_Dem = c(sum(elect.data$WinnerParty[elect.data$crystal_ball_num > 4] == "D"), sum(elect.data$WinnerParty[elect.data$crystal_ball_num > 4] == "R")),
+           Projected_Rep = c(sum(elect.data$WinnerParty[elect.data$crystal_ball_num < 4] == "D"), sum(elect.data$WinnerParty[elect.data$crystal_ball_num < 4] == "R")),
+           Projected_Tossup = c(sum(elect.data$WinnerParty[elect.data$crystal_ball_num == 4] == "D"), sum(elect.data$WinnerParty[elect.data$crystal_ball_num == 4] == "R")))
+
+avg_acc <- data.frame(Winning_Party = c("D","R"), 
+           Projected_Dem = c(sum(elect.data$WinnerParty[elect.data$avg > 4] == "D"), sum(elect.data$WinnerParty[elect.data$avg > 4] == "R")),
+           Projected_Rep = c(sum(elect.data$WinnerParty[elect.data$avg < 4] == "D"), sum(elect.data$WinnerParty[elect.data$avg < 4] == "R")),
+           Projected_Tossup = c(sum(elect.data$WinnerParty[elect.data$avg == 4] == "D"), sum(elect.data$WinnerParty[elect.data$avg == 4] == "R")))
+
+tab_df(ie_acc, title = "Inside Elections 2018 Prediction Accuracy")
+```
+
+
