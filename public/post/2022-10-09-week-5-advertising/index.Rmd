@@ -243,11 +243,13 @@ tossup_plotly <- ggplotly(tossup_map)
 tossup_plotly
 ```
 Comparing this map of competitive races to the maps of ad buys, it's clear that Republicans and Democrats both tend to run the most ads in the races believed to be most competitive. The barplot below displays the total number of ads run in 2018, based on the competitiveness of the congressional district (again, using race ratings from Cook).
+<br/>
 ```{r}
 sumfig
 ```
 <br/>
 Clearly, by far the most popular place to run ads were toss-up and lean districts, with Democrats outpacing Republican ad buys in nearly every category. The barplot below finds the average number of ads run in each congressional district, again sorted by Cook's race ratings. 
+<br/>
 ```{r}
 meanfig
 ```
@@ -258,6 +260,7 @@ Once again, ad-spending is concentrated in competitive seats. By observing the a
 Now, I'll turn to examining the relationship between advertising and election results. Rather than simply considering the raw number of ads run by Democrats or Republicans, my dependent variable will be the **proportion** of total ads in a district run by either Democrats or Republicans. After, the fact that Republicans ran 5,000 ads in a district may or may not be useful information, depending on how many ads Democrats won. If Republicans ran 5,000 ads and Democrats only ran half of that, we might expect these ads to predict stronger Republican performance. But if Democrats ran around the same number of ads, advertising data might not tell us much about which party is likely to win the race. Thus the scatterplot below compares the proportion of a congressional district's two-party vote won by Republicans with the proportion of total ads in the district run by Republicans.
 
 Note that this model only considers congressional districts in which both Republicans and Democrats ran ads. But as previously discussed, this means that we are generally only considering more competitive districts (since both parties usually only run ads in competitive districts). 
+<br/>
 ```{r}
 scatter
 ```
