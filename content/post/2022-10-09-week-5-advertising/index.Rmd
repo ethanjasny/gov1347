@@ -1,0 +1,273 @@
+---
+title: 'Week 5: Advertising'
+author: "Ethan Jasny"
+date: '2022-10-09'
+slug: []
+categories: []
+tags: []
+---
+
+```{r setup, include=FALSE}
+# Hide all code output
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+# Import libraries
+library(tidyverse)
+library(ggplot2)
+library(usmap)
+library(sf)
+library(blogdown)
+library(plotly)
+library(htmlwidgets)
+library(gridExtra)
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+library(kableExtra)
+library(rmapshaper)
+
+ads2 <- read.csv("ads_2006_2018 (1).csv")
+
+elec_data <- read_csv("house party vote share by district 1948-2020.csv")
+
+```
+
+```{r, include=FALSE}
+ads_sum <- ads2 %>%
+  mutate(count = 1) %>%
+  group_by(cycle, state, district, party) %>%
+  summarise(num = sum(count)) %>%
+  filter(party == "Democrat" | party == "Republican") %>%
+  drop_na(district)
+
+merged_data <- elec_data %>%
+  select(State, raceYear, RepVotesMajorPercent, DemVotesMajorPercent, CD, district_num, WinnerParty, Area) %>%
+  rename(cycle = raceYear, state = State, district = district_num) %>%
+  mutate(district = case_when(Area == "At Large" ~ 1,
+                              TRUE ~ district)) %>%
+  full_join(ads_sum, by = c("cycle", "state", "district")) %>%
+  filter(cycle != 2020) %>%  
+  pivot_wider(names_from = party, values_from = num) %>%
+  drop_na(Democrat, Republican) %>%
+  mutate(dem_ad_prop = 100*(Democrat)/(Democrat+Republican),
+         rep_ad_prop = 100*(Republican)/(Democrat+Republican))
+
+model <- lm(RepVotesMajorPercent ~ rep_ad_prop, data = merged_data)
+
+
+model1 <- lm(DemVotesMajorPercent ~ dem_ad_prop, data = merged_data)
+
+
+scatter <- ggplot(merged_data, aes(x  = rep_ad_prop, y = RepVotesMajorPercent)) +
+  geom_point() +
+  geom_smooth(method = lm, formula = y ~ x) +
+  xlab("Republican Proportion of Ads") +
+  ylab("Republican Two-Party Vote Share") + 
+  labs(title = "Republican Two-Party Vote Share by Republican Proportion of Ads", subtitle = "Congressional districts where both parties bought ads, midterm elections 2006-2018")
+  
+
+#nested <- merged_data %>%
+#  group_by(state, district) %>% 
+ # filter(n() > 1) %>% # Filtering out single data rows
+ # group_nest() %>% 
+ # mutate(data = map(data, ~unnest(., cols = c())))
+
+#models <- nested %>% 
+#  mutate(model = map(data, ~lm(RepVotesMajorPercent ~ Republican, 
+                           #       data = .x))) %>% 
+#  select(-data)
+#models
+
+#model_results <- models %>% 
+ # mutate(r_squared = map_dbl(model, ~summary(.x)$r.squared))
+
+##subset(v, v$state == "Alabama" & v$district == 1 & v$cycle == 2006)
+
+## Spot Check
+#nrow(subset(ads2, state == "Alabama" & cycle == 2006 & district == 1 & party == "Democrat"))  
+
+
+```
+
+
+```{r, include=FALSE}
+# Where are ads coming from:
+
+get_congress_map <- function(cong=114) {
+  tmp_file <- tempfile()
+  tmp_dir  <- tempdir()
+  zp <- sprintf("https://cdmaps.polisci.ucla.edu/shp/districts114.zip",cong)
+  download.file(zp, tmp_file)
+  unzip(zipfile = tmp_file, exdir = tmp_dir)
+  fpath <- paste(tmp_dir, sprintf("districtShapes/districts114.shp",cong), sep = "/")
+  st_read(fpath)
+}
+
+cd114 <- get_congress_map(114)
+
+newdf <- merged_data %>%
+  filter(cycle == 2018) %>%
+  rename(STATENAME = state, DISTRICT = district) %>%
+  mutate(DISTRICT = case_when(Area == "At Large" ~ 0,
+                              TRUE ~ DISTRICT)) %>%
+  mutate(DISTRICT = as.character(DISTRICT))
+
+map_data <- cd114 %>%
+  left_join(newdf, by=c("DISTRICT", "STATENAME"))
+
+map_data_simp <- rmapshaper::ms_simplify(map_data, keep = 0.01)
+
+dem_ad_plot <- ggplot() + 
+  geom_sf(data=map_data_simp,aes(fill=Democrat),
+          inherit.aes=FALSE,alpha=0.9) + 
+  scale_fill_gradient(low = "white", high = "blue", limits=c(0,25000)) +
+  coord_sf(xlim = c(-124.43, -66.57), ylim = c(23, 49), expand = FALSE) +  
+  theme_void() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
+  labs(fill = "Democratic Ads Run", title = "2018 House Democratic Ads by Congressional District")
+
+rep_ad_plot <- ggplot() + 
+  geom_sf(data=map_data_simp,aes(fill=Republican),
+          inherit.aes=FALSE,alpha=0.9) + 
+  scale_fill_gradient(low = "white", high = "red", limits=c(0,25000)) +
+  coord_sf(xlim = c(-124.43, -66.57), ylim = c(23, 49), expand = FALSE) +  
+  theme_void() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
+  labs(fill = "Republican Ads Run", title = "2018 House Republican Ads by Congressional District")
+
+expert_data <- read.csv("expert_predictions_data.csv") %>%
+  mutate(tossup = case_when(cpr == "Toss-up" ~ 2,
+                            cpr == "Lean Democratic" ~ 1,
+                            cpr == "Lean Republican" ~ 3),
+         DISTRICT = as.character(DISTRICT))
+expert_map <- cd114 %>% left_join(expert_data, by=c("DISTRICT", "STATENAME"))
+# simplify district boundaries
+expert_map_simp <- rmapshaper::ms_simplify(expert_map, keep = 0.01)
+
+tossup_map <- ggplot() + 
+  geom_sf(data=expert_map_simp,aes(fill=tossup),
+          inherit.aes=FALSE,alpha=0.9) + 
+  scale_fill_gradient(low = "blue", high = "red", limits=c(1,3)) +
+  coord_sf(xlim = c(-124.43, -66.57), ylim = c(23, 49), expand = FALSE) +  
+  theme_void() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        legend.position = "none",
+        plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
+  labs(title = "2018 Toss-up and Lean Districts (Cook Political Report)")
+
+
+
+
+
+```
+
+```{r}
+
+```
+```{r, include=FALSE}
+newanalysis <- full_join(expert_data, newdf, by = c("STATENAME", "DISTRICT")) %>%
+  mutate(Democrat = case_when(is.na(Democrat) ~ 0,
+                            TRUE ~ Democrat),
+         Republican = case_when(is.na(Republican) ~ 0,
+                            TRUE ~ Republican)) %>%
+  group_by(cpr) %>%
+  summarise(dem_sum = sum(Democrat),
+            rep_sum = sum(Republican),
+            dem_mean = mean(Democrat),
+            rep_mean = mean(Republican)) 
+
+newanalysis$cpr <- factor(newanalysis$cpr, levels = c("Solid Democratic", "Likely Democratic", "Lean Democratic", "Toss-up", "Lean Republican", "Likely Republican", "Solid Republican"))
+newanalysis
+
+options(scipen=10000)
+
+sumplot_data <- newanalysis %>%
+  pivot_longer(cols = c(dem_sum, rep_sum), names_to = "party", values_to = "sum")           
+sumfig <- ggplot(sumplot_data, aes(x = cpr, y = sum, fill = party)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  scale_x_discrete(labels=c("Solid D", "Likely D", "Lean D", "Toss-up", "Lean R", "Likely R", "Solid R"))+
+  theme(plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
+  labs(title = "2018 Ads Run By Race Rating and Party") +
+  xlab("Race Rating") +
+  ylab("Number of Ads Run") +
+  scale_fill_manual(values=c("#56B4E9","#D55E00"))
+
+meanplot_data <- newanalysis %>%
+  pivot_longer(cols = c(dem_mean, rep_mean), names_to = "party", values_to = "mean")           
+meanfig <- ggplot(meanplot_data, aes(x = cpr, y = mean, fill = party)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  scale_x_discrete(labels=c("Solid D", "Likely D", "Lean D", "Toss-up", "Lean R", "Likely R", "Solid R"))+
+  theme(plot.title = element_text(margin = margin(0,0,10,0), hjust = 0.5)) +
+  labs(title = "2018 Average Ads Run By Race Rating and Party") +
+  xlab("Race Rating") +
+  ylab("Average Number of Ads Run Per District") +
+  scale_fill_manual(values=c("#56B4E9","#D55E00"))
+
+
+```
+*This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
+
+This week, I'll be trying to answer one central question: does advertising in midterm elections predict the results of congressional elections? As we don't yet have access to 2022 advertising data, I won't be able to make a prediction for 2022 districts. But I will put together a model that assesses the predictiveness of advertising on congressional election results.
+
+# Where Do Parties Run Ads?
+Before constructing a model, I will first consider where political parties target their advertising. The map below plots the number of ads run supporting Democrats in House races in the run-up to the 2018 midterm elections.
+```{r}
+plotly_dem <- ggplotly(dem_ad_plot)
+plotly_dem
+```
+The map below plots the number of ads in favor of Republican candidates.
+```{r}
+plotly_rep <- ggplotly(rep_ad_plot)
+plotly_rep
+```
+Clearly, Republicans and Democrats tend to run ads in many of the same districts. This makes sense — both parties attempt to buy ads in the most competitive districts, while neither party believes it's worthwhile to spend money in safe Republican and safe Democratic districts. In fact, the map below plots the races considered to be competitive in the run-up to the 2018 election, according to the Cook Political Report. Red districts lean Republican, blue districts lean Democratic, and purple districts are toss-ups. All other grey districts are either considered likely Republican/Democratic or solid Republican/Democratic, and are thus noncompetitive. 
+```{r}
+tossup_plotly <- ggplotly(tossup_map)
+tossup_plotly
+```
+Comparing this map of competitive races to the maps of ad buys, it's clear that Republicans and Democrats both tend to run the most ads in the races believed to be most competitive. The barplot below displays the total number of ads run in 2018, based on the competitiveness of the congressional district (again, using race ratings from Cook).
+```{r}
+sumfig
+```
+<br/>
+Clearly, by far the most popular place to run ads were toss-up and lean districts, with Democrats outpacing Republican ad buys in nearly every category. The barplot below finds the average number of ads run in each congressional district, again sorted by Cook's race ratings. 
+```{r}
+meanfig
+```
+<br/>
+Once again, ad-spending is concentrated in competitive seats. By observing the average number of ads per district (rather than just the total number of ads by category), it is especially clear how few ads are run in solid Democratic and Republican seats.
+
+# Does Advertising Predict Election Results?
+Now, I'll turn to examining the relationship between advertising and election results. Rather than simply considering the raw number of ads run by Democrats or Republicans, my dependent variable will be the **proportion** of total ads in a district run by either Democrats or Republicans. After, the fact that Republicans ran 5,000 ads in a district may or may not be useful information, depending on how many ads Democrats won. If Republicans ran 5,000 ads and Democrats only ran half of that, we might expect these ads to predict stronger Republican performance. But if Democrats ran around the same number of ads, advertising data might not tell us much about which party is likely to win the race. Thus the scatterplot below compares the proportion of a congressional district's two-party vote won by Republicans with the proportion of total ads in the district run by Republicans.
+
+Note that this model only considers congressional districts in which both Republicans and Democrats ran ads. But as previously discussed, this means that we are generally only considering more competitive districts (since both parties usually only run ads in competitive districts). 
+```{r}
+scatter
+```
+<br/>
+Below is the regression output for the relationship between Republican two-party vote share and the Republican proportion of ads.
+<br/>
+```{r}
+tab_model(model)
+```
+<br/>
+There is a statistically significant relationship between two-party vote share and proportion of ads run. Though with an R-squared of around 0.23, this is not a highly predictive model. I also attempted to make separate district-level models, but given that we only have election data from four election years, few of these regressions were statistically significant. In fact, many districts only saw parties buy ads in one or two election cycles, meaning that some of the district-level models were being generated based only on one or two data points.
+
+Overall, by building a model based on all congressional districts with ad purchases from both parties, I was able to identify a positive relationship between partisan ad proportion and partisan vote share, albeit a relatively weak one. One important pitfall to consider is that simply adding the number of ads run by each of the political parties may not be the most accurate way to measure the **effect** of these ads. Some ads may reach a broader audience than others, depending on the television programs and geographic markets it was aired on. Measures like [Gross Ratings Points (GRP)](https://hollis.harvard.edu/primo-explore/fulldisplay?docid=TN_cdi_proquest_miscellaneous_59786011&context=PC&vid=HVD2&search_scope=everything&tab=everything&lang=en_US) that consider the audience reached by ads may be more exact means of estimating the effects of advertising. 

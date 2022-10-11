@@ -1,0 +1,20 @@
+---
+title: "Ads"
+author: "Ethan Jasny"
+date: '2022-10-06'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R 
+
+```{r cars}
+read.csv("ads_issues_2012-2018 (1).csv") 
+
+read.csv("ads_2006_2018 (1).csv")
+
+```
+

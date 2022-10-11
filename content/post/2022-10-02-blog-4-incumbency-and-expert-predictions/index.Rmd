@@ -102,6 +102,8 @@ elect.data <- elect.data %>%
   mutate(DISTRICT = as.character(DISTRICT),
          diff = avg_margin - RepVotesMajorPercent)
 
+write_csv(elect.data, "expert_predictions_data.csv")
+
 
 # load geographic data
 get_congress_map <- function(cong=114) {

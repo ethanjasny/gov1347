@@ -1,0 +1,436 @@
+STATENAME,raceYear,Area,RepVotesMajorPercent,DemVotesMajorPercent,st_fips,state_abb,CD,DISTRICT,district_id,WinnerParty,cpr,cpr_num,inside_elections,inside_elections_num,crystal_ball,crystal_ball_num,avg,cpr_margin,inside_elections_margin,crystal_ball_margin,avg_margin,diff
+Alabama,2018,District 1,63.2,36.8,1,AL,AL-01,1,AL01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-3.200000000000003
+Alabama,2018,District 2,61.5,38.5,1,AL,AL-02,2,AL02,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-1.5
+Alabama,2018,District 3,63.76,36.24,1,AL,AL-03,3,AL03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-3.759999999999998
+Alabama,2018,District 4,79.85,20.15,1,AL,AL-04,4,AL04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-19.849999999999994
+Alabama,2018,District 5,61.07,38.93,1,AL,AL-05,5,AL05,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-1.0700000000000003
+Alabama,2018,District 6,69.21,30.79,1,AL,AL-06,6,AL06,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-9.209999999999994
+Alabama,2018,District 7,0,100,1,AL,AL-07,7,AL07,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Alaska,2018,At Large,53.31,46.69,2,AK,AK-01,0,AK00,R,Lean Republican,5,Likely Republican,6,Lean Republican,5,5.333333333333333,53,56,53,54,0.6899999999999977
+Arizona,2018,District 1,46.16,53.84,4,AZ,AZ-01,1,AZ01,D,Lean Democratic,3,Lean Democratic,3,Likely Democratic,2,2.6666666666666665,47,47,44,46,-0.1599999999999966
+Arizona,2018,District 2,45.25,54.75,4,AZ,AZ-02,2,AZ02,D,Lean Democratic,3,Lean Democratic,3,Likely Democratic,2,2.6666666666666665,47,47,44,46,0.75
+Arizona,2018,District 3,36.13,63.87,4,AZ,AZ-03,3,AZ03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,3.8699999999999974
+Arizona,2018,District 4,69.08,30.92,4,AZ,AZ-04,4,AZ04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-9.079999999999998
+Arizona,2018,District 5,59.42,40.58,4,AZ,AZ-05,5,AZ05,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,0.5799999999999983
+Arizona,2018,District 6,55.19,44.81,4,AZ,AZ-06,6,AZ06,R,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,2.143333333333338
+Arizona,2018,District 7,0,100,4,AZ,AZ-07,7,AZ07,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Arizona,2018,District 8,55.46,44.54,4,AZ,AZ-08,8,AZ08,R,Likely Republican,6,Likely Republican,6,Likely Republican,6,6,56,56,56,56,0.5399999999999991
+Arizona,2018,District 9,38.91,61.09,4,AZ,AZ-09,9,AZ09,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,1.0900000000000034
+Arkansas,2018,District 1,70.56,29.44,5,AR,AR-01,1,AR01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-10.560000000000002
+Arkansas,2018,District 2,53.22,46.78,5,AR,AR-02,2,AR02,R,Likely Republican,6,Likely Republican,6,Lean Republican,5,5.666666666666667,56,56,53,55,1.7800000000000011
+Arkansas,2018,District 3,66.49,33.51,5,AR,AR-03,3,AR03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-6.489999999999995
+Arkansas,2018,District 4,68.12,31.88,5,AR,AR-04,4,AR04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-8.120000000000005
+California,2018,District 1,54.89,45.11,6,CA,CA-01,1,CA01,R,Likely Republican,6,Solid Republican,7,Safe Republican,7,6.666666666666667,56,60,60,58.666666666666664,3.7766666666666637
+California,2018,District 2,22.99,77.01,6,CA,CA-02,2,CA02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,17.01
+California,2018,District 3,41.93,58.07,6,CA,CA-03,3,CA03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-1.9299999999999997
+California,2018,District 4,54.13,45.87,6,CA,CA-04,4,CA04,R,Likely Republican,6,Likely Republican,6,Likely Republican,6,6,56,56,56,56,1.8699999999999974
+California,2018,District 5,0,100,6,CA,CA-05,5,CA05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+California,2018,District 6,0,100,6,CA,CA-06,6,CA06,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+California,2018,District 7,44.96,55.04,6,CA,CA-07,7,CA07,D,Likely Democratic,2,Solid Democratic,1,Likely Democratic,2,1.6666666666666667,44,40,44,42.666666666666664,-2.2933333333333366
+California,2018,District 8,100,0,6,CA,CA-08,8,CA08,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-40
+California,2018,District 9,43.51,56.49,6,CA,CA-09,9,CA09,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-3.509999999999998
+California,2018,District 10,47.75,52.25,6,CA,CA-10,10,CA10,D,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,1.25
+California,2018,District 11,25.87,74.13,6,CA,CA-11,11,CA11,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,14.129999999999999
+California,2018,District 12,13.18,86.82,6,CA,CA-12,12,CA12,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,26.82
+California,2018,District 13,0,100,6,CA,CA-13,13,CA13,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+California,2018,District 14,20.78,79.22,6,CA,CA-14,14,CA14,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,19.22
+California,2018,District 15,27.03,72.97,6,CA,CA-15,15,CA15,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,12.969999999999999
+California,2018,District 16,42.45,57.55,6,CA,CA-16,16,CA16,D,Likely Democratic,2,Solid Democratic,1,Likely Democratic,2,1.6666666666666667,44,40,44,42.666666666666664,0.21666666666666146
+California,2018,District 17,24.65,75.35,6,CA,CA-17,17,CA17,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,15.350000000000001
+California,2018,District 18,25.51,74.49,6,CA,CA-18,18,CA18,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,14.489999999999998
+California,2018,District 19,26.25,73.75,6,CA,CA-19,19,CA19,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,13.75
+California,2018,District 20,0,100,6,CA,CA-20,20,CA20,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+California,2018,District 21,49.62,50.38,6,CA,CA-21,21,CA21,D,Likely Republican,6,Likely Republican,6,Lean Republican,5,5.666666666666667,56,56,53,55,5.380000000000003
+California,2018,District 22,52.72,47.28,6,CA,CA-22,22,CA22,R,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,4.613333333333337
+California,2018,District 23,63.72,36.28,6,CA,CA-23,23,CA23,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-3.719999999999999
+California,2018,District 24,41.44,58.56,6,CA,CA-24,24,CA24,D,Solid Democratic,1,Solid Democratic,1,Likely Democratic,2,1.3333333333333333,40,40,44,41.333333333333336,-0.10666666666666202
+California,2018,District 25,45.63,54.37,6,CA,CA-25,25,CA25,D,Toss-up,4,Toss-up,4,Lean Republican,5,4.333333333333333,50,50,53,51,5.3699999999999974
+California,2018,District 26,38.06,61.94,6,CA,CA-26,26,CA26,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,1.9399999999999977
+California,2018,District 27,0,100,6,CA,CA-27,27,CA27,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+California,2018,District 28,21.63,78.37,6,CA,CA-28,28,CA28,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,18.37
+California,2018,District 29,19.39,80.61,6,CA,CA-29,29,CA29,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,20.61
+California,2018,District 30,26.6,73.4,6,CA,CA-30,30,CA30,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,13.399999999999999
+California,2018,District 31,41.26,58.74,6,CA,CA-31,31,CA31,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-1.259999999999998
+California,2018,District 32,31.22,68.78,6,CA,CA-32,32,CA32,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,8.780000000000001
+California,2018,District 33,29.97,70.03,6,CA,CA-33,33,CA33,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,10.030000000000001
+California,2018,District 34,0,100,6,CA,CA-34,34,CA34,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+California,2018,District 35,30.6,69.4,6,CA,CA-35,35,CA35,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,9.399999999999999
+California,2018,District 36,40.98,59.02,6,CA,CA-36,36,CA36,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-0.9799999999999969
+California,2018,District 37,10.92,89.08,6,CA,CA-37,37,CA37,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,29.08
+California,2018,District 38,31.15,68.85,6,CA,CA-38,38,CA38,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,8.850000000000001
+California,2018,District 39,48.44,51.56,6,CA,CA-39,39,CA39,D,Toss-up,4,Toss-up,4,Lean Republican,5,4.333333333333333,50,50,53,51,2.5600000000000023
+California,2018,District 40,0,100,6,CA,CA-40,40,CA40,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+California,2018,District 41,34.9,65.1,6,CA,CA-41,41,CA41,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,5.100000000000001
+California,2018,District 42,56.5,43.5,6,CA,CA-42,42,CA42,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,3.5
+California,2018,District 43,22.33,77.67,6,CA,CA-43,43,CA43,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,17.67
+California,2018,District 44,0,100,6,CA,CA-44,44,CA44,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+California,2018,District 45,47.95,52.05,6,CA,CA-45,45,CA45,D,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,1.0499999999999972
+California,2018,District 46,30.85,69.15,6,CA,CA-46,46,CA46,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,9.149999999999999
+California,2018,District 47,35.14,64.86,6,CA,CA-47,47,CA47,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,4.859999999999999
+California,2018,District 48,46.45,53.55,6,CA,CA-48,48,CA48,D,Toss-up,4,Tilt Democratic,3.5,Lean Democratic,3,3.5,50,48.5,47,48.5,2.049999999999997
+California,2018,District 49,43.58,56.42,6,CA,CA-49,49,CA49,D,Lean Democratic,3,Lean Democratic,3,Likely Democratic,2,2.6666666666666665,47,47,44,46,2.4200000000000017
+California,2018,District 50,51.72,48.28,6,CA,CA-50,50,CA50,R,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,1.2800000000000011
+California,2018,District 51,28.8,71.2,6,CA,CA-51,51,CA51,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,11.2
+California,2018,District 52,36.15,63.85,6,CA,CA-52,52,CA52,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,3.8500000000000014
+California,2018,District 53,30.93,69.07,6,CA,CA-53,53,CA53,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,9.07
+Colorado,2018,District 1,23.79,76.21,8,CO,CO-01,1,CO01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,16.21
+Colorado,2018,District 2,35.82,64.18,8,CO,CO-02,2,CO02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,4.18
+Colorado,2018,District 3,54.19,45.81,8,CO,CO-03,3,CO03,R,Likely Republican,6,Solid Republican,7,Lean Republican,5,6,56,60,53,56.333333333333336,2.143333333333338
+Colorado,2018,District 4,60.62,39.38,8,CO,CO-04,4,CO04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-0.6199999999999974
+Colorado,2018,District 5,59.19,40.81,8,CO,CO-05,5,CO05,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,0.8100000000000023
+Colorado,2018,District 6,44.21,55.79,8,CO,CO-06,6,CO06,D,Lean Democratic,3,Tilt Democratic,3.5,Lean Democratic,3,3.1666666666666665,47,48.5,47,47.5,3.289999999999999
+Colorado,2018,District 7,36.96,63.04,8,CO,CO-07,7,CO07,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,3.039999999999999
+Connecticut,2018,District 1,35.42,64.58,9,CT,CT-01,1,CT01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,4.579999999999998
+Connecticut,2018,District 2,36.31,63.69,9,CT,CT-02,2,CT02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,3.6899999999999977
+Connecticut,2018,District 3,35.4,64.6,9,CT,CT-03,3,CT03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,4.600000000000001
+Connecticut,2018,District 4,38.79,61.21,9,CT,CT-04,4,CT04,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,1.2100000000000009
+Connecticut,2018,District 5,44.13,55.87,9,CT,CT-05,5,CT05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-4.130000000000003
+Delaware,2018,At Large,35.55,64.45,10,DE,DE-01,0,DE00,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,4.450000000000003
+Florida,2018,District 1,67.06,32.94,12,FL,FL-01,1,FL01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-7.060000000000002
+Florida,2018,District 2,67.44,32.56,12,FL,FL-02,2,FL02,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-7.439999999999998
+Florida,2018,District 3,57.62,42.38,12,FL,FL-03,3,FL03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,2.3800000000000026
+Florida,2018,District 4,66.82,33.18,12,FL,FL-04,4,FL04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-6.819999999999993
+Florida,2018,District 5,33.22,66.78,12,FL,FL-05,5,FL05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,6.780000000000001
+Florida,2018,District 6,56.31,43.69,12,FL,FL-06,6,FL06,R,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,-3.3100000000000023
+Florida,2018,District 7,42.31,57.69,12,FL,FL-07,7,FL07,D,Likely Democratic,2,Solid Democratic,1,Likely Democratic,2,1.6666666666666667,44,40,44,42.666666666666664,0.356666666666662
+Florida,2018,District 8,60.5,39.5,12,FL,FL-08,8,FL08,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-0.5
+Florida,2018,District 9,41.98,58.02,12,FL,FL-09,9,FL09,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-1.9799999999999969
+Florida,2018,District 10,0,100,12,FL,FL-10,10,FL10,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Florida,2018,District 11,65.15,34.85,12,FL,FL-11,11,FL11,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-5.150000000000006
+Florida,2018,District 12,59.43,40.57,12,FL,FL-12,12,FL12,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,0.5700000000000003
+Florida,2018,District 13,42.36,57.64,12,FL,FL-13,13,FL13,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-2.3599999999999994
+Florida,2018,District 14,0,100,12,FL,FL-14,14,FL14,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Florida,2018,District 15,53.02,46.98,12,FL,FL-15,15,FL15,R,Toss-up,4,Tilt Republican,4.5,Lean Republican,5,4.5,50,51.5,53,51.5,-1.5200000000000031
+Florida,2018,District 16,54.56,45.44,12,FL,FL-16,16,FL16,R,Lean Republican,5,Likely Republican,6,Likely Republican,6,5.666666666666667,53,56,56,55,0.4399999999999977
+Florida,2018,District 17,62.26,37.74,12,FL,FL-17,17,FL17,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-2.259999999999998
+Florida,2018,District 18,54.3,45.7,12,FL,FL-18,18,FL18,R,Lean Republican,5,Likely Republican,6,Lean Republican,5,5.333333333333333,53,56,53,54,-0.29999999999999716
+Florida,2018,District 19,62.27,37.73,12,FL,FL-19,19,FL19,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-2.270000000000003
+Florida,2018,District 20,0,100,12,FL,FL-20,20,FL20,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Florida,2018,District 21,0,100,12,FL,FL-21,21,FL21,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Florida,2018,District 22,37.98,62.02,12,FL,FL-22,22,FL22,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,2.020000000000003
+Florida,2018,District 24,0,100,12,FL,FL-24,24,FL24,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Florida,2018,District 25,60.45,39.55,12,FL,FL-25,25,FL25,R,Lean Republican,5,Solid Republican,7,Likely Republican,6,6,53,60,56,56.333333333333336,-4.116666666666667
+Florida,2018,District 26,49.13,50.87,12,FL,FL-26,26,FL26,D,Toss-up,4,Toss-up,4,Lean Republican,5,4.333333333333333,50,50,53,51,1.8699999999999974
+Florida,2018,District 27,46.92,53.08,12,FL,FL-27,27,FL27,D,Lean Democratic,3,Lean Democratic,3,Lean Democratic,3,3,47,47,47,47,0.0799999999999983
+Georgia,2018,District 1,57.74,42.26,13,GA,GA-01,1,GA01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,2.259999999999998
+Florida,2018,District 23,38.09,61.91,12,FL,FL-23,23,FL23,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,1.9099999999999966
+Georgia,2018,District 2,40.35,59.65,13,GA,GA-02,2,GA02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-0.3500000000000014
+Georgia,2018,District 3,65.53,34.47,13,GA,GA-03,3,GA03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-5.530000000000001
+Georgia,2018,District 4,21.15,78.85,13,GA,GA-04,4,GA04,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,18.85
+Georgia,2018,District 5,0,100,13,GA,GA-05,5,GA05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Georgia,2018,District 6,49.49,50.51,13,GA,GA-06,6,GA06,D,Toss-up,4,Lean Republican,5,Lean Republican,5,4.666666666666667,50,53,53,52,2.509999999999998
+Georgia,2018,District 7,50.07,49.93,13,GA,GA-07,7,GA07,R,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,2.9299999999999997
+Georgia,2018,District 8,100,0,13,GA,GA-08,8,GA08,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-40
+Georgia,2018,District 9,79.51,20.49,13,GA,GA-09,9,GA09,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-19.510000000000005
+Georgia,2018,District 10,62.89,37.11,13,GA,GA-10,10,GA10,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-2.8900000000000006
+Georgia,2018,District 11,61.79,38.21,13,GA,GA-11,11,GA11,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-1.7899999999999991
+Georgia,2018,District 12,59.48,40.52,13,GA,GA-12,12,GA12,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,0.5200000000000031
+Georgia,2018,District 13,23.82,76.18,13,GA,GA-13,13,GA13,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,16.18
+Georgia,2018,District 14,76.5,23.5,13,GA,GA-14,14,GA14,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-16.5
+Hawaii,2018,District 1,23.99,76.01,15,HI,HI-01,1,HI01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,16.01
+Hawaii,2018,District 2,22.64,77.36,15,HI,HI-02,2,HI02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,17.36
+Idaho,2018,District 1,67.11,32.89,16,ID,ID-01,1,ID01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-7.109999999999999
+Idaho,2018,District 2,60.67,39.33,16,ID,ID-02,2,ID02,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-0.6700000000000017
+Illinois,2018,District 1,21.19,78.81,17,IL,IL-01,1,IL01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,18.81
+Illinois,2018,District 2,18.94,81.06,17,IL,IL-02,2,IL02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,21.06
+Illinois,2018,District 3,26.2,73.8,17,IL,IL-03,3,IL03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,13.8
+Illinois,2018,District 4,13.41,86.59,17,IL,IL-04,4,IL04,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,26.59
+Illinois,2018,District 5,23.33,76.67,17,IL,IL-05,5,IL05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,16.67
+Illinois,2018,District 6,46.42,53.58,17,IL,IL-06,6,IL06,D,Lean Democratic,3,Tilt Democratic,3.5,Lean Democratic,3,3.1666666666666665,47,48.5,47,47.5,1.0799999999999983
+Illinois,2018,District 7,12.38,87.62,17,IL,IL-07,7,IL07,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,27.619999999999997
+Illinois,2018,District 8,34.03,65.97,17,IL,IL-08,8,IL08,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,5.969999999999999
+Illinois,2018,District 9,26.51,73.49,17,IL,IL-09,9,IL09,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,13.489999999999998
+Illinois,2018,District 10,34.41,65.59,17,IL,IL-10,10,IL10,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,5.590000000000003
+Illinois,2018,District 11,36.16,63.84,17,IL,IL-11,11,IL11,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,3.8400000000000034
+Illinois,2018,District 12,53.19,46.81,17,IL,IL-12,12,IL12,R,Lean Republican,5,Tilt Republican,4.5,Lean Republican,5,4.833333333333333,53,51.5,53,52.5,-0.6899999999999977
+Illinois,2018,District 13,50.38,49.62,17,IL,IL-13,13,IL13,R,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,2.6199999999999974
+Illinois,2018,District 14,47.5,52.5,17,IL,IL-14,14,IL14,D,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,1.5
+Illinois,2018,District 15,70.93,29.07,17,IL,IL-15,15,IL15,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-10.930000000000007
+Illinois,2018,District 16,59.12,40.88,17,IL,IL-16,16,IL16,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,0.8800000000000026
+Illinois,2018,District 17,37.91,62.09,17,IL,IL-17,17,IL17,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,2.0900000000000034
+Illinois,2018,District 18,67.23,32.77,17,IL,IL-18,18,IL18,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-7.230000000000004
+Indiana,2018,District 1,34.91,65.09,18,IN,IN-01,1,IN01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,5.090000000000003
+Indiana,2018,District 2,54.84,45.16,18,IN,IN-02,2,IN02,R,Likely Republican,6,Likely Republican,6,Likely Republican,6,6,56,56,56,56,1.1599999999999966
+Indiana,2018,District 3,64.73,35.27,18,IN,IN-03,3,IN03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-4.730000000000004
+Indiana,2018,District 4,64.06,35.94,18,IN,IN-04,4,IN04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-4.060000000000002
+Indiana,2018,District 5,56.76,43.24,18,IN,IN-05,5,IN05,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,3.240000000000002
+Indiana,2018,District 6,66.01,33.99,18,IN,IN-06,6,IN06,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-6.010000000000005
+Indiana,2018,District 7,35.14,64.86,18,IN,IN-07,7,IN07,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,4.859999999999999
+Indiana,2018,District 8,64.43,35.57,18,IN,IN-08,8,IN08,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-4.430000000000007
+Indiana,2018,District 9,56.48,43.52,18,IN,IN-09,9,IN09,R,Solid Republican,7,Solid Republican,7,Likely Republican,6,6.666666666666667,60,60,56,58.666666666666664,2.1866666666666674
+Iowa,2018,District 1,47.39,52.61,19,IA,IA-01,1,IA01,D,Lean Democratic,3,Lean Democratic,3,Lean Democratic,3,3,47,47,47,47,-0.39000000000000057
+Iowa,2018,District 2,43.74,56.26,19,IA,IA-02,2,IA02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-3.740000000000002
+Iowa,2018,District 3,48.88,51.12,19,IA,IA-03,3,IA03,D,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,0.11999999999999744
+Iowa,2018,District 4,51.71,48.29,19,IA,IA-04,4,IA04,R,Lean Republican,5,Likely Republican,6,Lean Republican,5,5.333333333333333,53,56,53,54,2.289999999999999
+Kansas,2018,District 1,68.15,31.85,20,KS,KS-01,1,KS01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-8.150000000000006
+Kansas,2018,District 2,50.45,49.55,20,KS,KS-02,2,KS02,R,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,-1.4500000000000028
+Kansas,2018,District 3,45.04,54.96,20,KS,KS-03,3,KS03,D,Lean Democratic,3,Lean Democratic,3,Lean Democratic,3,3,47,47,47,47,1.9600000000000009
+Kansas,2018,District 4,59.44,40.56,20,KS,KS-04,4,KS04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,0.5600000000000023
+Kentucky,2018,District 1,68.59,31.41,21,KY,KY-01,1,KY01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-8.590000000000003
+Kentucky,2018,District 2,68.23,31.77,21,KY,KY-02,2,KY02,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-8.230000000000004
+Kentucky,2018,District 3,37.07,62.93,21,KY,KY-03,3,KY03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,2.9299999999999997
+Kentucky,2018,District 4,64.28,35.72,21,KY,KY-04,4,KY04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-4.280000000000001
+Kentucky,2018,District 5,78.95,21.05,21,KY,KY-05,5,KY05,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-18.950000000000003
+Kentucky,2018,District 6,51.63,48.37,21,KY,KY-06,6,KY06,R,Toss-up,4,Toss-up,4,Lean Republican,5,4.333333333333333,50,50,53,51,-0.6300000000000026
+Louisiana,2018,District 1,81.31,18.69,22,LA,LA-01,1,LA01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-21.310000000000002
+Louisiana,2018,District 2,0,100,22,LA,LA-02,2,LA02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Louisiana,2018,District 3,75.79,24.21,22,LA,LA-03,3,LA03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-15.790000000000006
+Louisiana,2018,District 4,65.64,34.36,22,LA,LA-04,4,LA04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-5.640000000000001
+Louisiana,2018,District 5,68.95,31.05,22,LA,LA-05,5,LA05,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-8.950000000000003
+Louisiana,2018,District 6,77.2,22.8,22,LA,LA-06,6,LA06,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-17.200000000000003
+Maine,2018,District 1,35.59,64.41,23,ME,ME-01,1,ME01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,4.409999999999997
+Maine,2018,District 2,49.38,50.62,23,ME,ME-02,2,ME02,D,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,-0.38000000000000256
+Maryland,2018,District 1,61.16,38.84,24,MD,MD-01,1,MD01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-1.1599999999999966
+Maryland,2018,District 2,31.75,68.25,24,MD,MD-02,2,MD02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,8.25
+Maryland,2018,District 3,29.03,70.97,24,MD,MD-03,3,MD03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,10.969999999999999
+Maryland,2018,District 4,20.28,79.72,24,MD,MD-04,4,MD04,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,19.72
+Maryland,2018,District 7,21.76,78.24,24,MD,MD-07,7,MD07,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,18.24
+Maryland,2018,District 5,27.81,72.19,24,MD,MD-05,5,MD05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,12.190000000000001
+Maryland,2018,District 6,39.18,60.82,24,MD,MD-06,6,MD06,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,0.8200000000000003
+Maryland,2018,District 8,30.72,69.28,24,MD,MD-08,8,MD08,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,9.280000000000001
+Massachusetts,2018,District 1,0,100,25,MA,MA-01,1,MA01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Massachusetts,2018,District 2,32.8,67.2,25,MA,MA-02,2,MA02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,7.200000000000003
+Massachusetts,2018,District 3,35.05,64.95,25,MA,MA-03,3,MA03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,4.950000000000003
+Massachusetts,2018,District 4,0,100,25,MA,MA-04,4,MA04,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Massachusetts,2018,District 5,24.06,75.94,25,MA,MA-05,5,MA05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,15.940000000000001
+Massachusetts,2018,District 6,32.5,67.5,25,MA,MA-06,6,MA06,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,7.5
+Massachusetts,2018,District 7,0,100,25,MA,MA-07,7,MA07,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Massachusetts,2018,District 8,0,100,25,MA,MA-08,8,MA08,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Massachusetts,2018,District 9,40.6,59.4,25,MA,MA-09,9,MA09,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-0.6000000000000014
+Michigan,2018,District 1,56.32,43.68,26,MI,MI-01,1,MI01,R,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,1.0133333333333354
+Michigan,2018,District 2,56.28,43.72,26,MI,MI-02,2,MI02,R,Solid Republican,7,Solid Republican,7,Likely Republican,6,6.666666666666667,60,60,56,58.666666666666664,2.386666666666663
+Michigan,2018,District 3,55.76,44.24,26,MI,MI-03,3,MI03,R,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,1.5733333333333377
+Michigan,2018,District 4,62.62,37.38,26,MI,MI-04,4,MI04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-2.6199999999999974
+Michigan,2018,District 5,37.63,62.37,26,MI,MI-05,5,MI05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,2.3699999999999974
+Michigan,2018,District 6,52.37,47.63,26,MI,MI-06,6,MI06,R,Lean Republican,5,Likely Republican,6,Lean Republican,5,5.333333333333333,53,56,53,54,1.6300000000000026
+Michigan,2018,District 7,53.8,46.2,26,MI,MI-07,7,MI07,R,Likely Republican,6,Likely Republican,6,Likely Republican,6,6,56,56,56,56,2.200000000000003
+Michigan,2018,District 8,48.03,51.97,26,MI,MI-08,8,MI08,D,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,0.9699999999999989
+Michigan,2018,District 9,38.16,61.84,26,MI,MI-09,9,MI09,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,1.8400000000000034
+Michigan,2018,District 10,63.28,36.72,26,MI,MI-10,10,MI10,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-3.280000000000001
+Michigan,2018,District 11,46.56,53.44,26,MI,MI-11,11,MI11,D,Lean Democratic,3,Tilt Democratic,3.5,Lean Democratic,3,3.1666666666666665,47,48.5,47,47.5,0.9399999999999977
+Michigan,2018,District 12,29.79,70.21,26,MI,MI-12,12,MI12,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,10.21
+Michigan,2018,District 13,0,100,26,MI,MI-13,13,MI13,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Michigan,2018,District 14,17.64,82.36,26,MI,MI-14,14,MI14,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,22.36
+Minnesota,2018,District 1,50.23,49.77,27,MN,MN-01,1,MN01,R,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,-1.2299999999999969
+Minnesota,2018,District 2,47.24,52.76,27,MN,MN-02,2,MN02,D,Lean Democratic,3,Tilt Democratic,3.5,Lean Democratic,3,3.1666666666666665,47,48.5,47,47.5,0.259999999999998
+Minnesota,2018,District 3,44.28,55.72,27,MN,MN-03,3,MN03,D,Lean Democratic,3,Tilt Democratic,3.5,Lean Democratic,3,3.1666666666666665,47,48.5,47,47.5,3.219999999999999
+Minnesota,2018,District 4,31.07,68.93,27,MN,MN-04,4,MN04,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,8.93
+Minnesota,2018,District 5,21.76,78.24,27,MN,MN-05,5,MN05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,18.24
+Minnesota,2018,District 6,61.2,38.8,27,MN,MN-06,6,MN06,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-1.2000000000000028
+Minnesota,2018,District 7,47.87,52.13,27,MN,MN-07,7,MN07,D,Likely Democratic,2,Solid Democratic,1,Likely Democratic,2,1.6666666666666667,44,40,44,42.666666666666664,-5.203333333333333
+Minnesota,2018,District 8,52.89,47.11,27,MN,MN-08,8,MN08,R,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,0.10999999999999943
+Mississippi,2018,District 1,67.38,32.62,28,MS,MS-01,1,MS01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-7.3799999999999955
+Mississippi,2018,District 2,0,100,28,MS,MS-02,2,MS02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Mississippi,2018,District 3,62.92,37.08,28,MS,MS-03,3,MS03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-2.9200000000000017
+Mississippi,2018,District 4,68.93,31.07,28,MS,MS-04,4,MS04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-8.930000000000007
+Missouri,2018,District 1,17.27,82.73,29,MO,MO-01,1,MO01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,22.73
+Missouri,2018,District 2,52.01,47.99,29,MO,MO-02,2,MO02,R,Lean Republican,5,Solid Republican,7,Likely Republican,6,6,53,60,56,56.333333333333336,4.323333333333338
+Missouri,2018,District 3,66.46,33.54,29,MO,MO-03,3,MO03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-6.459999999999994
+Missouri,2018,District 4,66.46,33.54,29,MO,MO-04,4,MO04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-6.459999999999994
+Missouri,2018,District 5,36.61,63.39,29,MO,MO-05,5,MO05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,3.3900000000000006
+Missouri,2018,District 6,67.17,32.83,29,MO,MO-06,6,MO06,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-7.170000000000002
+Missouri,2018,District 7,68.76,31.24,29,MO,MO-07,7,MO07,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-8.760000000000005
+Missouri,2018,District 8,74.58,25.42,29,MO,MO-08,8,MO08,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-14.579999999999998
+Montana,2018,At Large,52.39,47.61,30,MT,MT-01,0,MT00,R,Lean Republican,5,Likely Republican,6,Lean Republican,5,5.333333333333333,53,56,53,54,1.6099999999999994
+Nebraska,2018,District 1,60.36,39.64,31,NE,NE-01,1,NE01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-0.35999999999999943
+Nebraska,2018,District 2,51,49,31,NE,NE-02,2,NE02,R,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,2
+Nebraska,2018,District 3,76.72,23.28,31,NE,NE-03,3,NE03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-16.72
+Nevada,2018,District 1,31.81,68.19,32,NV,NV-01,1,NV01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,8.190000000000001
+Nevada,2018,District 2,58.23,41.77,32,NV,NV-02,2,NV02,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,1.7700000000000031
+Nevada,2018,District 3,45.22,54.78,32,NV,NV-03,3,NV03,D,Lean Democratic,3,Tilt Democratic,3.5,Lean Democratic,3,3.1666666666666665,47,48.5,47,47.5,2.280000000000001
+Nevada,2018,District 4,45.72,54.28,32,NV,NV-04,4,NV04,D,Lean Democratic,3,Lean Democratic,3,Likely Democratic,2,2.6666666666666665,47,47,44,46,0.28000000000000114
+New Hampshire,2018,District 1,45.66,54.34,33,NH,NH-01,1,NH01,D,Likely Democratic,2,Lean Democratic,3,Likely Democratic,2,2.3333333333333335,44,47,44,45,-0.6599999999999966
+New Hampshire,2018,District 2,43.16,56.84,33,NH,NH-02,2,NH02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-3.1599999999999966
+New Jersey,2018,District 1,34.06,65.94,34,NJ,NJ-01,1,NJ01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,5.939999999999998
+New Jersey,2018,District 2,46.09,53.91,34,NJ,NJ-02,2,NJ02,D,Likely Democratic,2,Likely Democratic,2,Safe Democratic,1,1.6666666666666667,44,44,40,42.666666666666664,-3.423333333333339
+New Jersey,2018,District 3,49.34,50.66,34,NJ,NJ-03,3,NJ03,D,Toss-up,4,Tilt Democratic,3.5,Lean Democratic,3,3.5,50,48.5,47,48.5,-0.8400000000000034
+New Jersey,2018,District 4,56.26,43.74,34,NJ,NJ-04,4,NJ04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,3.740000000000002
+New Jersey,2018,District 5,43.07,56.93,34,NJ,NJ-05,5,NJ05,D,Likely Democratic,2,Solid Democratic,1,Likely Democratic,2,1.6666666666666667,44,40,44,42.666666666666664,-0.403333333333336
+New Jersey,2018,District 6,36.37,63.63,34,NJ,NJ-06,6,NJ06,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,3.6300000000000026
+New Jersey,2018,District 7,47.45,52.55,34,NJ,NJ-07,7,NJ07,D,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,1.5499999999999972
+New Jersey,2018,District 8,19.33,80.67,34,NJ,NJ-08,8,NJ08,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,20.67
+New Jersey,2018,District 9,29.12,70.88,34,NJ,NJ-09,9,NJ09,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,10.879999999999999
+New Jersey,2018,District 11,42.6,57.4,34,NJ,NJ-11,11,NJ11,D,Lean Democratic,3,Lean Democratic,3,Lean Democratic,3,3,47,47,47,47,4.399999999999999
+New Jersey,2018,District 12,31.32,68.68,34,NJ,NJ-12,12,NJ12,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,8.68
+New Mexico,2018,District 1,38.05,61.95,35,NM,NM-01,1,NM01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,1.9500000000000028
+New Jersey,2018,District 10,10.33,89.67,34,NJ,NJ-10,10,NJ10,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,29.67
+New Mexico,2018,District 2,49.07,50.93,35,NM,NM-02,2,NM02,D,Toss-up,4,Tilt Republican,4.5,Lean Democratic,3,3.8333333333333335,50,51.5,47,49.5,0.4299999999999997
+New Mexico,2018,District 3,33,67,35,NM,NM-03,3,NM03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,7
+New York,2018,District 1,52.07,47.93,36,NY,NY-01,1,NY01,R,Likely Republican,6,Solid Republican,7,Lean Republican,5,6,56,60,53,56.333333333333336,4.263333333333335
+New York,2018,District 2,53.11,46.89,36,NY,NY-02,2,NY02,R,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,4.223333333333336
+New York,2018,District 3,41.02,58.98,36,NY,NY-03,3,NY03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-1.0200000000000031
+New York,2018,District 4,38.67,61.33,36,NY,NY-04,4,NY04,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,1.3299999999999983
+New York,2018,District 5,0,100,36,NY,NY-05,5,NY05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+New York,2018,District 6,0,100,36,NY,NY-06,6,NY06,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+New York,2018,District 7,0,100,36,NY,NY-07,7,NY07,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+New York,2018,District 8,0,100,36,NY,NY-08,8,NY08,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+New York,2018,District 9,10.33,89.67,36,NY,NY-09,9,NY09,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,29.67
+New York,2018,District 10,17.85,82.15,36,NY,NY-10,10,NY10,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,22.15
+New York,2018,District 11,46.76,53.24,36,NY,NY-11,11,NY11,D,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,6.240000000000002
+New York,2018,District 12,12.28,87.72,36,NY,NY-12,12,NY12,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,27.72
+New York,2018,District 13,5.4,94.6,36,NY,NY-13,13,NY13,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,34.6
+New York,2018,District 14,14.83,85.17,36,NY,NY-14,14,NY14,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,25.17
+New York,2018,District 15,4.01,95.99,36,NY,NY-15,15,NY15,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,35.99
+New York,2018,District 16,0,100,36,NY,NY-16,16,NY16,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+New York,2018,District 17,0,100,36,NY,NY-17,17,NY17,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+New York,2018,District 18,44.53,55.47,36,NY,NY-18,18,NY18,D,Solid Democratic,1,Solid Democratic,1,Likely Democratic,2,1.3333333333333333,40,40,44,41.333333333333336,-3.1966666666666654
+Ohio,2018,District 3,26.37,73.63,39,OH,OH-03,3,OH03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,13.629999999999999
+Ohio,2018,District 4,65.26,34.74,39,OH,OH-04,4,OH04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-5.260000000000005
+Ohio,2018,District 5,63.92,36.08,39,OH,OH-05,5,OH05,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-3.9200000000000017
+New York,2018,District 19,47.33,52.67,36,NY,NY-19,19,NY19,D,Toss-up,4,Tilt Democratic,3.5,Lean Democratic,3,3.5,50,48.5,47,48.5,1.1700000000000017
+New York,2018,District 20,33.5,66.5,36,NY,NY-20,20,NY20,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,6.5
+New York,2018,District 21,56.94,43.06,36,NY,NY-21,21,NY21,R,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,0.393333333333338
+New York,2018,District 22,49.11,50.89,36,NY,NY-22,22,NY22,D,Toss-up,4,Tilt Democratic,3.5,Lean Democratic,3,3.5,50,48.5,47,48.5,-0.6099999999999994
+New York,2018,District 23,54.24,45.76,36,NY,NY-23,23,NY23,R,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,3.0933333333333337
+New York,2018,District 24,52.63,47.37,36,NY,NY-24,24,NY24,R,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,0.36999999999999744
+New York,2018,District 25,41.02,58.98,36,NY,NY-25,25,NY25,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-1.0200000000000031
+New York,2018,District 26,26.66,73.34,36,NY,NY-26,26,NY26,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,13.34
+New York,2018,District 27,50.19,49.81,36,NY,NY-27,27,NY27,R,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,2.8100000000000023
+North Carolina,2018,District 1,30.15,69.85,37,NC,NC-01,1,NC01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,9.850000000000001
+North Carolina,2018,District 2,52.81,47.19,37,NC,NC-02,2,NC02,R,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,0.18999999999999773
+North Carolina,2018,District 3,100,0,37,NC,NC-03,3,NC03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-40
+North Carolina,2018,District 4,24.93,75.07,37,NC,NC-04,4,NC04,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,15.07
+North Carolina,2018,District 5,57.03,42.97,37,NC,NC-05,5,NC05,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,2.969999999999999
+North Carolina,2018,District 6,56.52,43.48,37,NC,NC-06,6,NC06,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,3.479999999999997
+North Carolina,2018,District 7,56.48,43.52,37,NC,NC-07,7,NC07,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,3.520000000000003
+North Carolina,2018,District 8,55.34,44.66,37,NC,NC-08,8,NC08,R,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,1.9933333333333323
+North Carolina,2018,District 9,50.16,49.84,37,NC,NC-09,9,NC09,R,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,-1.1599999999999966
+North Carolina,2018,District 10,59.29,40.71,37,NC,NC-10,10,NC10,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,0.7100000000000009
+North Carolina,2018,District 11,60.44,39.56,37,NC,NC-11,11,NC11,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-0.4399999999999977
+North Carolina,2018,District 12,26.93,73.07,37,NC,NC-12,12,NC12,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,13.07
+North Carolina,2018,District 13,53.09,46.91,37,NC,NC-13,13,NC13,R,Toss-up,4,Tilt Republican,4.5,Lean Republican,5,4.5,50,51.5,53,51.5,-1.5900000000000034
+North Dakota,2018,At Large,62.86,37.14,38,ND,ND-01,0,ND00,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-2.8599999999999994
+Ohio,2018,District 1,52.25,47.75,39,OH,OH-01,1,OH01,R,Lean Republican,5,Tilt Republican,4.5,Lean Republican,5,4.833333333333333,53,51.5,53,52.5,0.25
+Ohio,2018,District 2,58.28,41.72,39,OH,OH-02,2,OH02,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,1.7199999999999989
+Ohio,2018,District 6,69.25,30.75,39,OH,OH-06,6,OH06,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-9.25
+Ohio,2018,District 7,58.74,41.26,39,OH,OH-07,7,OH07,R,Solid Republican,7,Solid Republican,7,Likely Republican,6,6.666666666666667,60,60,56,58.666666666666664,-0.07333333333333769
+Ohio,2018,District 8,66.58,33.42,39,OH,OH-08,8,OH08,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-6.579999999999998
+Ohio,2018,District 9,32.2,67.8,39,OH,OH-09,9,OH09,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,7.799999999999997
+Ohio,2018,District 10,57.01,42.99,39,OH,OH-10,10,OH10,R,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,0.3233333333333377
+Ohio,2018,District 11,17.75,82.25,39,OH,OH-11,11,OH11,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,22.25
+Ohio,2018,District 12,52.14,47.86,39,OH,OH-12,12,OH12,R,Toss-up,4,Toss-up,4,Lean Republican,5,4.333333333333333,50,50,53,51,-1.1400000000000006
+Ohio,2018,District 13,39.01,60.99,39,OH,OH-13,13,OH13,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,0.990000000000002
+Ohio,2018,District 14,55.25,44.75,39,OH,OH-14,14,OH14,R,Likely Republican,6,Likely Republican,6,Lean Republican,5,5.666666666666667,56,56,53,55,-0.25
+Ohio,2018,District 15,59.5,40.5,39,OH,OH-15,15,OH15,R,Solid Republican,7,Solid Republican,7,Likely Republican,6,6.666666666666667,60,60,56,58.666666666666664,-0.8333333333333357
+Ohio,2018,District 16,56.73,43.27,39,OH,OH-16,16,OH16,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,3.270000000000003
+Oklahoma,2018,District 1,59.3,40.7,40,OK,OK-01,1,OK01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,0.7000000000000028
+Oklahoma,2018,District 2,68.36,31.64,40,OK,OK-02,2,OK02,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-8.36
+Oklahoma,2018,District 3,73.87,26.13,40,OK,OK-03,3,OK03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-13.870000000000005
+Oklahoma,2018,District 4,65.65,34.35,40,OK,OK-04,4,OK04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-5.650000000000006
+Oklahoma,2018,District 5,49.3,50.7,40,OK,OK-05,5,OK05,D,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,8.033333333333339
+Oregon,2018,District 1,33.5,66.5,41,OR,OR-01,1,OR01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,6.5
+Oregon,2018,District 2,58.83,41.17,41,OR,OR-02,2,OR02,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,1.1700000000000017
+Oregon,2018,District 3,21.45,78.55,41,OR,OR-03,3,OR03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,18.55
+Oregon,2018,District 4,42.21,57.79,41,OR,OR-04,4,OR04,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-2.210000000000001
+Oregon,2018,District 5,43.19,56.81,41,OR,OR-05,5,OR05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-3.1899999999999977
+Pennsylvania,2018,District 1,51.26,48.74,42,PA,PA-01,1,PA01,R,Toss-up,4,Toss-up,4,Lean Republican,5,4.333333333333333,50,50,53,51,-0.259999999999998
+Pennsylvania,2018,District 2,20.98,79.02,42,PA,PA-02,2,PA02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,19.02
+Pennsylvania,2018,District 3,6.62,93.38,42,PA,PA-03,3,PA03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,33.38
+Pennsylvania,2018,District 4,36.48,63.52,42,PA,PA-04,4,PA04,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,3.520000000000003
+Pennsylvania,2018,District 5,34.81,65.19,42,PA,PA-05,5,PA05,D,Likely Democratic,2,Likely Democratic,2,Safe Democratic,1,1.6666666666666667,44,44,40,42.666666666666664,7.856666666666662
+Pennsylvania,2018,District 6,41.12,58.88,42,PA,PA-06,6,PA06,D,Likely Democratic,2,Likely Democratic,2,Safe Democratic,1,1.6666666666666667,44,44,40,42.666666666666664,1.5466666666666669
+Pennsylvania,2018,District 7,44.83,55.17,42,PA,PA-07,7,PA07,D,Lean Democratic,3,Lean Democratic,3,Lean Democratic,3,3,47,47,47,47,2.1700000000000017
+Pennsylvania,2018,District 8,45.36,54.64,42,PA,PA-08,8,PA08,D,Likely Democratic,2,Lean Democratic,3,Likely Democratic,2,2.3333333333333335,44,47,44,45,-0.35999999999999943
+Pennsylvania,2018,District 9,59.75,40.25,42,PA,PA-09,9,PA09,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,0.25
+Pennsylvania,2018,District 10,51.32,48.68,42,PA,PA-10,10,PA10,R,Toss-up,4,Lean Republican,5,Lean Republican,5,4.666666666666667,50,53,53,52,0.6799999999999997
+Pennsylvania,2018,District 11,58.98,41.02,42,PA,PA-11,11,PA11,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,1.0200000000000031
+Pennsylvania,2018,District 12,66.04,33.96,42,PA,PA-12,12,PA12,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-6.040000000000006
+Pennsylvania,2018,District 13,70.49,29.51,42,PA,PA-13,13,PA13,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-10.489999999999995
+Pennsylvania,2018,District 14,57.91,42.09,42,PA,PA-14,14,PA14,R,Likely Republican,6,Likely Republican,6,Safe Republican,7,6.333333333333333,56,56,60,57.333333333333336,-0.5766666666666609
+Pennsylvania,2018,District 15,67.84,32.16,42,PA,PA-15,15,PA15,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-7.840000000000003
+Pennsylvania,2018,District 16,52.17,47.83,42,PA,PA-16,16,PA16,R,Lean Republican,5,Likely Republican,6,Lean Republican,5,5.333333333333333,53,56,53,54,1.8299999999999983
+Pennsylvania,2018,District 17,43.74,56.26,42,PA,PA-17,17,PA17,D,Likely Democratic,2,Lean Democratic,3,Likely Democratic,2,2.3333333333333335,44,47,44,45,1.259999999999998
+Pennsylvania,2018,District 18,0,100,42,PA,PA-18,18,PA18,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Rhode Island,2018,District 1,33.15,66.85,44,RI,RI-01,1,RI01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,6.850000000000001
+Rhode Island,2018,District 2,36.36,63.64,44,RI,RI-02,2,RI02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,3.6400000000000006
+South Carolina,2018,District 1,49.31,50.69,45,SC,SC-01,1,SC01,D,Lean Republican,5,Likely Republican,6,Lean Republican,5,5.333333333333333,53,56,53,54,4.689999999999998
+South Carolina,2018,District 2,56.98,43.02,45,SC,SC-02,2,SC02,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,3.020000000000003
+South Carolina,2018,District 3,68.64,31.36,45,SC,SC-03,3,SC03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-8.64
+South Carolina,2018,District 4,61.97,38.03,45,SC,SC-04,4,SC04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-1.9699999999999989
+South Carolina,2018,District 5,57.89,42.11,45,SC,SC-05,5,SC05,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,2.1099999999999994
+South Carolina,2018,District 6,28.7,71.3,45,SC,SC-06,6,SC06,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,11.3
+South Carolina,2018,District 7,59.64,40.36,45,SC,SC-07,7,SC07,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,0.35999999999999943
+South Dakota,2018,At Large,62.61,37.39,46,SD,SD-01,0,SD00,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-2.6099999999999994
+Tennessee,2018,District 1,78.57,21.43,47,TN,TN-01,1,TN01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-18.569999999999993
+Tennessee,2018,District 3,64.88,35.12,47,TN,TN-03,3,TN03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-4.8799999999999955
+Tennessee,2018,District 4,65.36,34.64,47,TN,TN-04,4,TN04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-5.359999999999999
+Tennessee,2018,District 5,32.15,67.85,47,TN,TN-05,5,TN05,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,7.850000000000001
+Tennessee,2018,District 2,66.61,33.39,47,TN,TN-02,2,TN02,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-6.609999999999999
+Tennessee,2018,District 6,71.06,28.94,47,TN,TN-06,6,TN06,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-11.060000000000002
+Tennessee,2018,District 7,67.56,32.44,47,TN,TN-07,7,TN07,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-7.560000000000002
+Tennessee,2018,District 8,69.21,30.79,47,TN,TN-08,8,TN08,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-9.209999999999994
+Tennessee,2018,District 9,19.39,80.61,47,TN,TN-09,9,TN09,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,20.61
+Texas,2018,District 1,73.3,26.7,48,TX,TX-01,1,TX01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-13.299999999999997
+Texas,2018,District 2,53.7,46.3,48,TX,TX-02,2,TX02,R,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,3.633333333333333
+Texas,2018,District 3,55.08,44.92,48,TX,TX-03,3,TX03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,4.920000000000002
+Texas,2018,District 4,76.67,23.33,48,TX,TX-04,4,TX04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-16.67
+Texas,2018,District 5,62.41,37.59,48,TX,TX-05,5,TX05,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-2.4099999999999966
+Texas,2018,District 6,53.89,46.11,48,TX,TX-06,6,TX06,R,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,3.443333333333335
+Texas,2018,District 7,47.47,52.53,48,TX,TX-07,7,TX07,D,Toss-up,4,Tilt Republican,4.5,Lean Republican,5,4.5,50,51.5,53,51.5,4.030000000000001
+Texas,2018,District 8,74.7,25.3,48,TX,TX-08,8,TX08,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-14.700000000000003
+Texas,2018,District 9,0,100,48,TX,TX-09,9,TX09,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Texas,2018,District 10,52.18,47.82,48,TX,TX-10,10,TX10,R,Likely Republican,6,Solid Republican,7,Safe Republican,7,6.666666666666667,56,60,60,58.666666666666664,6.486666666666665
+Texas,2018,District 11,81.3,18.7,48,TX,TX-11,11,TX11,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-21.299999999999997
+Texas,2018,District 12,65.47,34.53,48,TX,TX-12,12,TX12,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-5.469999999999999
+Texas,2018,District 13,82.81,17.19,48,TX,TX-13,13,TX13,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-22.810000000000002
+Texas,2018,District 14,60.11,39.89,48,TX,TX-14,14,TX14,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-0.10999999999999943
+Texas,2018,District 15,39.37,60.63,48,TX,TX-15,15,TX15,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,0.6300000000000026
+Texas,2018,District 16,28.3,71.7,48,TX,TX-16,16,TX16,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,11.7
+Texas,2018,District 17,57.89,42.11,48,TX,TX-17,17,TX17,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,2.1099999999999994
+Texas,2018,District 18,21.67,78.33,48,TX,TX-18,18,TX18,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,18.33
+Texas,2018,District 19,75.23,24.77,48,TX,TX-19,19,TX19,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-15.230000000000004
+Texas,2018,District 20,0,100,48,TX,TX-20,20,TX20,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Texas,2018,District 21,51.33,48.67,48,TX,TX-21,21,TX21,R,Likely Republican,6,Likely Republican,6,Likely Republican,6,6,56,56,56,56,4.670000000000002
+Texas,2018,District 22,52.51,47.49,48,TX,TX-22,22,TX22,R,Lean Republican,5,Solid Republican,7,Likely Republican,6,6,53,60,56,56.333333333333336,3.8233333333333377
+Texas,2018,District 23,50.23,49.77,48,TX,TX-23,23,TX23,R,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,2.770000000000003
+Texas,2018,District 24,51.56,48.44,48,TX,TX-24,24,TX24,R,Likely Republican,6,Solid Republican,7,Safe Republican,7,6.666666666666667,56,60,60,58.666666666666664,7.106666666666662
+Texas,2018,District 25,54.45,45.55,48,TX,TX-25,25,TX25,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,5.549999999999997
+Texas,2018,District 26,60.34,39.66,48,TX,TX-26,26,TX26,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-0.3400000000000034
+Texas,2018,District 27,62.23,37.77,48,TX,TX-27,27,TX27,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-2.229999999999997
+Texas,2018,District 28,0,100,48,TX,TX-28,28,TX28,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Texas,2018,District 29,24.16,75.84,48,TX,TX-29,29,TX29,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,15.84
+Texas,2018,District 30,0,100,48,TX,TX-30,30,TX30,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Texas,2018,District 31,51.48,48.52,48,TX,TX-31,31,TX31,R,Likely Republican,6,Likely Republican,6,Likely Republican,6,6,56,56,56,56,4.520000000000003
+Texas,2018,District 32,46.68,53.32,48,TX,TX-32,32,TX32,D,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,2.3200000000000003
+Texas,2018,District 33,22.34,77.66,48,TX,TX-33,33,TX33,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,17.66
+Texas,2018,District 34,40.01,59.99,48,TX,TX-34,34,TX34,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-0.00999999999999801
+Texas,2018,District 35,26.77,73.23,48,TX,TX-35,35,TX35,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,13.23
+Texas,2018,District 36,72.56,27.44,48,TX,TX-36,36,TX36,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-12.560000000000002
+Utah,2018,District 1,71.22,28.78,49,UT,UT-01,1,UT01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-11.219999999999999
+Utah,2018,District 2,59.05,40.95,49,UT,UT-02,2,UT02,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,0.9500000000000028
+Utah,2018,District 3,71.21,28.79,49,UT,UT-03,3,UT03,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-11.209999999999994
+Utah,2018,District 4,49.87,50.13,49,UT,UT-04,4,UT04,D,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,-0.8699999999999974
+Vermont,2018,At Large,27.27,72.73,50,VT,VT-01,0,VT00,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,12.73
+Virginia,2018,District 1,55.24,44.76,51,VA,VA-01,1,VA01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,4.759999999999998
+Virginia,2018,District 2,48.88,51.12,51,VA,VA-02,2,VA02,D,Toss-up,4,Tilt Republican,4.5,Lean Democratic,3,3.8333333333333335,50,51.5,47,49.5,0.6199999999999974
+Virginia,2018,District 3,0,100,51,VA,VA-03,3,VA03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Virginia,2018,District 4,36.47,63.53,51,VA,VA-04,4,VA04,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,3.530000000000001
+Virginia,2018,District 5,53.27,46.73,51,VA,VA-05,5,VA05,R,Lean Republican,5,Likely Republican,6,Lean Republican,5,5.333333333333333,53,56,53,54,0.7299999999999969
+Virginia,2018,District 6,59.75,40.25,51,VA,VA-06,6,VA06,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,0.25
+Virginia,2018,District 7,49.02,50.98,51,VA,VA-07,7,VA07,D,Toss-up,4,Toss-up,4,Lean Democratic,3,3.6666666666666665,50,50,47,49,-0.020000000000003126
+Virginia,2018,District 8,23.73,76.27,51,VA,VA-08,8,VA08,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,16.27
+Virginia,2018,District 9,65.22,34.78,51,VA,VA-09,9,VA09,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-5.219999999999999
+Virginia,2018,District 10,43.8,56.2,51,VA,VA-10,10,VA10,D,Lean Democratic,3,Tilt Democratic,3.5,Lean Democratic,3,3.1666666666666665,47,48.5,47,47.5,3.700000000000003
+Virginia,2018,District 11,27.47,72.53,51,VA,VA-11,11,VA11,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,12.530000000000001
+Washington,2018,District 1,40.73,59.27,53,WA,WA-01,1,WA01,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-0.7299999999999969
+Washington,2018,District 2,0,100,53,WA,WA-02,2,WA02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Washington,2018,District 3,52.67,47.33,53,WA,WA-03,3,WA03,R,Lean Republican,5,Likely Republican,6,Lean Republican,5,5.333333333333333,53,56,53,54,1.3299999999999983
+Washington,2018,District 4,62.82,37.18,53,WA,WA-04,4,WA04,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-2.8200000000000003
+Washington,2018,District 5,54.76,45.24,53,WA,WA-05,5,WA05,R,Lean Republican,5,Likely Republican,6,Lean Republican,5,5.333333333333333,53,56,53,54,-0.759999999999998
+Washington,2018,District 6,36.11,63.89,53,WA,WA-06,6,WA06,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,3.8900000000000006
+Washington,2018,District 7,16.44,83.56,53,WA,WA-07,7,WA07,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,23.56
+Washington,2018,District 8,47.58,52.42,53,WA,WA-08,8,WA08,D,Lean Democratic,3,Toss-up,4,Lean Democratic,3,3.3333333333333335,47,50,47,48,0.4200000000000017
+Washington,2018,District 9,0,100,53,WA,WA-09,9,WA09,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Washington,2018,District 10,38.46,61.54,53,WA,WA-10,10,WA10,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,1.5399999999999991
+West Virginia,2018,District 1,64.58,35.42,54,WV,WV-01,1,WV01,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-4.579999999999998
+West Virginia,2018,District 2,55.67,44.33,54,WV,WV-02,2,WV02,R,Likely Republican,6,Solid Republican,7,Safe Republican,7,6.666666666666667,56,60,60,58.666666666666664,2.9966666666666626
+West Virginia,2018,District 3,56.37,43.63,54,WV,WV-03,3,WV03,R,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,-3.3699999999999974
+Wisconsin,2018,District 1,56.35,43.65,55,WI,WI-01,1,WI01,R,Lean Republican,5,Lean Republican,5,Lean Republican,5,5,53,53,53,53,-3.3500000000000014
+Wisconsin,2018,District 2,0,100,55,WI,WI-02,2,WI02,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,40
+Wisconsin,2018,District 3,40.33,59.67,55,WI,WI-03,3,WI03,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,-0.3299999999999983
+Wisconsin,2018,District 4,22.25,77.75,55,WI,WI-04,4,WI04,D,Solid Democratic,1,Solid Democratic,1,Safe Democratic,1,1,40,40,40,40,17.75
+Wisconsin,2018,District 5,61.98,38.02,55,WI,WI-05,5,WI05,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-1.9799999999999969
+Wisconsin,2018,District 6,55.51,44.49,55,WI,WI-06,6,WI06,R,Likely Republican,6,Solid Republican,7,Likely Republican,6,6.333333333333333,56,60,56,57.333333333333336,1.8233333333333377
+Wisconsin,2018,District 8,63.71,36.29,55,WI,WI-08,8,WI08,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-3.710000000000001
+Wisconsin,2018,District 7,60.95,39.05,55,WI,WI-07,7,WI07,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-0.9500000000000028
+Wyoming,2018,At Large,68.11,31.89,56,WY,WY-01,0,WY00,R,Solid Republican,7,Solid Republican,7,Safe Republican,7,7,60,60,60,60,-8.11
