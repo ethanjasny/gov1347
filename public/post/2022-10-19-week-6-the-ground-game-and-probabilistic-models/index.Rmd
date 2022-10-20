@@ -8,7 +8,9 @@ tags: []
 ---
 *This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
 
-Week 6.
+The main focus of my blog this week will be transferring my linear model to a probabilistic model. I'll thus complete blog extension three as I create a binomial logistic regression model for every congressional district in the country.  
+
+As this is my first probabilistic model of the cycle, I'll use a fairly simple linear model to get started. I will predict Democratic major vote share in each congressional district based on national generic ballot polling and whether the Democratic candidate is a challenger or an incumbent. I'll use data from the 2012 to 2020 House elections to keep the shape of districts consistent over the period being modeled (see more on redistricting later). Before creating a generalized linear model, I'll first run a simple linear regression to make sure this model at least somewhat accurately predicts vote share in congressional districts.
 
 ```{r setup, include=FALSE}
 # Hide all code output
@@ -27,5 +29,193 @@ library(sjPlot)
 library(sjmisc)
 library(sjlabelled)
 library(kableExtra)
+library(data.table)
 library(rmapshaper)
 ```
+
+
+```{r, include=FALSE}
+cvap <- read.csv("cvap_district_2012-2020_clean.csv")
+polls_2022 <- read.csv("house_polls_long.csv")
+polls_hist <- read.csv("polls_df.csv")
+district_elec <- read.csv("incumb_dist_1948-2020 (3).csv")
+incumbency_2022 <- read.csv("house_cands.csv")
+
+cvap$cd[cvap$state == "Alaska"|cvap$state == "North Dakota"|cvap$state == "South Dakota"|cvap$state == "Alaska"|cvap$state == "Delaware"|cvap$state == "Montana"|cvap$state == "Vermont"|cvap$state == "Wyoming"] <- 0
+
+cvap <- cvap %>%
+  rename(st_cd_fips = geoid) %>%
+  filter(year != "2019") %>%
+  filter(state !=	"District of Columbia") 
+                         
+
+hist_polls_data <- polls_hist %>%
+  filter(days_until_election < 35) %>% 
+  group_by(year,party) %>% 
+  summarise(avg_support = mean(support)) %>%
+  spread(key = "party", value = "avg_support") %>%
+  mutate(poll_margin = 100*(D-R)/(D+R)) %>%
+  full_join(district_elec, by = "year") %>%
+  mutate(dem_inc = case_when(DemStatus == "Incumbent" ~ 1,
+                             DemStatus == "Challenger" ~ 0,
+                             TRUE ~ 0)) %>%
+  mutate(rep_inc = case_when(RepStatus == "Incumbent" ~ 1,
+                             RepStatus == "Challenger" ~ 0,
+                             TRUE ~ 0)) %>%
+  filter(year == 2012 | year == 2014 | year == 2016 | year == 2018 | year == 2020) %>%
+  filter(state !=	"District of Columbia") %>%
+  full_join(cvap, by = c("year", "st_cd_fips"))
+
+train_data <- hist_polls_data %>%
+  group_by(district_id) %>% 
+  filter(n() > 1) %>% # Filtering out single data rows
+  group_nest() %>% 
+  mutate(data = map(data, ~unnest(., cols = c())))
+
+test_data <- data.frame(district_id = train_data$district_id, D = rep(45.3,435), R = rep(45,435), dem_inc = c(1,0,0,0,0,0,0,1,0,0,0,0,0,1,1,1,0,0,1,0,0,0,1,0,1,0,1,1,1,1,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,0,0,0,1,1,0,1,1,0,1,1,1,1,1,1,0,0,0,1,0,0,1,1,1,1,1,1,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,1,0,1,1,0,0,0,0,1,0,1,1,0,1,0,0,0,0,0,1,0,1,0,0,0,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1,0,0,1,0,0,1,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,0,0,1,1,0,0,1,1,1,1,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,0,0,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,1,0,0,0,0,0,1,1,0,0,1,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,1,1,1,0,1,1,0,1,0,0,1,0,0,0,0,0,0,1,1,1,0,0,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0)) %>%
+  mutate(rep_inc = case_when(dem_inc == 1 ~ 0,
+                             TRUE ~ 1)) %>%
+  group_by(district_id) %>% 
+  group_nest() %>% 
+  mutate(data = map(data, ~unnest(., cols = c())))
+         
+
+
+#incumbency_2022 %>% 
+ # filter(cand_party == "Republican" | cand_party == "Democratic") %>%
+  #pivot_wider(names_from = cand_party, values_from = incumbent) %>%
+  #tidyr::unnest() %>%
+  #mutate(dem_inc = case_when(Democratic == 1 ~ 1,
+   #                          TRUE ~ 0)) %>%
+  #mutate(50.2)
+
+## Linear models
+dem_models <- train_data %>% 
+  mutate(model = map(data, ~lm(DemVotesMajorPercent ~ D + dem_inc, 
+                                  data = .x))) %>% 
+  select(-data)
+
+dem_model_results <- dem_models %>% 
+  mutate(r_squared = map_dbl(model, ~summary(.x)$r.squared))
+
+rep_models <- train_data %>% 
+  mutate(model = map(data, ~lm(RepVotesMajorPercent ~ R + rep_inc, 
+                                  data = .x))) %>% 
+  select(-data)
+
+rep_model_results <- rep_models %>% 
+  mutate(r_squared = map_dbl(model, ~summary(.x)$r.squared))
+mean(rep_model_results$r_squared[rep_model_results$district_id!="CA44" & rep_model_results$district_id!="MA01" & rep_model_results$district_id!="MA07"])
+
+
+## GLM
+dem_glm_models <- train_data %>% 
+  mutate(model = map(data, ~glm(cbind(DemVotes, cvap-DemVotes) ~ D + dem_inc, 
+                                  data = .x, family = binomial))) %>% 
+  select(-data)
+
+dem_pred_2022 <- test_data %>%
+  inner_join(dem_glm_models, by = "district_id") %>% 
+  mutate(d_pred = map_dbl(.x = model, .y = data, ~predict(object = .x, newdata = as.data.frame(.y),type="response")[[1]])) %>%
+  select(district_id, d_pred)
+
+rep_glm_models <- train_data %>% 
+  mutate(model = map(data, ~glm(cbind(RepVotes, cvap-RepVotes) ~ R + rep_inc, 
+                                  data = .x, family = binomial))) %>% 
+  select(-data)
+
+rep_pred_2022 <- test_data %>%
+  inner_join(rep_glm_models, by = "district_id") %>% 
+  mutate(r_pred = map_dbl(.x = model, .y = data, ~predict(object = .x, newdata = as.data.frame(.y),type="response")[[1]])) %>%
+  select(district_id, r_pred)
+  
+master_prediction <- hist_polls_data %>%
+  filter(year == 2020) %>%
+  select(district_id, cvap) %>%
+  inner_join(dem_pred_2022, by = "district_id") %>%
+  inner_join(rep_pred_2022, by = "district_id")
+
+master_prediction <- master_prediction[-179,]
+  
+set.seed(31)
+
+dem_simuls <- data.frame(data = rep(NA, 10000))
+
+for (i in 1:435) {
+  dem_simuls[i] <- rbinom(n=10000, size = master_prediction$cvap[i], prob = master_prediction$d_pred[i])
+}
+
+names(dem_simuls) <- master_prediction$district_id
+
+rep_simuls <- data.frame(data = rep(NA, 10000))
+
+for (i in 1:435) {
+  rep_simuls[i] <- rbinom(n=10000, size = master_prediction$cvap[i], prob = master_prediction$r_pred[i])
+}
+
+names(rep_simuls) <- master_prediction$district_id
+
+margin_simuls <- (dem_simuls - rep_simuls)/(dem_simuls + rep_simuls)
+
+dem_winning_probability <- rep(NA, 435)
+
+for (i in 1:435) {
+  dem_winning_probability[i] <- mean(margin_simuls[,i] > 0)
+}
+
+dem_wins <- sum(dem_winning_probability)
+
+
+```
+The histogram below plots the distribution of the R Squared values for the model predicting Democratic district vote share based on generic ballot polling and district-level incumbency.
+
+```{r}
+hist(dem_model_results$r_squared, main = "Distribution of R-Squared by District for Democratic Voteshare Model", xlab = "R Squared", ylab = "Number of Districts", col = "deepskyblue3")
+```
+<br/>
+The histogram below does the same but for the model predicting Republican district vote share.
+```{r}
+hist(rep_model_results$r_squared, main = "Distribution of R-Squared by District for Republican Voteshare Model", xlab = "R Squared", ylab = "Number of Districts", col = "firebrick2")
+```
+<br/>
+There's clearly a wide range in R-squared values for both models, which is to be expected since we are only predicting based on two variables over five data points. But this will do for now. I'll turn to building binomial logistic models for every congressional district to derive a probability that each party will win a certain race. Using cvap data and the data used for the previously defined linear regressions, I constructed binomial logistic models for every House district. Then, I predicted probabilities for the 2022 race by using the [current 538 generic ballot polling average](https://projects.fivethirtyeight.com/polls/generic-ballot/). Having now found the predicted probabilities for each party in each congressional district, I ran 10,000 trials to predict the number of voters who will turn out for each party in each district in 2022, again relying on cvap data to determine the number of eligible voters in each district. Finally, I calculated the simulated vote share margin across the 10,000 simulations in each district.
+
+Plotted below, for example, is a histogram of the predicted vote margin in Utah's 4th congressional district, which my model things will be a particularly competitive district. Values above 0 represent outcomes where the Democratic candidate wins and outcomes below 0 represent outcomes where the Republican candidate wins. So in this case, my model gives the Democrat around a roughly 32.7% chance of winning based on the 10,000 simulations.
+
+```{r}
+
+plot <- rep(NA, 435)
+for (i in 1:435) {
+  plot[i] <- ggplot(margin_simuls, aes(x = margin_simuls[,i])) +
+  geom_histogram()
+}
+
+ggplot(margin_simuls, aes(x = margin_simuls[,401])) +
+  geom_histogram(color = "brown4", fill = "burlywood1") +
+  xlab("Predicted Margin (Dem minus Rep)") +
+  ylab("Number of Simulations") +
+  ggtitle("Simulated Vote Margin in Utah's 4th Congressional District")
+```
+Other districts aren't nearly as competitive. My model for Alabama's 1st, for example, shows the Republican winning in every simulation, as the histogram below shows.
+
+```{r}
+ggplot(margin_simuls, aes(x = margin_simuls[,1])) +
+  geom_histogram(color = "brown4", fill = "burlywood1") +
+  xlab("Predicted Margin (Dem minus Rep)") +
+  ylab("Number of Simulations") +
+  ggtitle("Simulated Vote Margin in Alabama's 1st Congressional District")
+```
+Meanwhile, a safer blue district like Connecticut's 3rd has Democrats winning every simulation, as plotted below.
+```{r}
+ggplot(margin_simuls, aes(x = margin_simuls[,84])) +
+  geom_histogram(color = "brown4", fill = "burlywood1") +
+  xlab("Predicted Margin (Dem minus Rep)") +
+  ylab("Number of Simulations") +
+  ggtitle("Simulated Vote Margin in Connecticut's 3rd Congressional District")
+```
+
+I won't plot all 435 histograms here, but in adding up all of the districts in which a Democratic wins a majority of the simulations, **my model predicts that Democrats will win roughly 209 out of the 435 seats** (around 48% of the seats).
+
+It is important to note two flaws in this approach. First, there's the issue of redistricting. The 2022 district maps are different from those used from 2012-2020, which is when the data used to train my model is from. Thus, it is not entirely appropriate to predict results in certain congressional districts based on previous results in those districts, since the boundary lines are different. Meanwhile, some districts, like Montana's 2nd, are completely new due to decennial reapportionment, so there is no historical data that can be used to train a model for these districts.  
+
+Second, the simulations derived from my probabilistic models seem to not take into account enough uncertainty. A large proportion of districts had Democratic victory probabilities (i.e. *P(dem - rep > 0)*) of 1 or 0. While this to some extent reflects the decreasing number of competitive congressional districts in House elections, it still appears that many of my models are overconfident. There are districts that seem at least somewhat competitive but that my model predicts going Democrat or Republican with total certainty. As I build toward my final predictive model, I look to find workarounds to these two problems — redistricting and overconfidence — so that my predictions are sound.

@@ -14,7 +14,7 @@
       
       <guid>http://example.org/post/2022-10-19-week-6-the-ground-game-and-probabilistic-models/</guid>
       <description>This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor Ryan Enos. It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.
-Week 6.</description>
+The main focus of my blog this week will be transferring my linear model to a probabilistic model. I’ll thus complete blog extension three as I create a binomial logistic regression model for every congressional district in the country.</description>
     </item>
     
     <item>
