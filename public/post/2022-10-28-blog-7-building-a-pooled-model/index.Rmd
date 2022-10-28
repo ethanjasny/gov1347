@@ -1,0 +1,108 @@
+---
+title: 'Blog 7: Building a Pooled District-Level Model'
+author: R package build
+date: '2022-10-28'
+slug: []
+categories: []
+tags: []
+---
+```{r setup, include=FALSE}
+# Hide all code output
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+# Import libraries
+library(tidyverse)
+library(ggplot2)
+library(usmap)
+library(sf)
+library(blogdown)
+library(plotly)
+library(htmlwidgets)
+library(gridExtra)
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+library(kableExtra)
+library(data.table)
+library(rmapshaper)
+library(stargazer)
+library(readr)
+
+demog_df <- read_csv("demographic_2009_2020.csv")
+
+demog_df_2020 <- read_csv("demographic_2020.csv")
+
+demog_df_2009_2019 <- read_csv("demographic_2009_2019.csv")
+
+pvdistrict_df <- read_csv("incumb_dist_1948-2020 (3).csv")
+
+hist_pvi <- read_csv("hist_pvi.csv")
+```
+```{r}
+hist_pvi_n <- hist_pvi %>%
+  rename(district_num = District,
+         state = State) %>%
+  select(year, state, district_num, PVI) %>%
+  mutate(district_num = parse_number(district_num))
+
+hist_pvi_n$multi <- rep(NA, 2610)
+hist_pvi_n$multi[grep("R", hist_pvi_n$PVI)] <- -1
+hist_pvi_n$multi[grep("D", hist_pvi_n$PVI)] <- 1
+hist_pvi_n$multi[hist_pvi_n$PVI == 0] <- 0
+
+hist_pvi_n <- hist_pvi_n %>%
+  mutate(PVI_num = parse_number(PVI)*multi)
+
+dat <- pvdistrict_df %>% 
+  #filter(year %in% years) %>% 
+    inner_join(demog_df,
+              by = c("year" ,"st_cd_fips", "state")) %>%
+  mutate(district_num = parse_number(district_num)) %>%
+  inner_join(hist_pvi_n, 
+             by = c("year", "district_num", "state")) %>%
+  # change age var name
+   dplyr::rename("age20_29" = "20_29", 
+                "age30_44" = "30_44",
+               "age45_64" = "45_64", 
+                "age65" = "65+",
+               "hispanic" = "hispanic or latino",
+               "indigenous" = "native american") %>%
+  mutate(dem_inc = case_when(DemStatus == "Incumbent" ~ 1,
+                             TRUE ~ 0)) %>%
+  mutate(dem_pres = c(rep(0,868), rep(1,1722)),
+         midterm = case_when(year == 2010 | year == 2014 | year == 2018 ~ 1,
+                             TRUE ~ 0))
+
+pool_model <- lm(DemVotesMajorPercent ~ PVI_num + dem_inc + dem_pres + midterm + white  +
+                           age20_29 + age30_44, data = dat)
+
+fig1 <- ggplot(aes(x = predict(pool_model, dat), y = DemVotesMajorPercent), data = dat) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, color = "firebrick") +
+  labs(title = "Pooled District Model ") +
+  xlab(label = "Predicted Democratic District-Level Vote Share") +
+  ylab(label = "Actual Democratic District-Level Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+dat_contested <- dat %>%
+  filter(DemVotesMajorPercent != 0 & RepVotesMajorPercent != 0)
+
+contested_model <- lm(DemVotesMajorPercent ~ PVI_num + dem_inc + dem_pres + midterm  + white +
+                           age20_29 + age30_44, data = dat_contested)
+
+fig2 <- ggplot(aes(x = predict(contested_model, dat_contested), y = DemVotesMajorPercent), data = dat_contested) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, color = "firebrick") +
+  labs(title = "Pooled District Model (Contested Races Only)") +
+  xlab(label = "Predicted Democratic District-Level Vote Share") +
+  ylab(label = "Actual Democratic District-Level Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+```{r}
+stargazer(pool_model,
+          column.sep.width = "3pt", type = "html",
+          title = "Pooled Model")
+```
+
