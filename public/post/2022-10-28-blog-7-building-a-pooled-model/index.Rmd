@@ -1,11 +1,16 @@
 ---
 title: 'Blog 7: Building a Pooled District-Level Model'
-author: R package build
+author: "Ethan Jasny"
 date: '2022-10-28'
 slug: []
 categories: []
 tags: []
 ---
+*This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
+
+For my last blog post until my final prediction, I'm going to construct a pooled district-level model to predict Democratic vote share based on the demographics of the districts. It became clear that a pooled model — rather than 435 distinct models for each district — would be necessary to predict district-level results. Due to decennial redistricting, the 2022 congressional districts are different from those used in previous districts. It is thus not appropriate to predict vote share in a particular district based on previous results in that district since the people living in that district have shifted. Meanwhile, we have no data to predict results in new districts like Montana's Second. Moreover, working with separate district level models means that there are only around 4-5 data points to train my model on — not enough to make statistically solid predictions. 
+
+Using data from the 2010 through 2020 congressional elections, I constructed the following pooled model.
 ```{r setup, include=FALSE}
 # Hide all code output
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
@@ -38,7 +43,7 @@ pvdistrict_df <- read_csv("incumb_dist_1948-2020 (3).csv")
 
 hist_pvi <- read_csv("hist_pvi.csv")
 ```
-```{r}
+```{r, include=FALSE}
 hist_pvi_n <- hist_pvi %>%
   rename(district_num = District,
          state = State) %>%
@@ -99,10 +104,27 @@ fig2 <- ggplot(aes(x = predict(contested_model, dat_contested), y = DemVotesMajo
   theme(plot.title = element_text(hjust = 0.5))
 
 ```
+<br/>
+```{r}
+tab_model(pool_model, show.se = TRUE)
+```
+<br/>
+In the above model, **PVI** represents the Cook Political Report's partisan voter index for that district in a particular election year, which is a measure of how Republican or Democratic a district is relative to the nation as a whole. The **dem inc**, **dem pres**, and **midterm** variables are dummy variables for whether the district has an incumbent Democratic candidate, whether the incumbent president is a Democrat, and whether it is a midterm cycle. The **white**, **age 20-20**, and **age 30-34** represent the proportion of the district's population that is white, aged 20-29, and aged 30-44 respectively. All of the variables are statistically significant, with the exception of the midterm dummy, which has a p-value of around 0.072. Below is a plot of the actual Democratic vote share versus the predicted Democratic vote according to the model for all congressional races from 2010 to 2020. The red 45-degree line represents cases where our model perfectly predicts district level results.
 
 ```{r}
-stargazer(pool_model,
-          column.sep.width = "3pt", type = "html",
-          title = "Pooled Model")
+fig1
 ```
+Note the districts with 0 or 100% Democratic vote share, which come from uncontested races. These districts may be skewing our model since one party will win all of the two-party vote regardless of the demographics of the district. The following model is trained on the same data as before but excluding uncontested districts. 
+<br/>
+```{r}
+tab_model(contested_model, show.se = TRUE)
+```
+<br/>
+As before, nearly all the variables are statistically significant, this time which the exception of the white proportion of the district population. And this model now seems to fit our data better, with the adjusted R-squared up to 0.919. Below is a plot of predicted versus actual Democratic vote share for only uncontested seats.
 
+```{r}
+fig2
+```
+At this point, I will withhold from making predictions for 2022 as I still need to gather and wrangle post-redistricting district-level demographic data. But for now, this pooled model seems provide a good approach for translating demographic information about districts (as well as incumbency) into Democratic vote share.
+
+One potential concern given how high the R-squared is is that I may be overfitting. Just throwing demographic data into the model might fit historical data well but it may not prove to be an effective basis for prediction. As I continue to refine my model, I'll consider dropping variables to make my model more parsimonious and conduct cross validation to check my model's predictive power. 

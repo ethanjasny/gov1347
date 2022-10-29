@@ -1,6 +1,6 @@
 ---
 title: 'Blog 7: Building a Pooled District-Level Model'
-author: R package build
+author: "Ethan Jasny"
 date: '2022-10-28'
 slug: []
 categories: []
@@ -9,39 +9,375 @@ tags: []
 
 
 
-<pre><code>## 
-## &lt;table style=&quot;text-align:center&quot;&gt;&lt;caption&gt;&lt;strong&gt;Pooled Model&lt;/strong&gt;&lt;/caption&gt;
-## &lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;em&gt;Dependent variable:&lt;/em&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td colspan=&quot;1&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;DemVotesMajorPercent&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;PVI_num&lt;/td&gt;&lt;td&gt;1.105&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(0.022)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;dem_inc&lt;/td&gt;&lt;td&gt;8.087&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(0.591)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;dem_pres&lt;/td&gt;&lt;td&gt;-4.507&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(0.447)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;midterm&lt;/td&gt;&lt;td&gt;-0.741&lt;sup&gt;*&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(0.412)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;white&lt;/td&gt;&lt;td&gt;4.087&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(1.412)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;age20_29&lt;/td&gt;&lt;td&gt;23.931&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(7.982)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;age30_44&lt;/td&gt;&lt;td&gt;-35.732&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(8.371)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;Constant&lt;/td&gt;&lt;td&gt;52.703&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(2.908)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;Observations&lt;/td&gt;&lt;td&gt;2,590&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;R&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;0.797&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;Adjusted R&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;0.796&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;Residual Std. Error&lt;/td&gt;&lt;td&gt;10.420 (df = 2582)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;F Statistic&lt;/td&gt;&lt;td&gt;1,446.860&lt;sup&gt;***&lt;/sup&gt; (df = 7; 2582)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td colspan=&quot;2&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;em&gt;Note:&lt;/em&gt;&lt;/td&gt;&lt;td style=&quot;text-align:right&quot;&gt;&lt;sup&gt;*&lt;/sup&gt;p&lt;0.1; &lt;sup&gt;**&lt;/sup&gt;p&lt;0.05; &lt;sup&gt;***&lt;/sup&gt;p&lt;0.01&lt;/td&gt;&lt;/tr&gt;
-## &lt;/table&gt;</code></pre>
+<p><em>This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor <a href="https://www.ryandenos.com">Ryan Enos</a>. It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.</em></p>
+<p>For my last blog post until my final prediction, I’m going to construct a pooled district-level model to predict Democratic vote share based on the demographics of the districts. It became clear that a pooled model — rather than 435 distinct models for each district — would be necessary to predict district-level results. Due to decennial redistricting, the 2022 congressional districts are different from those used in previous districts. It is thus not appropriate to predict vote share in a particular district based on previous results in that district since the people living in that district have shifted. Meanwhile, we have no data to predict results in new districts like Montana’s Second. Moreover, working with separate district level models means that there are only around 4-5 data points to train my model on — not enough to make statistically solid predictions.</p>
+<p>Using data from the 2010 through 2020 congressional elections, I constructed the following pooled model.</p>
+<br/>
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+Dem Votes Major Percent
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+52.70
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.91
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+47.00 – 58.41
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+PVI num
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.11
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.02
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.06 – 1.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+dem inc
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+8.09
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.59
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+6.93 – 9.25
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+dem pres
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-4.51
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.45
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-5.38 – -3.63
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+midterm
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.74
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.41
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.55 – 0.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.072
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+white
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+4.09
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.41
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.32 – 6.85
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>0.004</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+age20 29
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+23.93
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+7.98
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+8.28 – 39.58
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>0.003</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+age30 44
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-35.73
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+8.37
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-52.15 – -19.32
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+2590
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.797 / 0.796
+</td>
+</tr>
+</table>
+<p><br/>
+In the above model, <strong>PVI</strong> represents the Cook Political Report’s partisan voter index for that district in a particular election year, which is a measure of how Republican or Democratic a district is relative to the nation as a whole. The <strong>dem inc</strong>, <strong>dem pres</strong>, and <strong>midterm</strong> variables are dummy variables for whether the district has an incumbent Democratic candidate, whether the incumbent president is a Democrat, and whether it is a midterm cycle. The <strong>white</strong>, <strong>age 20-20</strong>, and <strong>age 30-34</strong> represent the proportion of the district’s population that is white, aged 20-29, and aged 30-44 respectively. All of the variables are statistically significant, with the exception of the midterm dummy, which has a p-value of around 0.072. Below is a plot of the actual Democratic vote share versus the predicted Democratic vote according to the model for all congressional races from 2010 to 2020. The red 45-degree line represents cases where our model perfectly predicts district level results.</p>
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+Note the districts with 0 or 100% Democratic vote share, which come from uncontested races. These districts may be skewing our model since one party will win all of the two-party vote regardless of the demographics of the district. The following model is trained on the same data as before but excluding uncontested districts.
+<br/>
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+Dem Votes Major Percent
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+51.34
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.43
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+48.54 – 54.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+PVI num
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.90
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.01
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.88 – 0.92
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+dem inc
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+6.40
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.29
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+5.84 – 6.97
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+dem pres
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-2.92
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.22
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-3.35 – -2.49
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+midterm
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.89
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.20
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.29 – -0.49
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+white
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.95
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.70
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.43 – 2.33
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.178
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+age20 29
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+19.19
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+4.02
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+11.31 – 27.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+age30 44
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-20.82
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+4.14
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-28.93 – -12.71
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+2304
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.919 / 0.919
+</td>
+</tr>
+</table>
+<p><br/>
+As before, nearly all the variables are statistically significant, this time which the exception of the white proportion of the district population. And this model now seems to fit our data better, with the adjusted R-squared up to 0.919. Below is a plot of predicted versus actual Democratic vote share for only uncontested seats.</p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+At this point, I will withhold from making predictions for 2022 as I still need to gather and wrangle post-redistricting district-level demographic data. But for now, this pooled model seems provide a good approach for translating demographic information about districts (as well as incumbency) into Democratic vote share.</p>
+<p>One potential concern given how high the R-squared is is that I may be overfitting. Just throwing demographic data into the model might fit historical data well but it may not prove to be an effective basis for prediction. As I continue to refine my model, I’ll consider dropping variables to make my model more parsimonious and conduct cross validation to check my model’s predictive power.</p>
