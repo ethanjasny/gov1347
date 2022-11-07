@@ -13,7 +13,8 @@
       <pubDate>Tue, 01 Nov 2022 00:00:00 +0000</pubDate>
       
       <guid>http://example.org/post/2022-11-01-final-prediction/</guid>
-      <description>National Seat Forecast Republicans are strongly favored to take the House. My model predicts that Democrats will win 200 seats and Republicans will win 235 seats. In 80% of simulations, Democrats win between 185 and 216 seats, and Republicans win between 219 and 250 seats.
+      <description>National Seat Forecast Republicans are strongly favored to take the House. My model predicts that Democrats will win 200 seats and Republicans will win 235 seats.
+In 80% of simulations, Democrats win between 185 and 216 seats, and Republicans win between 219 and 250 seats.
 District-Level Forecasts Zoom and hover over this district map to get predicted vote share, win probability, and prediction intervals for every district.
 Note: the template for this cartogram comes from Daily Kos Elections</description>
     </item>

@@ -854,7 +854,7 @@ overallpredhist <- plot_ly(x = dem_wins, type = "histogram", marker = list(color
   add_histogram(x = 435 - dem_wins, marker = list(color = 'red', opacity = 0.5), name = "Simulated Rep Seat Share") %>%
   layout(legend = list(orientation = "h")) %>% 
   layout(barmode = "overlay") %>%
-  layout(title = paste("National Forecast", ": The Democrats win the House in ", avgdemwins,"% of 10,000 simulations", sep = ""),
+  layout(title = paste("The Democrats win the House in ", avgdemwins,"% of 10,000 simulations", sep = ""),
          yaxis = list(title = '# of Simulations'), xaxis = list(range = c(150,285)))
 
 ## 80% Seat share prediction interval
@@ -865,7 +865,7 @@ overallpredhist <- plot_ly(x = dem_wins, type = "histogram", marker = list(color
 ```
 
 # National Seat Forecast
-## Republicans are **strongly favored** to take the House. My model predicts that **Democrats will win 200 seats** and **Republicans will win 235 seats**. 
+Republicans are **strongly favored** to take the House. My model predicts that **Democrats will win 200 seats** and **Republicans will win 235 seats**. 
 ```{r}
 overallpredhist
 ```
@@ -881,7 +881,7 @@ districtcartmap
 
 Click through the drop-down menu to get histograms of simulations for every district.
 
-<iframe height="400" width="100%" frameborder="no" src="https://ethanjasny.shinyapps.io/Histograms/"> </iframe>
+<iframe height="100%" width="100%" frameborder="no" src="https://ethanjasny.shinyapps.io/Histograms/"> </iframe>
 
 # Methodology
 My model combines district-level demographic data, other fundamental indicators, and national polling data to generate predicted vote shares and win probabilities for every district in the country. These district-level estimates are then combined to determine a national-level seat forecast. I built my model in two main sections: a district-level pooled model based on fundamentals and a national vote share model based on generic ballot polls.
