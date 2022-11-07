@@ -881,7 +881,7 @@ districtcartmap
 
 Click through the drop-down menu to get histograms of simulations for every district.
 
-<iframe height="100%" width="100%" frameborder="no" src="https://ethanjasny.shinyapps.io/Histograms/"> </iframe>
+<iframe height="600" width="100%" frameborder="no" src="https://ethanjasny.shinyapps.io/Histograms/"> </iframe>
 
 # Methodology
 My model combines district-level demographic data, other fundamental indicators, and national polling data to generate predicted vote shares and win probabilities for every district in the country. These district-level estimates are then combined to determine a national-level seat forecast. I built my model in two main sections: a district-level pooled model based on fundamentals and a national vote share model based on generic ballot polls.
