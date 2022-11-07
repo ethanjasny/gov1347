@@ -1,15 +1,11 @@
 ---
-title: Final Prediction
-author: R package build
+title: Final Prediction Model
+author: Ethan Jasny
 date: '2022-11-01'
 slug: []
 categories: []
 tags: []
 ---
-*This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
-
-<iframe height="800" width="100%" frameborder="no" src="https://ethanjasny.shinyapps.io/Histograms/"> </iframe>
-
 ```{r setup, include=FALSE}
 # Hide all code output
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
@@ -51,7 +47,6 @@ generic_ballot_2022 <- read.csv("generic_ballot_polls.csv")
 
 state.abbrevs <- data.frame("state" = c("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"), "abbrev" = c("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"))
 ```
-
 ```{r, include=FALSE}
 # Clean training data
 hist_pvi_n <- hist_pvi %>%
@@ -199,7 +194,6 @@ incumbency_2022 <- read.csv("house_cands.csv") %>%
 dem_incumbents <- c(incumbency_2022$District, "Arizona 2", "Arizona 3", "Arizona 4", "Arizona 7", "California 4", "California 6", "California 7", "California 8", "California 9", "California 10", "California 11", "California 12", "California 14", "California 16", "California 18", "California 19", "California 21", "California 25", "California 28", "California 30", "California 31", "California 32", "California 33", "California 36", "California 39", "California 47", "California 50", "California 51", "California 52", "Florida 22", "Florida 25", "Georgia 7", "Michigan 6", "Michigan 7", "Michigan 8", "Michigan 12", "Minnesota 2", "Minnesota 3", "Minnesota 4", "Minnesota 5", "New York 12", "New York 17", "New York 18", "Texas 34")
 
 ```
-
 ```{r}
 state_converter <- read.csv("house_cands.csv") %>%
   mutate(District = paste(state, district, sep = " ")) %>%
@@ -324,6 +318,8 @@ for (i in 1:435) {
 library(donnermap)
 
 #sum(point_predictions$con_prob_dem_win > 50)
+#sum(point_predictions$con_predicted_dem_voteshare > 50)
+
 
 ```
 
@@ -367,7 +363,7 @@ cart <- ggplot(cd_cartogram) + geom_sf(aes(fill=con_prob_dem_win, text = paste("
         axis.ticks.y=element_blank()) +
   labs(fill = "Dem Win Prob %") 
 
-ggplotly(cart, tooltip = "text") %>%
+districtcartmap <- ggplotly(cart, tooltip = "text") %>%
   layout(hoverlabel = list(bgcolor = "white"))
 ```
 
@@ -843,7 +839,7 @@ server <- shinyServer(function(input,output,session){
 })
 
           
-shinyApp(ui,server)
+#shinyApp(ui,server)
 
 library(purrr)
 seatdraws1 <- consolidated_draws1 %>%
@@ -854,68 +850,111 @@ dem_wins <- rowSums(seatdraws1)
 
 avgdemwins <- 100*mean(dem_wins > 217)
 
-plot_ly(x = dem_wins, type = "histogram", marker = list(color = 'blue', opacity = 0.5), name = "Simulated Dem Seat Share") %>% 
+overallpredhist <- plot_ly(x = dem_wins, type = "histogram", marker = list(color = 'blue', opacity = 0.5), name = "Simulated Dem Seat Share") %>% 
   add_histogram(x = 435 - dem_wins, marker = list(color = 'red', opacity = 0.5), name = "Simulated Rep Seat Share") %>%
   layout(legend = list(orientation = "h")) %>% 
   layout(barmode = "overlay") %>%
-  layout(title = paste("National Forecast", ": The Democrats win ", avgdemwins,"% of 10,000 simulations", sep = ""),
+  layout(title = paste("National Forecast", ": The Democrats win the House in ", avgdemwins,"% of 10,000 simulations", sep = ""),
          yaxis = list(title = '# of Simulations'), xaxis = list(range = c(150,285)))
 
-
+## 80% Seat share prediction interval
+#quantile(dem_wins, c(0.1,0.9))
 
 #write.csv(x = consolidated_draws1, file = "consolidated_draws1.csv")
 #write.csv(x = merge_point, file = "merge_point.csv")
 ```
 
+# National Seat Forecast
+## Republicans are **strongly favored** to take the House. My model predicts that **Democrats will win 200 seats** and **Republicans will win 235 seats**. 
+```{r}
+overallpredhist
+```
+In 80% of simulations, Democrats win between 185 and 216 seats, and Republicans win between 219 and 250 seats.
 
+# District-Level Forecasts
+Zoom and hover over this district map to get predicted vote share, win probability, and prediction intervals for every district.
 
+```{r}
+districtcartmap
+```
+*Note: the template for this cartogram comes from [Daily Kos Elections](https://docs.google.com/spreadsheets/d/1LrBXlqrtSZwyYOkpEEXFwQggvtR0bHHTxs9kq4kjOjw/edit#gid=0)*
 
-ui <-shinyUI(fluidPage(selectInput("selectPlot", "Choose desired congressional district", choices=merge_point$District, plotlyOutput("plot"))))
+Click through the drop-down menu to get histograms of simulations for every district.
 
-server <- shinyServer(function(input,output){      
-  output$plot <- renderPlotly({
-    return(get(merge_point$districtlabs[1]))
-  })
-})
+<iframe height="400" width="100%" frameborder="no" src="https://ethanjasny.shinyapps.io/Histograms/"> </iframe>
 
-merge_point$District == input$selectPlot
-server <- shinyServer(function(input,output){      
-  output$plot <- renderPlotly({
-    return(get(plot_list[[which(merge_point$District == input$selectPlot)]]))
-  })
-})
+# Methodology
+My model combines district-level demographic data, other fundamental indicators, and national polling data to generate predicted vote shares and win probabilities for every district in the country. These district-level estimates are then combined to determine a national-level seat forecast. I built my model in two main sections: a district-level pooled model based on fundamentals and a national vote share model based on generic ballot polls.
 
-p <- merge_point[1,]$plots
+## Pooled District-Level Fundamentals Model
+This model combines district-level results from the past decade of House elections to predict the Democratic two-party vote share for a certain district. In my final model, I used the following variables.
 
-shinyApp(ui,server)
+**PVI**: The Cook Political Report’s [Partisan Voter Index]( https://www.cookpolitical.com/cook-pvi/2022-partisan-voting-index/state-map-and-list), a measure of the baseline partisanship of a district based on presidential election data. 
 
-merge_point$plots <- plot_list
+**Democratic incumbency**: 1 if the Democratic candidate is an incumbent, 0 if not.
 
-string <- merge_point$districtlabs
+**Democratic president**: 1 if the incumbent president is a Democrat, 0 if not.
 
-AL01 <- plot_list[[1]]
+**Midterm**: 1 if it is a midterm election cycle, 0 if not.
 
-which(merge_point$District == input$selectPlot)
+**White population**: Proportion of the district’s voting age population that is white.
 
-get(merge_point$districtlabs[1])
-
-
-
-
+I considered other demographic variables, such as the Black proportion of the population, the proportion of the population under 29, etc., but decided not to use them either for the sake of parsimony or for the lack of corresponding data for the 2022 districts. The model output is shown below.
 <br/>
 ```{r}
 tab_model(pool_model, show.se = TRUE)
 ```
 <br/>
+Below is a plot of the actual Democratic vote share versus the predicted Democratic vote according to the model for all congressional races from 2010 to 2020. The red 45-degree line represents cases where the model perfectly predicts district-level results.
+<br/>
 ```{r}
 fig1
 ```
+<br/>
+While this model performs well, uncontested districts (with actual Democratic vote share values of 0% or 100%) skew the regression. Thus, I ran the same model but filtered out uncontested districts.
 <br/>
 ```{r}
 tab_model(contested_model, show.se = TRUE)
 ```
 <br/>
+As before, nearly all the variables are statistically significant, this time which the exception of the white proportion of the district population. And this model now seems to fit our data better, with the adjusted R-squared up to 0.919. Below is a plot of predicted versus actual Democratic vote share for only uncontested seats.
+<br/>
 ```{r}
 fig2
 ```
+<br/>
+This model clearly fits the data quite well, with the high R-squared pointing to strong in-sample performance. One concern I have is that I may be overfitting, though the model continued to perform well under out-of-sample testing (calculated by removing an entire year from the training data). 
 
+Thus the final equation for this model is given by *dem_two_party_voteshare = 0.9(PVI) + 6.53(dem_inc) – 3.06(dem_pres) – 0.95(midterm) + 0.94(white)  + 49.50*. Note that, as we might expect, a Democratic incumbent running in a district predicts higher Democratic vote share, while having a Democratic president and a midterm election year is associated with poorer Democratic performance. 
+
+Using data updated for the 2022 districts from [Dave’s Redistricting]( https://davesredistricting.org/maps#home), I ran this model for all 435 congressional districts, generating two-party vote share estimates and 80% prediction intervals. Then I simulated 10,000 elections in each district, using the predicted two-party vote share and residual standard error.
+
+## National Generic Ballot Model
+But this district-level pooled model is flawed on its own when attempting to convert to a national estimate for seat share. The pooled model generates predictions for each district independently. In reality, a particular party performing well in a certain district should generally be correlated with that party doing well across the board. Thus, when I aggregated the 10,000 simulations to form a national seat share prediction, the model was very overconfident, since it wasn’t considering cases where Democrats consistently performed well or poorly across districts. I thus turned to national polling to consider cases where a certain party outperforms the district fundamentals. 
+
+Using historical polling and election data, the following simple linear model predicts national Democratic two-party vote share based only on generic ballot polling, with individual polls filtered by recency to generate polling averages. 
+<br/>
+```{r}
+tab_model(poll_model, show.se = TRUE)
+```
+<br/>
+A scatterplot for the model is shown below.
+<br/>
+```{r}
+pollmodelscat
+```
+<br/>
+And the equation for this model is given by *dem_two_party_voteshare = 0.73(two_party_generic_ballot_avg) + 12.52*. Note that the coefficient for the generic ballot variable is below one, suggesting that two-party generic ballot average tends to overestimate Democrats’ national vote share, which this model takes into account.
+
+Using 2022 polling data (again filtered by recency), I calculated the 2022 polling average and fed it through this model to determine an estimate for the national two-party Democratic vote share as well as an 80% prediction interval. I used this estimate and the residual standard error to conduct 10,000 simulations of the national two-party vote share. These simulated results thus represent possible true estimates for the national two-party vote, based on historical polling error (and in particular, the polls’ propensity to overrate Democrats’ chances). 
+
+Finally, I used these simulated vote shares to represent possible values of the baseline national environment (e.g. a simulated Democratic two-party vote share of 52% represents a D+2 environment). Then, I adjusted the previously calculated district-level simulations by these measures of national partisanship. Notably, this makes the assumption of uniform swing (i.e. that national shifts cause all districts to move in the same direction, at the same magnitude). But in this way, I am able to consider both district-level uncertainty using the pooled model and the possibility of a unidirectional polling error using the national model’s adjustment.
+
+Adjusting the pooled model by the national model, I generated the final vote share predictions and prediction intervals for each district that are plotted on the cartogram as well as the 10,000 simulations plotted on the district-level histograms. Then, for each simulation, I aggregated the number of seats won by Democrats to generate 10,000 national seat share predictions, shown on the topline histogram. These seat share simulations now feature a greater degree of uncertainty given the uniform swing adjustments created by the polling model. Despite the relatively large prediction interval, the model is quite confident in Republicans’ chances (giving Democrats only an 8.14% chance at a majority) mainly because the mean of the distribution has Democrats only winning 200 out of 435 seats. 
+
+## Limitations
+As previously mentioned, the implementation of my polling model presumes a national swing, which may not be a fair assumption. Certain demographically similar districts may be correlated and swing together while others do not.
+
+Moreover, I decided to omit district-level polling (due to the sparseness and potential unreliability of the data) and expert predictions (to preserve the intellectual exercise of making this model). But these data points could have helped refine my district-level predictions to incorporate information beyond the fundamentals considered in my pooled model. For example, expert predictions and polling suggest that Democrat Mary Peltola is competitive and even favored in Alaska’s at-large congressional district, but my model — turning to the baseline partisanship of the district — only gives Peltola an 18.3% chance of winning. My model also has no way to account for Alaska’s ranked-choice voting electoral system.
+
+Still, as an exercise in considering how some measures of district-level fundamentals and national polling can be used to model midterm elections, I think my predictions seem broadly reasonable, if somewhat more pro-Republican than other forecasts and my own priors.
