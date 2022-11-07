@@ -1,0 +1,921 @@
+---
+title: Final Prediction
+author: R package build
+date: '2022-11-01'
+slug: []
+categories: []
+tags: []
+---
+*This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor [Ryan Enos](https://www.ryandenos.com). It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.*
+
+<iframe height="800" width="100%" frameborder="no" src="https://ethanjasny.shinyapps.io/Histograms/"> </iframe>
+
+```{r setup, include=FALSE}
+# Hide all code output
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+# Import libraries
+library(tidyverse)
+library(ggplot2)
+library(usmap)
+library(sf)
+library(blogdown)
+library(plotly)
+library(htmlwidgets)
+library(gridExtra)
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+library(kableExtra)
+library(data.table)
+library(rmapshaper)
+library(stargazer)
+library(readr)
+
+set.seed(31)
+
+## Read in data
+demog_df <- read_csv("demographic_2009_2020.csv")
+
+demog_df_2020 <- read_csv("demographic_2020.csv")
+
+demog_df_2009_2019 <- read_csv("demographic_2009_2019.csv")
+
+pvdistrict_df <- read_csv("incumb_dist_1948-2020 (3).csv")
+
+hist_pvi <- read_csv("hist_pvi.csv")
+
+hist_polls <- read_csv("polls_df.csv")
+
+generic_ballot_2022 <- read.csv("generic_ballot_polls.csv")
+
+state.abbrevs <- data.frame("state" = c("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"), "abbrev" = c("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"))
+```
+
+```{r, include=FALSE}
+# Clean training data
+hist_pvi_n <- hist_pvi %>%
+  rename(district_num = District,
+         state = State) %>%
+  select(year, state, district_num, PVI) %>%
+  mutate(district_num = parse_number(district_num))
+
+hist_pvi_n$multi <- rep(NA, 2610)
+hist_pvi_n$multi[grep("R", hist_pvi_n$PVI)] <- -1
+hist_pvi_n$multi[grep("D", hist_pvi_n$PVI)] <- 1
+hist_pvi_n$multi[hist_pvi_n$PVI == 0] <- 0
+
+hist_pvi_n <- hist_pvi_n %>%
+  mutate(PVI_num = parse_number(PVI)*multi)
+
+dat <- pvdistrict_df %>% 
+  #filter(year %in% years) %>% 
+    inner_join(demog_df,
+              by = c("year" ,"st_cd_fips", "state")) %>%
+  mutate(district_num = parse_number(district_num)) %>%
+  inner_join(hist_pvi_n, 
+             by = c("year", "district_num", "state")) %>%
+  # change age var name
+   dplyr::rename("age20_29" = "20_29", 
+                "age30_44" = "30_44",
+               "age45_64" = "45_64", 
+                "age65" = "65+",
+               "hispanic" = "hispanic or latino",
+               "indigenous" = "native american") %>%
+  mutate(dem_inc = case_when(DemStatus == "Incumbent" ~ 1,
+                             TRUE ~ 0)) %>%
+  mutate(dem_pres = c(rep(0,868), rep(1,1722)),
+         midterm = case_when(year == 2010 | year == 2014 | year == 2018 ~ 1,
+                             TRUE ~ 0))
+
+## Create pooled model
+pool_model <- lm(DemVotesMajorPercent ~ PVI_num + dem_inc + dem_pres + midterm + white, data = dat)
+
+## Plot pooled model
+fig1 <- ggplot(aes(x = predict(pool_model, dat), y = DemVotesMajorPercent), data = dat) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, color = "firebrick") +
+  labs(title = "Pooled District Model ") +
+  xlab(label = "Predicted Democratic District-Level Vote Share") +
+  ylab(label = "Actual Democratic District-Level Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+dat_contested <- dat %>%
+  filter(DemVotesMajorPercent != 0 & RepVotesMajorPercent != 0)
+
+## Create better pooled model for contested seats
+contested_model <- lm(DemVotesMajorPercent ~ PVI_num + dem_inc + dem_pres + midterm  + white, data = dat_contested)
+
+fig2 <- ggplot(aes(x = predict(contested_model, dat_contested), y = DemVotesMajorPercent), data = dat_contested) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, color = "firebrick") +
+  labs(title = "Pooled District Model (Contested Races Only)") +
+  xlab(label = "Predicted Democratic District-Level Vote Share") +
+  ylab(label = "Actual Democratic District-Level Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+## Clean historical poll data
+hist_polls_data <- hist_polls %>%
+  filter(days_until_election < 25) %>% 
+  group_by(year,party) %>% 
+  summarise(avg_support = mean(support)) %>%
+  spread(key = "party", value = "avg_support") %>%
+  mutate(dem_two_party = 100*(D)/(D+R),
+         rep_two_party = 100*(R)/(D+R)) %>%
+  mutate(dem_two_party = case_when(year == 2008 ~ 100 - dem_two_party,
+                                   TRUE ~ dem_two_party),
+         rep_two_party = case_when(year == 2008 ~ 100 - rep_two_party,
+                                   TRUE ~ rep_two_party))
+
+national_data <- read_csv("house_popvote_seats.csv")
+
+poll_train <- national_data %>%
+  select(year, R_seats, D_seats, R_majorvote_pct, D_majorvote_pct) %>%
+  inner_join(hist_polls_data, by = "year") %>%
+  filter(year > 1970)
+
+## Create poll model
+poll_model <- lm(D_majorvote_pct ~ dem_two_party, data = poll_train)
+
+summary(poll_model)
+
+## Plot poll model
+pollmodelscat <- ggplot(aes(x = predict(poll_model, poll_train), y = D_majorvote_pct, label = year), data = poll_train) +
+  geom_text() +
+  geom_abline(intercept = 0, slope = 1, color = "darkseagreen4") +
+  labs(title = "Polls Model") +
+  xlab(label = "Predicted Democratic Vote Share") +
+  ylab(label = "Actual Democratic Vote Share") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+## Clean current poll data to find polling average
+generic_ballot_2022$end_date <- as.Date(generic_ballot_2022$end_date, "%m/%d/%y")
+nat_polls_pred <- generic_ballot_2022 %>%
+  filter(end_date > "2022-10-30",
+         fte_grade == "A" | fte_grade == "A-"| fte_grade == "A/B" | fte_grade == "A+"| fte_grade == "B"| fte_grade == "B-"| fte_grade == "B+") %>%
+  mutate(dem_two_party_poll = dem/(dem + rep))
+
+## Predict true 2022 polling average based on past polling error
+poll_avg <- data.frame(dem_two_party = 100*mean(nat_polls_pred$dem_two_party_poll))
+
+poll_predict <- predict.lm(poll_model, poll_avg, interval="predict", level=0.8, se.fit = TRUE)
+
+## Simulate national popular vote based on generic ballot regression 
+nat_sim <- data.frame(sim_share = rep(NA, 10000))
+
+for (i in 1:10000) {
+  nat_sim$sim_share[i] <- rnorm(n = 1, mean = poll_predict$fit[1], sd = poll_predict$residual.scale)
+}
+
+# plot_ly(x = nat_sim$sim_share, type = "histogram", marker = list(color = 'blue', opacity = 0.5), name = "Simulated Dem Seat Share") %>% 
+#  add_histogram(x = 100 - nat_sim$sim_share, marker = list(color = 'red', opacity = 0.5), name = "Simulated Rep Seat Share") %>%
+#  layout(legend = list(orientation = "h")) %>% 
+ # layout(barmode = "overlay") %>%
+  #layout(title = paste("National Forecast", ": The Democrats win ", avgdemwins,"% of 10,000 simulations", sep = ""),
+   #      yaxis = list(title = '# of Simulations'), xaxis = list(range = c(40,60)))
+
+  
+
+```
+
+```{r wrangle prediction data}
+## Wrangle prediction data
+PVI_2022 <- read.csv("PVI_share.csv")
+  
+
+demographics_2022 <- read.csv("demographics_by_2022_cd.csv") %>%
+  mutate(white = White_2020_VAP / Total_2020_VAP) %>%
+  select(District, white) %>%
+  rename(District_merge = District)
+
+incumbency_2022 <- read.csv("house_cands.csv") %>%
+  mutate(District = paste(state, district, sep = " ")) %>%
+  filter(incumbent == 1 & cand_party == "Democratic") %>%
+  mutate(District = case_when(District == "Alaska AL" ~ "Alaska at-large",
+                              District == "Delaware AL" ~ "Delaware at-large",
+                              TRUE ~ District)) %>%
+  select(District, state)
+
+dem_incumbents <- c(incumbency_2022$District, "Arizona 2", "Arizona 3", "Arizona 4", "Arizona 7", "California 4", "California 6", "California 7", "California 8", "California 9", "California 10", "California 11", "California 12", "California 14", "California 16", "California 18", "California 19", "California 21", "California 25", "California 28", "California 30", "California 31", "California 32", "California 33", "California 36", "California 39", "California 47", "California 50", "California 51", "California 52", "Florida 22", "Florida 25", "Georgia 7", "Michigan 6", "Michigan 7", "Michigan 8", "Michigan 12", "Minnesota 2", "Minnesota 3", "Minnesota 4", "Minnesota 5", "New York 12", "New York 17", "New York 18", "Texas 34")
+
+```
+
+```{r}
+state_converter <- read.csv("house_cands.csv") %>%
+  mutate(District = paste(state, district, sep = " ")) %>%
+  distinct(District, state) %>%
+  mutate(District = case_when(District == "Alaska AL" ~ "Alaska at-large",
+                              District == "Delaware AL" ~ "Delaware at-large",
+                              District == "North Dakota AL" ~ "North Dakota at-large",
+                              District == "South Dakota AL" ~ "South Dakota at-large",
+                              District == "Vermont AL" ~ "Vermont at-large",
+                              District == "Wyoming AL" ~ "Wyoming at-large",
+                              TRUE ~ District)) %>%
+  select(District, state)
+
+predict_data <- PVI_2022 %>%
+  mutate(dem_inc = case_when(District %in% dem_incumbents ~ 1,
+                             TRUE ~ 0)) %>%
+  mutate(district_num = parse_number(District)) %>%
+  mutate(district_num = case_when(is.na(district_num) ~ 01,
+                                  TRUE ~ district_num)) %>%
+  mutate(district_num = sprintf("%02d",district_num)) %>%
+  full_join(state_converter, by = "District") %>%
+  full_join(state.abbrevs, by = "state") %>%
+  mutate(District_merge = paste(abbrev, district_num, sep = "-")) %>%
+  full_join(demographics_2022, by = "District_merge") %>%
+  select(District, District_merge, state, abbrev, district_num, PVI, PVI_num, dem_inc, white) %>%
+  mutate(dem_pres = rep(1,435),
+         midterm = rep(1,435))
+
+point_predictions <- predict_data %>%
+  select(District, District_merge, state, abbrev, district_num, PVI) %>%
+  mutate(predicted_dem_voteshare = rep(NA, 435),
+         lwr_pred_interval = rep(NA, 435),
+         upr_pred_interval = rep(NA, 435),
+         se.fit = rep(NA, 435)) %>%
+  mutate(districtlabs = paste(abbrev, district_num, sep = ""))
+
+#national_adjuster <- predict_data %>%
+#  mutate(districtlabs = paste(abbrev, district_num, sep = ""))
+
+## Convert national prediction to baseline margin
+nat_sim$margin <- nat_sim$sim_share - 50
+
+poll_pred_voteshare <- rep(NA, 435)
+poll_pred_lwr <- rep(NA, 435)
+poll_pred_upr <- rep(NA, 435)
+
+for (i in 1:435) {
+ poll_pred_voteshare[i] <- poll_predict$fit[1] - 50
+ poll_pred_lwr[i] <- poll_predict$fit[2] - 50
+ poll_pred_upr[i] <- poll_predict$fit[3] - 50
+}
+
+#poll_model_sims <- data.frame(AL01 = rep(NA, 10000))
+
+#for (i in 1:435) {
+# poll_model_sims[,i] <- 
+ # poll_model_sims[,i] <- nat_sim$sim_share + rep(national_adjuster$PVI_num[i], 10000)
+ # poll_pred_voteshare[i] <- poll_predict$fit[1] + national_adjuster$PVI_num[i]
+ # poll_pred_lwr[i] <- poll_predict$fit[2] + national_adjuster$PVI_num[i]
+ # poll_pred_upr[i] <- poll_predict$fit[3] + national_adjuster$PVI_num[i]
+#}
+
+#colnames(poll_model_sims) <- national_adjuster$districtlabs
+
+## Run pooled model for each current district
+for (i in 1:435) {
+  point_predictions$predicted_dem_voteshare[i] <- predict.lm(contested_model, predict_data[i,], interval="predict", level=0.80, se.fit = TRUE)$fit[,1]
+  point_predictions$lwr_pred_interval[i] <- predict.lm(contested_model, predict_data[i,], interval="predict", level=0.80, se.fit = TRUE)$fit[,2]
+  point_predictions$upr_pred_interval[i] <- predict.lm(contested_model, predict_data[i,], interval="predict", level=0.80, se.fit = TRUE)$fit[,3]
+  point_predictions$se.fit[i] <- predict.lm(contested_model, predict_data[i,], interval="predict", level=0.80, se.fit = TRUE)$se.fit
+  point_predictions$residual.scale[i] <- predict.lm(contested_model, predict_data[i,], interval="predict", level=0.80, se.fit = TRUE)$residual.scale
+}
+
+#sim <- data.frame(pred_fit = rep(point_predictions[34,]$predicted_dem_voteshare, 10000), pred_se = point_predictions[34,]$residual.scale, sim_share = rep(NA, 10000))
+
+## Simulate 10,000 elections in each district
+draws <- data.frame(AL01 = rep(NA, 10000))
+point_predictions$prob_dem_win <- rep(NA, 435)
+
+for (j in 1:435) {
+  sim <- data.frame(pred_fit = rep(point_predictions[j,]$predicted_dem_voteshare, 10000), pred_se = point_predictions[j,]$residual.scale, sim_share = rep(NA, 10000))
+  
+  for (i in 1:10000) {
+  sim$sim_share[i] <- rnorm(n = 1, mean = sim$pred_fit[i], sd = sim$pred_se[i])
+  }
+  draws[,j] <- sim$sim_share
+  point_predictions$prob_dem_win[j] <- mean(sim$sim_share > 50)
+}
+
+colnames(draws) <- point_predictions$districtlabs
+point_predictions$prob_dem_win = 100*point_predictions$prob_dem_win
+
+consolidated_draws1 <- data.frame(AL01 = rep(NA, 10000))
+
+## Add simulated national margin to independently simulated district voteshares
+for (i in 1:435) {
+  consolidated_draws1[,i] <- draws[,i] + nat_sim$margin
+}  
+
+colnames(consolidated_draws1) <- point_predictions$districtlabs
+
+
+#consolidated_draws <- data.frame(AL01 = rep(NA, 10000))
+
+for (i in 1:435) {
+  point_predictions$con_prob_dem_win[i] <- 100*mean(consolidated_draws1[,i] > 50)
+  point_predictions$con_predicted_dem_voteshare[i] <- point_predictions$predicted_dem_voteshare[i] + poll_pred_voteshare[i]
+  point_predictions$con_lwr_pred_interval[i] <- point_predictions$lwr_pred_interval[i] + poll_pred_lwr[i]
+  point_predictions$con_upr_pred_interval[i] <- point_predictions$upr_pred_interval[i] + poll_pred_upr[i]
+}
+
+#consolidated_draws <- data.frame(AL01 = rep(NA, 10000))
+#for (i in 1:435) {
+ # consolidated_draws[,i] <- 0.35*draws[,i] + poll_model_sims[,i]*0.65
+  #point_predictions$con_prob_dem_win[i] <- 100*mean(consolidated_draws[,i] > 50)
+  #point_predictions$con_predicted_dem_voteshare[i] <- 0.35*point_predictions$predicted_dem_voteshare[i] + 0.65*poll_pred_voteshare[i]
+#  point_predictions$con_lwr_pred_interval[i] <- 0.35*point_predictions$lwr_pred_interval[i] + 0.65*poll_pred_lwr[i]
+#  point_predictions$con_upr_pred_interval[i] <- 0.35*point_predictions$upr_pred_interval[i] + 0.65*poll_pred_upr[i]
+#}
+
+
+library(donnermap)
+
+#sum(point_predictions$con_prob_dem_win > 50)
+
+```
+
+```{r}
+
+## Cartogram of predictions
+
+merge_point <- point_predictions %>%
+  mutate(STATEAB = abbrev,
+         CDLABEL = as.character(parse_number(district_num))) %>%
+  mutate(CDLABEL = case_when(District == "Alaska at-large" ~ "AK",
+                              District == "Delaware at-large" ~ "DE",
+                              District == "North Dakota at-large" ~ "ND",
+                              District == "South Dakota at-large" ~ "SD",
+                              District == "Vermont at-large" ~ "VT",
+                              District == "Wyoming at-large" ~ "WY",
+                              TRUE ~ CDLABEL)) %>%
+  mutate(prob_dem_win = round(prob_dem_win, digits=2),
+         lwr_pred_interval = round(lwr_pred_interval, digits=2),
+         upr_pred_interval = round(upr_pred_interval, digits=2),
+         predicted_dem_voteshare = round(predicted_dem_voteshare, digits=2),
+         con_prob_dem_win = round(con_prob_dem_win, digits=2),
+         con_lwr_pred_interval = round(con_lwr_pred_interval, digits=2),
+         con_upr_pred_interval = round(con_upr_pred_interval, digits=2),
+         con_predicted_dem_voteshare = round(con_predicted_dem_voteshare, digits=2))
+         
+  
+
+cd_cartogram <- read_sf("HexCDv30wm.shp") %>%
+  full_join(merge_point, by = c("STATEAB","CDLABEL"))
+
+cart <- ggplot(cd_cartogram) + geom_sf(aes(fill=con_prob_dem_win, text = paste("District: ", District_merge, "<br />","Dem Win Prob: ", con_prob_dem_win, "%", "<br />", "Predicted Dem Vote Share: ", con_predicted_dem_voteshare, "%","<br />","80% Pred Interval Lower: ", con_lwr_pred_interval, "%", "<br />","80% Pred Interval Upper: ", con_upr_pred_interval, "%", sep = "")),
+          inherit.aes=FALSE,alpha=0.7) +  
+  scale_fill_gradient(low = "red", high = "blue") +
+  theme_void() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) +
+  labs(fill = "Dem Win Prob %") 
+
+ggplotly(cart, tooltip = "text") %>%
+  layout(hoverlabel = list(bgcolor = "white"))
+```
+
+```{r}
+
+## Generate histograms for each district
+library(shiny)
+
+plot_list = list()
+
+for (i in 1:435) {
+  p <- plot_ly(x = consolidated_draws1[,i], type = "histogram", marker = list(color = 'blue', opacity = 0.5), name = "Simulated Dem Two-Party Vote Share") %>% 
+  add_histogram(x = 100 - consolidated_draws1[,i], marker = list(color = 'red', opacity = 0.5), name = "Simulated Rep Two-Party Vote Share") %>%
+  layout(legend = list(orientation = "h")) %>% 
+  layout(barmode = "overlay") %>%
+  layout(title = paste(merge_point$District[i], ": The Democrat wins ", merge_point$con_prob_dem_win[i],"% of 10,000 simulations", sep = ""),
+         yaxis = list(title = '# of Simulations'), xaxis = list(range = c(0,100)))
+  plot_list[[i]] = p
+}
+
+
+ui <- shinyUI(
+    fluidPage(
+        selectInput("selectPlot", "Select District:", merge_point$districtlabs),
+        plotlyOutput("plot")
+    )
+)
+
+server <- shinyServer(function(input,output,session){   
+
+    data <- eventReactive(input$selectPlot,{
+        switch(input$selectPlot,
+               "AL01" = plot_list[[1]],
+               "AL02" = plot_list[[2]],
+               "AL03" = plot_list[[3]],
+               "AL04" = plot_list[[4]],
+               "AL05" = plot_list[[5]],
+               "AL06" = plot_list[[6]],
+               "AL07" = plot_list[[7]],
+               "AK01" = plot_list[[8]],
+               "AZ01" = plot_list[[9]],
+               "AZ02" = plot_list[[10]],
+               "AZ03" = plot_list[[11]],
+               "AZ04" = plot_list[[12]],
+               "AZ05" = plot_list[[13]],
+               "AZ06" = plot_list[[14]],
+               "AZ07" = plot_list[[15]],
+               "AZ08" = plot_list[[16]],
+               "AZ09" = plot_list[[17]],
+               "AR01" = plot_list[[18]],
+               "AR02" = plot_list[[19]],
+               "AR03" = plot_list[[20]],
+               "AR04" = plot_list[[21]],
+               "CA01" = plot_list[[22]],
+               "CA02" = plot_list[[23]],
+               "CA03" = plot_list[[24]],
+               "CA04" = plot_list[[25]],
+               "CA05" = plot_list[[26]],
+               "CA06" = plot_list[[27]],
+               "CA07" = plot_list[[28]],
+               "CA08" = plot_list[[29]],
+               "CA09" = plot_list[[30]],
+               "CA10" = plot_list[[31]],
+               "CA11" = plot_list[[32]],
+               "CA12" = plot_list[[33]],
+               "CA13" = plot_list[[34]],
+               "CA14" = plot_list[[35]],
+               "CA15" = plot_list[[36]],
+               "CA16" = plot_list[[37]],
+               "CA17" = plot_list[[38]],
+               "CA18" = plot_list[[39]],
+               "CA19" = plot_list[[40]],
+               "CA20" = plot_list[[41]],
+               "CA21" = plot_list[[42]],
+               "CA22" = plot_list[[43]],
+               "CA23" = plot_list[[44]],
+               "CA24" = plot_list[[45]],
+               "CA25" = plot_list[[46]],
+               "CA26" = plot_list[[47]],
+               "CA27" = plot_list[[48]],
+               "CA28" = plot_list[[49]],
+               "CA29" = plot_list[[50]],
+               "CA30" = plot_list[[51]],
+               "CA31" = plot_list[[52]],
+               "CA32" = plot_list[[53]],
+               "CA33" = plot_list[[54]],
+               "CA34" = plot_list[[55]],
+               "CA35" = plot_list[[56]],
+               "CA36" = plot_list[[57]],
+               "CA37" = plot_list[[58]],
+               "CA38" = plot_list[[59]],
+               "CA39" = plot_list[[60]],
+               "CA40" = plot_list[[61]],
+               "CA41" = plot_list[[62]],
+               "CA42" = plot_list[[63]],
+               "CA43" = plot_list[[64]],
+               "CA44" = plot_list[[65]],
+               "CA45" = plot_list[[66]],
+               "CA46" = plot_list[[67]],
+               "CA47" = plot_list[[68]],
+               "CA48" = plot_list[[69]],
+               "CA49" = plot_list[[70]],
+               "CA50" = plot_list[[71]],
+               "CA51" = plot_list[[72]],
+               "CA52" = plot_list[[73]],
+               "CO01" = plot_list[[74]],
+               "CO02" = plot_list[[75]],
+               "CO03" = plot_list[[76]],
+               "CO04" = plot_list[[77]],
+               "CO05" = plot_list[[78]],
+               "CO06" = plot_list[[79]],
+               "CO07" = plot_list[[80]],
+               "CO08" = plot_list[[81]],
+               "CT01" = plot_list[[82]],
+               "CT02" = plot_list[[83]],
+               "CT03" = plot_list[[84]],
+               "CT04" = plot_list[[85]],
+               "CT05" = plot_list[[86]],
+               "DE01" = plot_list[[87]],
+               "FL01" = plot_list[[88]],
+               "FL02" = plot_list[[89]],
+               "FL03" = plot_list[[90]],
+               "FL04" = plot_list[[91]],
+               "FL05" = plot_list[[92]],
+               "Fl06" = plot_list[[93]],
+               "FL07" = plot_list[[94]],
+               "FL08" = plot_list[[95]],
+               "FL09" = plot_list[[96]],
+               "FL10" = plot_list[[97]],
+               "FL11" = plot_list[[98]],
+               "FL12" = plot_list[[99]],
+               "FL13" = plot_list[[100]],
+               "FL14" = plot_list[[101]],
+               "FL15" = plot_list[[102]],
+               "FL16" = plot_list[[103]],
+               "FL17" = plot_list[[104]],
+               "FL18" = plot_list[[105]],
+               "FL19" = plot_list[[106]],
+               "FL20" = plot_list[[107]],
+               "FL21" = plot_list[[108]],
+               "FL22" = plot_list[[109]],
+               "FL23" = plot_list[[110]],
+               "FL24" = plot_list[[111]],
+               "FL25" = plot_list[[112]],
+               "FL26" = plot_list[[113]],
+               "FL27" = plot_list[[114]],
+               "FL28" = plot_list[[115]],
+               "GA01" = plot_list[[116]],
+               "GA02" = plot_list[[117]],
+               "GA03" = plot_list[[118]],
+               "GA04" = plot_list[[119]],
+               "GA05" = plot_list[[120]],
+               "GA06" = plot_list[[121]],
+               "GA07" = plot_list[[122]],
+               "GA08" = plot_list[[123]],
+               "GA09" = plot_list[[124]],
+               "GA10" = plot_list[[125]],
+               "GA11" = plot_list[[126]],
+               "GA12" = plot_list[[127]],
+               "GA13" = plot_list[[128]],
+               "GA14" = plot_list[[129]],
+               "HI01" = plot_list[[130]],
+               "HI02" = plot_list[[131]],
+               "ID01" = plot_list[[132]],
+               "ID02" = plot_list[[133]],
+               "IL01" = plot_list[[134]],
+               "IL02" = plot_list[[135]],
+               "IL03" = plot_list[[136]],
+               "IL04" = plot_list[[137]],
+               "IL05" = plot_list[[138]],
+               "IL06" = plot_list[[139]],
+               "IL07" = plot_list[[140]],
+               "IL08" = plot_list[[141]],
+               "IL09" = plot_list[[142]],
+               "IL10" = plot_list[[143]],
+               "IL11" = plot_list[[144]],
+               "IL12" = plot_list[[145]],
+               "IL13" = plot_list[[146]],
+               "IL14" = plot_list[[147]],
+               "IL15" = plot_list[[148]],
+               "IL16" = plot_list[[149]],
+               "IL17" = plot_list[[150]],
+               "IN01" = plot_list[[151]],
+               "IN02" = plot_list[[152]],
+               "IN03" = plot_list[[153]],
+               "IN04" = plot_list[[154]],
+               "IN05" = plot_list[[155]],
+               "IN06" = plot_list[[156]],
+               "IN07" = plot_list[[157]],
+               "IN08" = plot_list[[158]],
+               "IN09" = plot_list[[159]],
+               "IA01" = plot_list[[160]],
+               "IA02" = plot_list[[161]],
+               "IA03" = plot_list[[162]],
+               "IA04" = plot_list[[163]],
+               "KS01" = plot_list[[164]],
+               "KS02" = plot_list[[165]],
+               "KS03" = plot_list[[166]],
+               "KS04" = plot_list[[167]],
+               "KY01" = plot_list[[168]],
+               "KY02" = plot_list[[169]],
+               "KY03" = plot_list[[170]],
+               "KY04" = plot_list[[171]],
+               "KY05" = plot_list[[172]],
+               "KY06" = plot_list[[173]],
+               "LA01" = plot_list[[174]],
+               "LA02" = plot_list[[175]],
+               "LA03" = plot_list[[176]],
+               "LA04" = plot_list[[177]],
+               "LA05" = plot_list[[178]],
+               "LA06" = plot_list[[179]],
+               "ME01" = plot_list[[180]],
+               "ME02" = plot_list[[181]],
+               "MD01" = plot_list[[182]],
+               "MD02" = plot_list[[183]],
+               "MD03" = plot_list[[184]],
+               "MD04" = plot_list[[185]],
+               "MD05" = plot_list[[186]],
+               "MD06" = plot_list[[187]],
+               "MD07" = plot_list[[188]],
+               "MD08" = plot_list[[189]],
+               "MA01" = plot_list[[190]],
+               "MA02" = plot_list[[191]],
+               "MA03" = plot_list[[192]],
+               "MA04" = plot_list[[193]],
+               "MA05" = plot_list[[194]],
+               "MA06" = plot_list[[195]],
+               "MA07" = plot_list[[196]],
+               "MA08" = plot_list[[197]],
+               "MA09" = plot_list[[198]],
+               "MI01" = plot_list[[199]],
+               "MI02" = plot_list[[200]],
+               "MI03" = plot_list[[201]],
+               "MI04" = plot_list[[202]],
+               "MI05" = plot_list[[203]],
+               "MI06" = plot_list[[204]],
+               "MI07" = plot_list[[205]],
+               "MI08" = plot_list[[206]],
+               "MI09" = plot_list[[207]],
+               "MI10" = plot_list[[208]],
+               "MI11" = plot_list[[209]],
+               "MI12" = plot_list[[210]],
+               "MI13" = plot_list[[211]],
+               "MN01" = plot_list[[212]],
+               "MN02" = plot_list[[213]],
+               "MN03" = plot_list[[214]],
+               "MN04" = plot_list[[215]],
+               "MN05" = plot_list[[216]],
+               "MN06" = plot_list[[217]],
+               "MN07" = plot_list[[218]],
+               "MN08" = plot_list[[219]],
+               "MS01" = plot_list[[220]],
+               "MS02" = plot_list[[221]],
+               "MS03" = plot_list[[222]],
+               "MS04" = plot_list[[223]],
+               "MO01" = plot_list[[224]],
+               "MO02" = plot_list[[225]],
+               "MO03" = plot_list[[226]],
+               "MO04" = plot_list[[227]],
+               "MO05" = plot_list[[228]],
+               "MO06" = plot_list[[229]],
+               "MO07" = plot_list[[230]],
+               "MO08" = plot_list[[231]],
+               "MT01" = plot_list[[232]],
+               "MT02" = plot_list[[233]],
+               "NE01" = plot_list[[234]],
+               "NE02" = plot_list[[235]],
+               "NE03" = plot_list[[236]],
+               "NV01" = plot_list[[237]],
+               "NV02" = plot_list[[238]],
+               "NV03" = plot_list[[239]],
+               "NV04" = plot_list[[240]],
+               "NH01" = plot_list[[241]],
+               "NH02" = plot_list[[242]],
+               "NJ01" = plot_list[[243]],
+               "NJ02" = plot_list[[244]],
+               "NJ03" = plot_list[[245]],
+               "NJ04" = plot_list[[246]],
+               "NJ05" = plot_list[[247]],
+               "NJ06" = plot_list[[248]],
+               "NJ07" = plot_list[[249]],
+               "NJ08" = plot_list[[250]],
+               "NJ09" = plot_list[[251]],
+               "NJ10" = plot_list[[252]],
+               "NJ11" = plot_list[[253]],
+               "NJ12" = plot_list[[254]],
+               "NM01" = plot_list[[255]],
+               "NM02" = plot_list[[256]],
+               "NM03" = plot_list[[257]],
+               "NY01" = plot_list[[258]],
+               "NY02" = plot_list[[259]],
+               "NY03" = plot_list[[260]],
+               "NY04" = plot_list[[261]],
+               "NY05" = plot_list[[262]],
+               "NY06" = plot_list[[263]],
+               "NY07" = plot_list[[264]],
+               "NY08" = plot_list[[265]],
+               "NY09" = plot_list[[266]],
+               "NY10" = plot_list[[267]],
+               "NY11" = plot_list[[268]],
+               "NY12" = plot_list[[269]],
+               "NY13" = plot_list[[270]],
+               "NY14" = plot_list[[271]],
+               "NY15" = plot_list[[272]],
+               "NY16" = plot_list[[273]],
+               "NY17" = plot_list[[274]],
+               "NY18" = plot_list[[275]],
+               "NY19" = plot_list[[276]],
+               "NY20" = plot_list[[277]],
+               "NY21" = plot_list[[278]],
+               "NY22" = plot_list[[279]],
+               "NY23" = plot_list[[280]],
+               "NY24" = plot_list[[281]],
+               "NY25" = plot_list[[282]],
+               "NY26" = plot_list[[283]],
+               "NC01" = plot_list[[284]],
+               "NC02" = plot_list[[285]],
+               "NC03" = plot_list[[286]],
+               "NC04" = plot_list[[287]],
+               "NC05" = plot_list[[288]],
+               "NC06" = plot_list[[289]],
+               "NC07" = plot_list[[290]],
+               "NC08" = plot_list[[291]],
+               "NC09" = plot_list[[292]],
+               "NC10" = plot_list[[293]],
+               "NC11" = plot_list[[294]],
+               "NC12" = plot_list[[295]],
+               "NC13" = plot_list[[296]],
+               "NC14" = plot_list[[297]],
+               "ND01" = plot_list[[298]],
+               "OH01" = plot_list[[299]],
+               "OH02" = plot_list[[300]],
+               "OH03" = plot_list[[301]],
+               "OH04" = plot_list[[302]],
+               "OH05" = plot_list[[303]],
+               "OH06" = plot_list[[304]],
+               "OH07" = plot_list[[305]],
+               "OH08" = plot_list[[306]],
+               "OH09" = plot_list[[307]],
+               "OH10" = plot_list[[308]],
+               "OH11" = plot_list[[309]],
+               "OH12" = plot_list[[310]],
+               "OH13" = plot_list[[311]],
+               "OH14" = plot_list[[312]],
+               "OH15" = plot_list[[313]],
+               "OK01" = plot_list[[314]],
+               "OK02" = plot_list[[315]],
+               "OK03" = plot_list[[316]],
+               "OK04" = plot_list[[317]],
+               "OK05" = plot_list[[318]],
+               "OR01" = plot_list[[319]],
+               "OR02" = plot_list[[320]],
+               "OR03" = plot_list[[321]],
+               "OR04" = plot_list[[322]],
+               "OR05" = plot_list[[323]],
+               "OR06" = plot_list[[324]],
+               "PA01" = plot_list[[325]],
+               "PA02" = plot_list[[326]],
+               "PA03" = plot_list[[327]],
+               "PA04" = plot_list[[328]],
+               "PA05" = plot_list[[329]],
+               "PA06" = plot_list[[330]],
+               "PA07" = plot_list[[331]],
+               "PA08" = plot_list[[332]],
+               "PA09" = plot_list[[333]],
+               "PA10" = plot_list[[334]],
+               "PA11" = plot_list[[335]],
+               "PA12" = plot_list[[336]],
+               "PA13" = plot_list[[337]],
+               "PA14" = plot_list[[338]],
+               "PA15" = plot_list[[339]],
+               "PA16" = plot_list[[340]],
+               "PA17" = plot_list[[341]],
+               "RI01" = plot_list[[342]],
+               "RI02" = plot_list[[343]],
+               "SC01" = plot_list[[344]],
+               "SC02" = plot_list[[345]],
+               "SC03" = plot_list[[346]],
+               "SC04" = plot_list[[347]],
+               "SC05" = plot_list[[348]],
+               "SC06" = plot_list[[349]],
+               "SC07" = plot_list[[350]],
+               "SD01" = plot_list[[351]],
+               "TN01" = plot_list[[352]],
+               "TN02" = plot_list[[353]],
+               "TN03" = plot_list[[354]],
+               "TN04" = plot_list[[355]],
+               "TN05" = plot_list[[356]],
+               "TN06" = plot_list[[357]],
+               "TN07" = plot_list[[358]],
+               "TN08" = plot_list[[359]],
+               "TN09" = plot_list[[360]],
+               "TX01" = plot_list[[361]],
+               "TX02" = plot_list[[362]],
+               "TX03" = plot_list[[363]],
+               "TX04" = plot_list[[364]],
+               "TX05" = plot_list[[365]],
+               "TX06" = plot_list[[366]],
+               "TX07" = plot_list[[367]],
+               "TX08" = plot_list[[368]],
+               "TX09" = plot_list[[369]],
+               "TX10" = plot_list[[370]],
+               "TX11" = plot_list[[371]],
+               "TX12" = plot_list[[372]],
+               "TX13" = plot_list[[373]],
+               "TX14" = plot_list[[374]],
+               "TX15" = plot_list[[375]],
+               "TX16" = plot_list[[376]],
+               "TX17" = plot_list[[377]],
+               "TX18" = plot_list[[378]],
+               "TX19" = plot_list[[379]],
+               "TX20" = plot_list[[380]],
+               "TX21" = plot_list[[381]],
+               "TX22" = plot_list[[382]],
+               "TX23" = plot_list[[383]],
+               "TX24" = plot_list[[384]],
+               "TX25" = plot_list[[385]],
+               "TX26" = plot_list[[386]],
+               "TX27" = plot_list[[387]],
+               "TX28" = plot_list[[388]],
+               "TX29" = plot_list[[389]],
+               "TX30" = plot_list[[390]],
+               "TX31" = plot_list[[391]],
+               "TX32" = plot_list[[392]],
+               "TX33" = plot_list[[393]],
+               "TX34" = plot_list[[394]],
+               "TX35" = plot_list[[395]],
+               "TX36" = plot_list[[396]],
+               "TX37" = plot_list[[397]],
+               "TX38" = plot_list[[398]],
+               "UT01" = plot_list[[399]],
+               "UT02" = plot_list[[400]],
+               "UT03" = plot_list[[401]],
+               "UT04" = plot_list[[402]],
+               "VT01" = plot_list[[403]],
+               "VA01" = plot_list[[404]],
+               "VA02" = plot_list[[405]],
+               "VA03" = plot_list[[406]],
+               "VA04" = plot_list[[407]],
+               "VA05" = plot_list[[408]],
+               "VA06" = plot_list[[409]],
+               "VA07" = plot_list[[410]],
+               "VA08" = plot_list[[411]],
+               "VA09" = plot_list[[412]],
+               "VA10" = plot_list[[413]],
+               "VA11" = plot_list[[414]],
+               "WA01" = plot_list[[415]],
+               "WA02" = plot_list[[416]],
+               "WA03" = plot_list[[417]],
+               "WA04" = plot_list[[418]],
+               "WA05" = plot_list[[419]],
+               "WA06" = plot_list[[420]],
+               "WA07" = plot_list[[421]],
+               "WA08" = plot_list[[422]],
+               "WA09" = plot_list[[423]],
+               "WA10" = plot_list[[424]],
+               "WV01" = plot_list[[425]],
+               "WV02" = plot_list[[426]],
+               "WI01" = plot_list[[427]],
+               "WI02" = plot_list[[428]],
+               "WI03" = plot_list[[429]],
+               "WI04" = plot_list[[430]],
+               "WI05" = plot_list[[431]],
+               "WI06" = plot_list[[432]],
+               "WI07" = plot_list[[433]],
+               "WI08" = plot_list[[434]],
+               "WY01" = plot_list[[435]])
+    })
+
+    output$plot <- renderPlotly({
+        data()
+    })
+})
+
+          
+shinyApp(ui,server)
+
+library(purrr)
+seatdraws1 <- consolidated_draws1 %>%
+  map_df(~case_when(.x > 50 ~ 1,
+                  TRUE ~ 0))
+
+dem_wins <- rowSums(seatdraws1)
+
+avgdemwins <- 100*mean(dem_wins > 217)
+
+plot_ly(x = dem_wins, type = "histogram", marker = list(color = 'blue', opacity = 0.5), name = "Simulated Dem Seat Share") %>% 
+  add_histogram(x = 435 - dem_wins, marker = list(color = 'red', opacity = 0.5), name = "Simulated Rep Seat Share") %>%
+  layout(legend = list(orientation = "h")) %>% 
+  layout(barmode = "overlay") %>%
+  layout(title = paste("National Forecast", ": The Democrats win ", avgdemwins,"% of 10,000 simulations", sep = ""),
+         yaxis = list(title = '# of Simulations'), xaxis = list(range = c(150,285)))
+
+
+
+#write.csv(x = consolidated_draws1, file = "consolidated_draws1.csv")
+#write.csv(x = merge_point, file = "merge_point.csv")
+```
+
+
+
+
+ui <-shinyUI(fluidPage(selectInput("selectPlot", "Choose desired congressional district", choices=merge_point$District, plotlyOutput("plot"))))
+
+server <- shinyServer(function(input,output){      
+  output$plot <- renderPlotly({
+    return(get(merge_point$districtlabs[1]))
+  })
+})
+
+merge_point$District == input$selectPlot
+server <- shinyServer(function(input,output){      
+  output$plot <- renderPlotly({
+    return(get(plot_list[[which(merge_point$District == input$selectPlot)]]))
+  })
+})
+
+p <- merge_point[1,]$plots
+
+shinyApp(ui,server)
+
+merge_point$plots <- plot_list
+
+string <- merge_point$districtlabs
+
+AL01 <- plot_list[[1]]
+
+which(merge_point$District == input$selectPlot)
+
+get(merge_point$districtlabs[1])
+
+
+
+
+<br/>
+```{r}
+tab_model(pool_model, show.se = TRUE)
+```
+<br/>
+```{r}
+fig1
+```
+<br/>
+```{r}
+tab_model(contested_model, show.se = TRUE)
+```
+<br/>
+```{r}
+fig2
+```
+

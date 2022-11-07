@@ -6,7 +6,21 @@
     <description>Recent content in Posts on Ethan&#39;s 2022 Election Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 28 Oct 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 01 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Final Prediction</title>
+      <link>http://example.org/post/2022-11-01-final-prediction/</link>
+      <pubDate>Tue, 01 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/2022-11-01-final-prediction/</guid>
+      <description>This blog is an ongoing assignment for Gov 1347: Election Analytics, a course at Harvard College taught by Professor Ryan Enos. It will be updated weekly and culminate in a predictive model of the 2022 midterm elections.
+Shiny applications not supported in static R Markdown documents
+ui &amp;lt;-shinyUI(fluidPage(selectInput(“selectPlot”, “Choose desired congressional district”, choices=merge_point$District, plotlyOutput(“plot”))))
+server &amp;lt;- shinyServer(function(input,output){
+output\(plot &amp;lt;- renderPlotly({ return(get(merge_point\)districtlabs[1])) }) })
+merge_point\(District == input\)selectPlot server &amp;lt;- shinyServer(function(input,output){</description>
+    </item>
+    
     <item>
       <title>Blog 7: Building a Pooled District-Level Model</title>
       <link>http://example.org/post/2022-10-28-blog-7-building-a-pooled-model/</link>
