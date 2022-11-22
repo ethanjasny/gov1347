@@ -881,7 +881,7 @@ districtcartmap
 
 Click through the drop-down menu to get histograms of simulations for every district.
 
-<iframe height="600" width="100%" frameborder="no" src="https://ethanjasny.shinyapps.io/Histograms/"> </iframe>
+<iframe height="500" width="100%" frameborder="no" src="https://ethanjasny.shinyapps.io/Histograms/"> </iframe>
 
 # Methodology
 My model combines district-level demographic data, other fundamental indicators, and national polling data to generate predicted vote shares and win probabilities for every district in the country. These district-level estimates are then combined to determine a national-level seat forecast. I built my model in two main sections: a district-level pooled model based on fundamentals and a national vote share model based on generic ballot polls.
@@ -958,3 +958,8 @@ As previously mentioned, the implementation of my polling model presumes a natio
 Moreover, I decided to omit district-level polling (due to the sparseness and potential unreliability of the data) and expert predictions (to preserve the intellectual exercise of making this model). But these data points could have helped refine my district-level predictions to incorporate information beyond the fundamentals considered in my pooled model. For example, expert predictions and polling suggest that Democrat Mary Peltola is competitive and even favored in Alaska’s at-large congressional district, but my model — turning to the baseline partisanship of the district — only gives Peltola an 18.3% chance of winning. My model also has no way to account for Alaska’s ranked-choice voting electoral system.
 
 Still, as an exercise in considering how some measures of district-level fundamentals and national polling can be used to model midterm elections, I think my predictions seem broadly reasonable, if somewhat more pro-Republican than other forecasts and my own priors.
+
+```{r}
+write.csv(point_predictions, "point_predictions.csv")
+```
+

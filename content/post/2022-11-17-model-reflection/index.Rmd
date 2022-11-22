@@ -1,0 +1,236 @@
+---
+title: Model Reflection
+author: R package build
+date: '2022-11-17'
+slug: []
+categories: []
+tags: []
+---
+```{r setup, include=FALSE}
+# Hide all code output
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+# Import libraries
+library(tidyverse)
+library(ggplot2)
+library(usmap)
+library(sf)
+library(blogdown)
+library(plotly)
+library(htmlwidgets)
+library(gridExtra)
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+library(kableExtra)
+library(data.table)
+library(rmapshaper)
+library(stargazer)
+library(readr)
+```
+
+```{r}
+dat <- read.csv("2022_4_0_3.csv") %>%
+  filter(FIPS != "fips") %>%
+  mutate(Democratic = as.numeric(Democratic),
+         Republican = as.numeric(Republican))
+
+##hand enter MA, ME, and MS
+dat[dat$FIPS == 25901,'Democratic'] = 153081; dat[dat$FIPS == 25901,'Republican'] = 96415
+dat[dat$FIPS == 25902,'Democratic'] = 177519; dat[dat$FIPS == 25902,'Republican'] = 90791
+dat[dat$FIPS == 25903,'Democratic'] = 145379; dat[dat$FIPS == 25903,'Republican'] = 82568
+dat[dat$FIPS == 25904,'Democratic'] = 0; dat[dat$FIPS == 25904,'Republican'] = 0
+dat[dat$FIPS == 25905,'Democratic'] = 198126; dat[dat$FIPS == 25905,'Republican'] = 70570
+dat[dat$FIPS == 25906,'Democratic'] = 189753; dat[dat$FIPS == 25906,'Republican'] = 107384
+dat[dat$FIPS == 25907,'Democratic'] = 144902; dat[dat$FIPS == 25907,'Republican'] = 26481
+dat[dat$FIPS == 25908,'Democratic'] = 184076; dat[dat$FIPS == 25908,'Republican'] = 80961
+dat[dat$FIPS == 25909,'Democratic'] = 192941; dat[dat$FIPS == 25909,'Republican'] = 131774
+
+dat[dat$FIPS == 23901,'Democratic'] = 218630; dat[dat$FIPS == 23901,'Republican'] = 128996
+dat[dat$FIPS == 23902,'Democratic'] = 151440; dat[dat$FIPS == 23902,'Republican'] = 140895
+
+
+dat[dat$FIPS == 28901,'Democratic'] = 44387; dat[dat$FIPS == 28901,'Republican'] = 119673
+dat[dat$FIPS == 28902,'Democratic'] = 107071; dat[dat$FIPS == 28902,'Republican'] = 71380
+dat[dat$FIPS == 28903,'Democratic'] = 51628; dat[dat$FIPS == 28903,'Republican'] = 126081
+dat[dat$FIPS == 28904,'Democratic'] = 39292; dat[dat$FIPS == 28904,'Republican'] = 122128
+
+##LA and FL races with no reporting b/c no contest
+dat[dat$FIPS == 22904,'Democratic'] = 0; dat[dat$FIPS == 22904,'Republican'] = 0
+dat[dat$FIPS == 12905,'Democratic'] = 0; dat[dat$FIPS == 12905,'Republican'] = 0
+
+## Utah
+dat[dat$FIPS == 49903,'Democratic'] = 82865; dat[dat$FIPS == 49903,'Republican'] = 181141
+
+
+dat <- dat %>% 
+  mutate(RepublicanPct = Republican/(Democratic + Republican)*100,
+         DemocratPct = Democratic/(Democratic + Republican)*100,
+         CD = ifelse(Geographic.Name == 'At Large','00',CD),
+         STATE_FIPS = str_pad(STATE_FIPS,2,'left','0'),
+         GEOID = paste0(STATE_FIPS,CD),
+         state_abbr = fips_info(STATE_FIPS)$abbr,
+         abbr_fips = paste(state_abbr,CD,sep = '-'),
+         Winner = ifelse(RepublicanPct>50,'Republican','Democrat')) %>%
+  select(abbr_fips, DemocratPct, RepublicanPct, Winner, FIPS, STATE_FIPS, CD, Geographic.Name, Total.Vote, Democratic, Republican, GEOID, state_abbr)
+
+dat$Winner[92] <- "Republican"
+dat$Winner[177] <- "Republican"
+dat$Winner[193] <- "Democrat"
+
+length(dat$Winner[dat$Winner == "Democrat"])
+
+dat$abbr_fips[dat$abbr_fips == "AK-00"] <- "AK-01"
+dat$abbr_fips[dat$abbr_fips == "ND-00"] <- "ND-01"
+dat$abbr_fips[dat$abbr_fips == "SD-00"] <- "SD-01"
+dat$abbr_fips[dat$abbr_fips == "WY-00"] <- "WY-01"
+dat$abbr_fips[dat$abbr_fips == "DE-00"] <- "DE-01"
+dat$abbr_fips[dat$abbr_fips == "VT-00"] <- "VT-01"
+
+point_predictions <- read.csv("point_predictions.csv")
+
+dat_merged <- dat %>%
+  rename(District_merge = abbr_fips) %>%
+  full_join(point_predictions, by = "District_merge")
+
+
+incorrect_rep <- dat_merged %>%
+  filter(con_predicted_dem_voteshare > 50,
+         Winner == "Republican")
+incorrect_dem <- dat_merged %>%
+  filter(con_predicted_dem_voteshare < 50,
+         Winner == "Democrat")
+
+mistakes <- rbind(incorrect_rep, incorrect_dem)
+
+dat_merged$errors <- dat_merged$DemocratPct - dat_merged$con_predicted_dem_voteshare
+
+uncontested.cds = c("AZ-08", "PA-15", "AZ-09", "SC-03", "FL-05", "SC-04", "IL-07", "TX-06", "LA-04", "TX-11", "MA-04", "TX-25", "NY-13", "TX-31", "PA-13", "WI-06", "PA-14",
+                    "AL-01", "NY-09", "AL-06", "PA-03", "CA-10", "SD-01", "FL-06", "TX-19", "FL-18", "TX-26", "LA-06", "WI-08", "ND-01",
+                    "CA-15", "CA-30", "CA-16", "CA-34", "CA-29", "CA-37", "LA-05", "LA-03")
+
+dat.contested <- dat_merged %>%
+  filter(!District_merge%in%uncontested.cds)
+
+#RMSE
+mean(sqrt((dat.contested$errors)^2))
+
+#Brier
+dat_merged$win_num[dat_merged$Winner == "Democrat"] <- 1
+dat_merged$win_num[dat_merged$Winner == "Republican"] <- 0
+
+mean(((dat_merged$con_prob_dem_win/100) - dat_merged$win_num)^2)
+
+```
+```{r}
+## Plot errors
+merge_point <- dat.contested %>%
+  mutate(STATEAB = state_abbr,
+         CDLABEL = as.character(parse_number(CD))) %>%
+  mutate(CDLABEL = case_when(state_abbr == "AK" ~ "AK",
+                              state_abbr == "DE" ~ "DE",
+                              state_abbr == "ND" ~ "ND",
+                              state_abbr == "SD" ~ "SD",
+                              state_abbr == "VT" ~ "VT",
+                              state_abbr == "WY" ~ "WY",
+                              TRUE ~ CDLABEL)) %>%
+  mutate(prob_dem_win = round(prob_dem_win, digits=2),
+         lwr_pred_interval = round(lwr_pred_interval, digits=2),
+         upr_pred_interval = round(upr_pred_interval, digits=2),
+         predicted_dem_voteshare = round(predicted_dem_voteshare, digits=2),
+         con_prob_dem_win = round(con_prob_dem_win, digits=2),
+         errors = round(errors, digits =2),
+         con_lwr_pred_interval = round(con_lwr_pred_interval, digits=2),
+         con_upr_pred_interval = round(con_upr_pred_interval, digits=2),
+         con_predicted_dem_voteshare = round(con_predicted_dem_voteshare, digits=2),
+         DemocratPct = round(DemocratPct, digits=2))
+         
+  
+
+cd_cartogram <- read_sf("HexCDv30wm.shp") %>%
+  full_join(merge_point, by = c("STATEAB","CDLABEL"))
+
+cart <- ggplot(cd_cartogram) + geom_sf(aes(fill=errors, text = paste("District: ", District_merge, "<br />","Error ", errors, "<br />", "Dem Win Prob: ",con_prob_dem_win, "%", "<br />","Actual Dem Voteshare: ", DemocratPct, "%", "<br />", "Predicted Dem Vote Share: ", con_predicted_dem_voteshare, "%","<br />","80% Pred Interval Lower: ", con_lwr_pred_interval, "%", "<br />","80% Pred Interval Upper: ", con_upr_pred_interval, "%", sep = "")),
+          inherit.aes=FALSE,alpha=0.7) +  
+  scale_fill_gradient(low = "red", high = "blue", limits = c(-10,10)) +
+  theme_void() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) +
+  labs(fill = "Prediction Error") 
+
+districtcartmap <- ggplotly(cart, tooltip = "text") %>%
+  layout(hoverlabel = list(bgcolor = "white"))
+
+```
+```{r}
+## Incorrect seat map
+merge_point1 <- mistakes %>%
+  mutate(STATEAB = state_abbr,
+         CDLABEL = as.character(parse_number(CD))) %>%
+  mutate(CDLABEL = case_when(state_abbr == "AK" ~ "AK",
+                              state_abbr == "DE" ~ "DE",
+                              state_abbr == "ND" ~ "ND",
+                              state_abbr == "SD" ~ "SD",
+                              state_abbr == "VT" ~ "VT",
+                              state_abbr == "WY" ~ "WY",
+                              TRUE ~ CDLABEL)) %>%
+  mutate(prob_dem_win = round(prob_dem_win, digits=2),
+         lwr_pred_interval = round(lwr_pred_interval, digits=2),
+         upr_pred_interval = round(upr_pred_interval, digits=2),
+         predicted_dem_voteshare = round(predicted_dem_voteshare, digits=2),
+         con_prob_dem_win = round(con_prob_dem_win, digits=2),
+         con_lwr_pred_interval = round(con_lwr_pred_interval, digits=2),
+         con_upr_pred_interval = round(con_upr_pred_interval, digits=2),
+         con_predicted_dem_voteshare = round(con_predicted_dem_voteshare, digits=2),
+         DemocratPct = round(DemocratPct, digits=2))
+         
+  
+
+cd_cartogram1 <- read_sf("HexCDv30wm.shp") %>%
+  full_join(merge_point1, by = c("STATEAB","CDLABEL"))
+
+cart <- ggplot(cd_cartogram1) + geom_sf(aes(fill=Winner, text = paste("District: ", District_merge, "<br />","Dem Win Prob: ",con_prob_dem_win, "%", "<br />","Actual Dem Voteshare: ", DemocratPct, "%", "<br />", "Predicted Dem Vote Share: ", con_predicted_dem_voteshare, "%","<br />","80% Pred Interval Lower: ", con_lwr_pred_interval, "%", "<br />","80% Pred Interval Upper: ", con_upr_pred_interval, "%", sep = ""))) +
+  scale_fill_manual(values=c("#619CFF", "#F8766D")) +
+  theme_void() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) +
+  labs(fill = "Prediction Error") 
+
+mistakesmap <- ggplotly(cart, tooltip = "text") %>%
+  layout(hoverlabel = list(bgcolor = "white"))
+
+mistakes %>%
+  arrange(con_prob_dem_win)
+
+ scale_fill_gradient(low = "red", high = "blue", limits = c(-10,10))
+```
+```{r}
+## Histogram of errors
+dat.contested.rlean <- dat.contested$errors[dat.contested$errors < 0]
+dat.contested.dlean <- dat.contested$errors[dat.contested$errors >= 0]
+
+errorshist <- plot_ly(x = dat.contested.dlean, type = "histogram", marker = list(color = 'blue', opacity = 0.5), name = "Dem Overperformance", xbins = list(size = 0.5, start = 0)) %>% 
+  add_histogram(x = dat.contested.rlean, marker = list(color = 'red', opacity = 0.5), name = "GOP Overperformance", xbins = list(size = 0.5, start = -20)) %>%
+  layout(legend = list(orientation = "h")) %>% 
+  layout(barmode = "overlay") %>%
+  layout(title = paste("Histogram of District-Level Errors", sep = ""),
+         yaxis = list(title = 'Error'))
+
+mean(dat.contested$errors)
+median(dat.contested$errors)
+
+
+```
+```{r}
+plot(x = 2*dat.contested$con_predicted_dem_voteshare - 50, y = dat.contested$DemocratPct - dat.contested$con_predicted_dem_voteshare)
+```
+
+

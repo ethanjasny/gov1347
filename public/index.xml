@@ -6,7 +6,16 @@
     <description>Recent content on Ethan&#39;s 2022 Election Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 01 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 17 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Model Reflection</title>
+      <link>http://example.org/post/2022-11-17-model-reflection/</link>
+      <pubDate>Thu, 17 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/post/2022-11-17-model-reflection/</guid>
+      <description>## [1] 214 ## [1] 2.685172 ## [1] 0.03396136 ## District_merge DemocratPct RepublicanPct Winner FIPS STATE_FIPS CD ## 1 WA-03 50.48476 49.51524 Democrat 53903 53 03 ## 2 NC-13 51.32203 48.67797 Democrat 37913 37 13 ## 3 OH-13 52.58965 47.41035 Democrat 39913 39 13 ## 4 AK-01 64.85863 35.14137 Democrat 2901 02 00 ## 5 CO-08 50.37945 49.62055 Democrat 8908 08 08 ## 6 PA-17 53.16339 46.83661 Democrat 42917 42 17 ## 7 NM-02 50.</description>
+    </item>
+    
     <item>
       <title>Final Prediction Model</title>
       <link>http://example.org/post/2022-11-01-final-prediction/</link>
