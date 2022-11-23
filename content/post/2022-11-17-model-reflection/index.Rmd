@@ -1,6 +1,6 @@
 ---
 title: Model Reflection
-author: R package build
+author: Ethan Jasny
 date: '2022-11-17'
 slug: []
 categories: []
@@ -28,7 +28,6 @@ library(rmapshaper)
 library(stargazer)
 library(readr)
 ```
-
 ```{r}
 dat <- read.csv("2022_4_0_3.csv") %>%
   filter(FIPS != "fips") %>%
@@ -78,8 +77,6 @@ dat$Winner[92] <- "Republican"
 dat$Winner[177] <- "Republican"
 dat$Winner[193] <- "Democrat"
 
-length(dat$Winner[dat$Winner == "Democrat"])
-
 dat$abbr_fips[dat$abbr_fips == "AK-00"] <- "AK-01"
 dat$abbr_fips[dat$abbr_fips == "ND-00"] <- "ND-01"
 dat$abbr_fips[dat$abbr_fips == "SD-00"] <- "SD-01"
@@ -113,14 +110,13 @@ dat.contested <- dat_merged %>%
   filter(!District_merge%in%uncontested.cds)
 
 #RMSE
-mean(sqrt((dat.contested$errors)^2))
+rmse <- mean(sqrt((dat.contested$errors)^2))
 
 #Brier
 dat_merged$win_num[dat_merged$Winner == "Democrat"] <- 1
 dat_merged$win_num[dat_merged$Winner == "Republican"] <- 0
 
-mean(((dat_merged$con_prob_dem_win/100) - dat_merged$win_num)^2)
-
+brier <- mean(((dat_merged$con_prob_dem_win/100) - dat_merged$win_num)^2)
 ```
 ```{r}
 ## Plot errors
@@ -202,15 +198,15 @@ cart <- ggplot(cd_cartogram1) + geom_sf(aes(fill=Winner, text = paste("District:
         axis.title.y=element_blank(),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank()) +
-  labs(fill = "Prediction Error") 
+  labs(fill = "Actual Winner") 
 
 mistakesmap <- ggplotly(cart, tooltip = "text") %>%
   layout(hoverlabel = list(bgcolor = "white"))
 
-mistakes %>%
-  arrange(con_prob_dem_win)
-
- scale_fill_gradient(low = "red", high = "blue", limits = c(-10,10))
+mistake.arranged <- mistakes %>%
+  arrange(con_prob_dem_win) %>%
+  select(District_merge, Winner, con_prob_dem_win, DemocratPct, con_predicted_dem_voteshare, con_lwr_pred_interval, con_upr_pred_interval) %>%
+  rename(District = District_merge, Dem_Win_Prob = con_prob_dem_win, Actual_Dem_Vote = DemocratPct, Predicted_Dem_Vote = con_predicted_dem_voteshare, Lower = con_lwr_pred_interval, Upper = con_upr_pred_interval)
 ```
 ```{r}
 ## Histogram of errors
@@ -221,16 +217,96 @@ errorshist <- plot_ly(x = dat.contested.dlean, type = "histogram", marker = list
   add_histogram(x = dat.contested.rlean, marker = list(color = 'red', opacity = 0.5), name = "GOP Overperformance", xbins = list(size = 0.5, start = -20)) %>%
   layout(legend = list(orientation = "h")) %>% 
   layout(barmode = "overlay") %>%
-  layout(title = paste("Histogram of District-Level Errors", sep = ""),
+  layout(title = "Histogram of District-Level Errors",
          yaxis = list(title = 'Error'))
 
-mean(dat.contested$errors)
-median(dat.contested$errors)
 
 
 ```
 ```{r}
-plot(x = 2*dat.contested$con_predicted_dem_voteshare - 50, y = dat.contested$DemocratPct - dat.contested$con_predicted_dem_voteshare)
+scatterpreds <- ggplot(dat.contested, aes(x = predicted_dem_voteshare, y = DemocratPct)) +
+  geom_point() +
+  geom_abline() +
+  ggtitle("Predicted Versus Actual 2022 Democratic Vote Share by District") +
+  xlab("Predicted Democratic Two-Party Vote Share") +
+  ylab("Actual Democratic Two-Party Vote Share")
 ```
+```{r}
+##Topline hist
+dem_wins <- read.csv("dem_wins.csv")
+avgdemwins <- 8.14
+
+overallpredhist <- plot_ly(x = dem_wins$x, type = "histogram", marker = list(color = 'blue', opacity = 0.5), name = "Simulated Dem Seat Share") %>% 
+  add_histogram(x = 435 - dem_wins$x, marker = list(color = 'red', opacity = 0.5), name = "Simulated Rep Seat Share") %>%
+  layout(legend = list(orientation = "h")) %>% 
+  layout(barmode = "overlay") %>%
+  layout(title = paste("The Democrats win the House in ", avgdemwins,"% of 10,000 simulations", sep = ""),
+         yaxis = list(title = '# of Simulations'), xaxis = list(range = c(150,285)))
+```
+In this blog post, I’ll reflect on the performance of my model using actual results from the 2022 midterms. As a reminder, my final model found that Republicans were strongly favored to take the House. My model predicted that **Democrats would win 200 seats** and **Republicans would win 235 seats**.  Moreover, I gave Democrats an 8.14% chance of winning the House. 
+```{r}
+overallpredhist
+```
+In 80% of simulations of my model, Democrats won between 185 and 216 seats, and Republicans won between 219 and 250 seats.
+
+The drop-down menu below displays histograms with my predictions for every district in the nation.
+
+<iframe height="500" width="100%" frameborder="no" src="https://ethanjasny.shinyapps.io/Histograms/"> </iframe>
+
+# Accuracy of My Model
+
+Clearly, my model underestimated Democrats chances, predicting they would win 200 seats when in reality they are on track to win 213. But this 213-222 final seat share was still a reasonably likely outcome according to my topline histogram, with this result sitting within the 80% prediction interval. This may suggest that although my final point prediction was off, my model did a better job consider the levels of uncertainty in the election.
+
+Using the probabilities generated for each of my district forecasts, I calculated a Brier score for my model of 0.03396. And using the point predictions for each of my district forecasts in contested races, I calculated a root mean square error of 2.6852. According to Kiara’s calculations, FiveThirtyEight’s district models had a brier score of 0.032 and an RMSE of 3.99, so although my overall seat prediction was further from the mark, the accuracy of my model was in line with some of the major forecasters. 
+
+Listed below are the districts that I called incorrectly, sorted by the Democratic win percentage determined by my model. 
+
+```{r}
+tab_df(mistake.arranged)
+```
+I called 26 races incorrectly (FiveThirtyEight, for reference, called 23 incorrectly). Notably, 20 of these races were those that I initially called for Republicans but which on election day were won by Democrats, while only 6 of the districts that I predicted would go Democratic in fact went Republican. This aligns with my broader underestimation of Democrats. 
+
+Many of the districts that I called incorrectly were those that I had pegged as toss-ups. I gave Democrats a 50.11% chance of winning Iowa’s 3rd, so a Republican victory was the mere toss of a coin. In 12 of the districts I called incorrectly, I gave the actual winner at least a 40% chance of victory. Some of my bigger misses were upsets that came as a shock to everyone. I gave Democrat Marie Gluesenkamp Perez only a 5.91% chance of winning Washington’s 3rd District — FiveThirtyEight gave her only a 2% chance. Similarly, my model thought Democrat Sean Patrick Maloney would win New York’s 17th in 84.55% of simulations. FiveThirtyEight was less certain in Maloney’s victory but still confident enough to give him 70-30 odds. Other miscalled races came down to clear flaws in my methodology. I gave Democrat Mary Peltola only an 18.30% chance of winning Alaska’s at-large district, despite the conventional (and ultimately correct) wisdom that Peltola was competitive and even favored in the race. My forecast was off since it did not consider Alaska’s RCV system, the poor candidate quality of the Republicans in the race, or the quirks of Alaska politics. 
+
+The map below plots the districts that I called incorrectly. 
+
+```{r}
+mistakesmap
+```
+
+Republicans won upset victories in two races in New York, and Democrats outperformed my model in districts across the Midwest and in South Carolina. 
+
+Turning now to my vote share point predictions, the histogram below plots the model’s error in contested seats (that is, the actual Democratic vote share minus the predicted Democratic vote share). My point predictions are slightly skewed toward underestimating Democrats (the median error, for reference, is 0.70 percentage points). But the distribution of point prediction errors is still roughly centered around 0. In the majority of contested districts, my model was within 5 percentage points of the true Democratic vote share and within 10 percentage points for nearly all contested districts. A notable outlier is Alaska, though this is effectively just a data error caused by Alaska’s RCV system. (the data set only considers the votes of the top vote-getting Republican, rather than adding the votes of the two Republicans in the race or adjusting for RCV results in some way.)
+
+The map below plots the errors across districts. Grey districts were either uncontested or had multiple Republicans or Democrats on the ballot. 
+
+```{r}
+districtcartmap
+```
+Once again, Republicans overperformed my model in New York state, as well as Florida and parts of California. My model underestimated Democrats across the Midwest and in South Carolina. 
+
+Finally, the graph below plots the actual Democratic two-party vote share versus the predicted Democratic two-party vote share.
+
+```{r}
+scatterpreds 
+```
+
+Overall, my predictions fairly closely map the actual results, with the districts generally following the 45-degree line.
+
+# Where I Went Wrong
+
+I think my predictions were fairly reasonable given the outputs I was feeding my model. My forecast was based on fundamental conditions, such as the partisanship and demographics of of districts and the fact this was a midterm election cycle with an incumbent Democratic president. These fundamentals seemed to be [objectively bad for Democrats]( https://fivethirtyeight.com/features/5-reasons-for-democrats-to-still-be-concerned-about-the-midterms/), based on the historical data my model is based off of. My model also incorporated national polling, and since it was trained on polling data which had had a pro-Republican bias in recent years, the model expected another modest Republican polling bias. These factors led to overestimating Republicans’ chances.
+
+In particular, I was unable to consider significant regional variations in party performance. This midterm cycle saw a wide range in swings depending on the state: Florida and New York experienced Red Waves, while Michigan experienced a Blue Wave. But my model simply applied a national swing (based on the generic ballot polling average) to all districts and was thus unable to consider regional correlations. 
+
+I worry that this lack of consideration for state-based dynamics left my model unable to consider the particular quirks of this election cycle. As evidence for this, my model generally underestimated Democrats in places where Democrats overperformed Biden and the baseline partisanship of districts (the Midwest) and underestimated Republicans in places where Democrats underperformed Biden and the baseline partisanship of districts (Florida, New York, California). In other words, my model was overly reliant on district-level fundamentals like PVI, not anticipating the particular regional contexts of certain races in 2022.
+
+To test this hypothesis further, I may run a regression between my model’s error and 2020-2022 district-level vote swing. If my model is indeed overly reliant on regional fundamentals, I’d expect a strong positive correlation between Democratic overperformance relative to my model and Democratic overperformance relative to 2020. 
+
+# Improvements for Next Time
+
+One way to address the pitfalls discussed above would be to consider the correlations between districts based on geographic proximity and demographic similarity. FiveThirtyEight’s CANTOR algorithm, for example, is able to make predictions for districts with sparse data based on data in similar districts. This would allow me to consider region- and demographic-based uncertainties rather than relying on a uniform swing model. 
+
+Another approach could be to consider the effects of top-of-ballot races on congressional elections. States in which [Senate and gubernatorial candidates of a certain party performed well]( https://www.nytimes.com/interactive/2022/11/08/us/elections/results-house.html) also tended to see that party fare well in House races (e.g. for Republicans, Ron DeSantis and Lee Zeldin; for Democrats, Gretchen Whitmer). In future models, I may therefore include polling for Senate and gubernatorial candidates, which provides a means of considering regional variations. It also provides a way to integrate potentially valuable state-level polling data that I did not consider this time around. 
 
 

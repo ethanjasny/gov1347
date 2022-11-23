@@ -961,5 +961,6 @@ Still, as an exercise in considering how some measures of district-level fundame
 
 ```{r}
 write.csv(point_predictions, "point_predictions.csv")
+write.csv(dem_wins, "dem_wins.csv")
 ```
 

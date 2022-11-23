@@ -13,7 +13,8 @@
       <pubDate>Thu, 17 Nov 2022 00:00:00 +0000</pubDate>
       
       <guid>http://example.org/post/2022-11-17-model-reflection/</guid>
-      <description>## [1] 214 ## [1] 2.685172 ## [1] 0.03396136 ## District_merge DemocratPct RepublicanPct Winner FIPS STATE_FIPS CD ## 1 WA-03 50.48476 49.51524 Democrat 53903 53 03 ## 2 NC-13 51.32203 48.67797 Democrat 37913 37 13 ## 3 OH-13 52.58965 47.41035 Democrat 39913 39 13 ## 4 AK-01 64.85863 35.14137 Democrat 2901 02 00 ## 5 CO-08 50.37945 49.62055 Democrat 8908 08 08 ## 6 PA-17 53.16339 46.83661 Democrat 42917 42 17 ## 7 NM-02 50.</description>
+      <description>In this blog post, I’ll reflect on the performance of my model using actual results from the 2022 midterms. As a reminder, my final model found that Republicans were strongly favored to take the House. My model predicted that Democrats would win 200 seats and Republicans would win 235 seats. Moreover, I gave Democrats an 8.14% chance of winning the House.
+In 80% of simulations of my model, Democrats won between 185 and 216 seats, and Republicans won between 219 and 250 seats.</description>
     </item>
     
     <item>
