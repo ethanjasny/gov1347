@@ -276,7 +276,14 @@ mistakesmap
 
 Republicans won upset victories in two races in New York, and Democrats outperformed my model in districts across the Midwest and in South Carolina. 
 
-Turning now to my vote share point predictions, the histogram below plots the model’s error in contested seats (that is, the actual Democratic vote share minus the predicted Democratic vote share). My point predictions are slightly skewed toward underestimating Democrats (the median error, for reference, is 0.70 percentage points). But the distribution of point prediction errors is still roughly centered around 0. In the majority of contested districts, my model was within 5 percentage points of the true Democratic vote share and within 10 percentage points for nearly all contested districts. A notable outlier is Alaska, though this is effectively just a data error caused by Alaska’s RCV system. (the data set only considers the votes of the top vote-getting Republican, rather than adding the votes of the two Republicans in the race or adjusting for RCV results in some way.)
+Turning now to my vote share point predictions, the histogram below plots the model’s error in contested seats (that is, the actual Democratic vote share minus the predicted Democratic vote share). 
+
+```{r}
+errorshist
+```
+
+
+My point predictions are slightly skewed toward underestimating Democrats (the median error, for reference, is 0.70 percentage points). But the distribution of point prediction errors is still roughly centered around 0. In the majority of contested districts, my model was within 5 percentage points of the true Democratic vote share and within 10 percentage points for nearly all contested districts. A notable outlier is Alaska, though this is effectively just a data error caused by Alaska’s RCV system. (the data set only considers the votes of the top vote-getting Republican, rather than adding the votes of the two Republicans in the race or adjusting for RCV results in some way.)
 
 The map below plots the errors across districts. Grey districts were either uncontested or had multiple Republicans or Democrats on the ballot. 
 
