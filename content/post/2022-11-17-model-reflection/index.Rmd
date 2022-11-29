@@ -255,7 +255,7 @@ The drop-down menu below displays histograms with my predictions for every distr
 
 # Accuracy of My Model
 
-Clearly, my model underestimated Democrats chances, predicting they would win 200 seats when in reality they are on track to win 213. But this 213-222 final seat share was still a reasonably likely outcome according to my topline histogram, with this result sitting within the 80% prediction interval. This may suggest that although my final point prediction was off, my model did a better job consider the levels of uncertainty in the election.
+Clearly, my model underestimated Democrats chances, predicting they would win 200 seats when in reality they are on track to win 213. But this 213-222 final seat share was still a reasonably likely outcome according to my topline histogram, with this result sitting within the 80% prediction interval. This may suggest that although my final point prediction was off, my model did a better job considering the levels of uncertainty in the election.
 
 Using the probabilities generated for each of my district forecasts, I calculated a Brier score for my model of 0.03396. And using the point predictions for each of my district forecasts in contested races, I calculated a root mean square error of 2.6852. According to Kiara’s calculations, FiveThirtyEight’s district models had a brier score of 0.032 and an RMSE of 3.99, so although my overall seat prediction was further from the mark, the accuracy of my model was in line with some of the major forecasters. 
 
@@ -283,7 +283,7 @@ errorshist
 ```
 
 
-My point predictions are slightly skewed toward underestimating Democrats (the median error, for reference, is 0.70 percentage points). But the distribution of point prediction errors is still roughly centered around 0. In the majority of contested districts, my model was within 5 percentage points of the true Democratic vote share and within 10 percentage points for nearly all contested districts. A notable outlier is Alaska, though this is effectively just a data error caused by Alaska’s RCV system. (the data set only considers the votes of the top vote-getting Republican, rather than adding the votes of the two Republicans in the race or adjusting for RCV results in some way.)
+My point predictions are slightly skewed toward underestimating Democrats (the median error, for reference, is 0.70 percentage points). But the distribution of point prediction errors is still roughly centered around 0. In the majority of contested districts, my model was within 5 percentage points of the true Democratic vote share and within 10 percentage points for nearly all contested districts. A notable outlier is Alaska, though this is effectively just a data error caused by Alaska’s RCV system. (The data set only considers the votes of the top vote-getting Republican, rather than adding the votes of the two Republicans in the race or adjusting for RCV results in some way.)
 
 The map below plots the errors across districts. Grey districts were either uncontested or had multiple Republicans or Democrats on the ballot. 
 
@@ -302,7 +302,7 @@ Overall, my predictions fairly closely map the actual results, with the district
 
 # Where I Went Wrong
 
-I think my predictions were fairly reasonable given the outputs I was feeding my model. My forecast was based on fundamental conditions, such as the partisanship and demographics of of districts and the fact this was a midterm election cycle with an incumbent Democratic president. These fundamentals seemed to be [objectively bad for Democrats]( https://fivethirtyeight.com/features/5-reasons-for-democrats-to-still-be-concerned-about-the-midterms/), based on the historical data my model is based off of. My model also incorporated national polling, and since it was trained on polling data which had had a pro-Republican bias in recent years, the model expected another modest Republican polling bias. These factors led to overestimating Republicans’ chances.
+I think my predictions were fairly reasonable given the outputs I was feeding my model. My forecast was based on fundamental conditions, such as the partisanship and demographics of districts and the fact this was a midterm election cycle with an incumbent Democratic president. These fundamentals seemed to be [objectively bad for Democrats]( https://fivethirtyeight.com/features/5-reasons-for-democrats-to-still-be-concerned-about-the-midterms/), based on the historical data my model is based off of. My model also incorporated national polling, and since it was trained on polling data which had had a pro-Republican bias in recent years, the model expected another modest Republican polling bias. These factors led to overestimating Republicans’ chances.
 
 In particular, I was unable to consider significant regional variations in party performance. This midterm cycle saw a wide range in swings depending on the state: Florida and New York experienced Red Waves, while Michigan experienced a Blue Wave. But my model simply applied a national swing (based on the generic ballot polling average) to all districts and was thus unable to consider regional correlations. 
 
